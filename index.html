@@ -339,31 +339,26 @@
     }
 
     /* L2b — About headline (#text-about)
-       ─────────────────────────────────────────────────────
-       Lives INSIDE #text-hero (as its last child), with
-       position:absolute; inset:0. #text-hero is already
-       position:relative, so inset:0 makes #text-about occupy
-       the EXACT SAME box as #text-hero — pixel-identical on
-       every screen, with zero hard-coded coordinates.
-
-       Because it's absolutely positioned, #text-about does NOT
-       contribute to #text-hero's size — #text-hero's box is
-       still sized purely by its two <h1> lines, so #hero's
-       flex/centering math is completely unaffected.
-
-       Initial state: invisible, 50px below its final spot.
-       JS (phase 2) animates opacity 0→1 and translateY 50→0.
+       position:fixed, full viewport width.
+       The EXACT top value is set by JS on every scroll/resize
+       by reading #text-hero's actual getBoundingClientRect().top.
+       This is the only reliable way to match the position across
+       all screens regardless of flex centering math.
+       z-index:6 — above text-hero (5), below photo (20).
     */
     #text-about {
-      position: absolute;
-      inset: 0;
+      position: fixed;
+      left: 0;
+      right: 0;
+      /* top is set dynamically by JS */
+      z-index: 6;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       text-align: center;
       padding-left: clamp(16px, 5vw, 80px);
       padding-right: clamp(16px, 5vw, 80px);
+      pointer-events: none;
       opacity: 0;
       transform: translateY(50px);
       will-change: opacity, transform;
@@ -447,37 +442,21 @@
     }
 
     /* L4b — Quote (#p3-wrap)
-       ─────────────────────────────────────────────────────
-       position:absolute relative to #hero (sticky is still a
-       "positioned" value, so it remains the containing block).
-       Anchored to #hero's bottom edge via `bottom`, centered
-       horizontally via left:50% + translateX(-50%).
-
-       Being absolute, #p3-wrap is OUTSIDE the flex flow — it
-       adds ZERO height to the centered group and cannot shift
-       #text-hero / #hero-photo-wrap / #caption-wrap. It simply
-       sits in the open area below the photo, in the same spot
-       #caption-wrap occupied (whose content has already faded
-       out by Phase 3).
-
-       Only the QUOTE lives here. The BIO is NOT part of this
-       pinned overlay — it lives in #about-bio, which appears
-       once the sticky section releases (Phase 4).
-
-       Initial state: invisible, 40px below its final spot.
-       JS (phase 3) animates opacity 0→1 and translateY 40→0,
-       while keeping the translateX(-50%) centering intact.
+       position:fixed, centered. JS sets the `top` value to match
+       exactly where #caption-wrap sits (the same area below the
+       photo), so it appears to "replace" the caption in Phase 3.
+       z-index:25 — above photo (20).
     */
     #p3-wrap {
-      position: absolute;
+      position: fixed;
       left: 50%;
-      bottom: clamp(20px, 4vh, 48px);
-      z-index: 21;
+      /* top is set dynamically by JS to match #caption-wrap position */
+      z-index: 25;
       width: min(600px, 88vw);
       text-align: center;
       pointer-events: none;
       opacity: 0;
-      transform: translateX(-50%) translateY(40px);
+      transform: translateX(-50%) translateY(30px);
       will-change: opacity, transform;
     }
     .p3-quote {
@@ -603,18 +582,17 @@
       <!-- L0: Sky gradient -->
       <div id="layer-bg"></div>
 
-      <!-- L2: Headline (Phase 1) + About headline (Phase 2/3 overlay) -->
+      <!-- L2a: Hero headline (Phase 1) -->
       <div id="text-hero">
         <h1 class="hl-serif blur-text">Hi, I'm Nadja,</h1>
         <h1 class="hl-sans  blur-text">I tell stories through visuals.</h1>
+      </div>
 
-        <!-- #text-about overlays #text-hero at the EXACT same
-             coordinates (position:absolute; inset:0 on a
-             position:relative parent). Starts invisible. -->
-        <div id="text-about" aria-hidden="true">
-          <h2 class="hl-about blur-text">Memadukan logika <span class="hl-italic">engineering</span></h2>
-          <h2 class="hl-about blur-text">dengan jiwa <span class="hl-italic">visual storytelling.</span></h2>
-        </div>
+      <!-- L2b: About headline (Phase 2/3) — position:fixed, exact same
+           viewport coordinates as #text-hero. Starts invisible. -->
+      <div id="text-about" aria-hidden="true">
+        <h2 class="hl-about blur-text">Memadukan logika <span class="hl-italic">engineering</span></h2>
+        <h2 class="hl-about blur-text">dengan jiwa <span class="hl-italic">visual storytelling.</span></h2>
       </div>
 
       <!-- L3: Photo — overlaps headline by -0.30em (≈30% of --fs-hl). NEVER moves. -->
@@ -844,31 +822,16 @@
     /* ═══════════════════════════════════════════════════
        5. CINEMATIC HERO → ABOUT SCROLL TRANSITION
        ───────────────────────────────────────────────────
-       #hero-about-scroll is 350vh tall; #hero (position:sticky)
-       stays pinned for 250vh of scroll travel (350vh - 100vh).
-       Progress p ∈ [0,1] maps that travel distance.
-
-       Phase 1  p ∈ [0.00, 0.15] — hold. #text-hero / caption
-                visible as-is, #text-about / #p3-wrap hidden.
-                #hero-photo never moves, in any phase.
-
-       Phase 2  p ∈ [0.15, 0.55] — #text-hero + caption fade
-                out and drift up; #text-about fades in and
-                settles into the EXACT spot #text-hero occupied
-                (it's an inset:0 overlay, so coordinates match
-                automatically — no position math needed here).
-
-       Phase 3  p ∈ [0.55, 0.90] — #text-about holds steady;
-                #p3-wrap (the QUOTE) fades in and drifts up into
-                the open area below the photo.
-
-       Phase 4  p ∈ [0.90, 1.00] — hold (quote settled). Once p
-                reaches 1, #hero un-sticks and the page scrolls
-                normally into #about-bio.
-
-       Each phase is an independent clamped 0→1 ramp (t2, t3),
-       so transitions never jump and phases never overlap in a
-       jarring way.
+       Strategy:
+       - #text-about (fixed) → its `top` is set ONCE (and on
+         resize) to match #text-hero's actual top in the viewport.
+         This is the only reliable way to align across all screens.
+       - #p3-wrap (fixed) → its `top` is set to match where
+         #caption-wrap actually sits so the quote appears right
+         where the caption was.
+       - Both are hidden (visibility:hidden) when the sticky
+         zone is not visible, so they don't ghost over other
+         page sections.
     ═══════════════════════════════════════════════════ */
     const scrollWrap   = document.getElementById('hero-about-scroll');
     const textHero     = document.getElementById('text-hero');
@@ -878,22 +841,49 @@
 
     const clamp01 = (x) => Math.min(1, Math.max(0, x));
 
-    /* Maps p from [start, end] to [0, 1], clamped */
     function rampUp(p, start, end) {
       return clamp01((p - start) / (end - start));
     }
 
+    /* Sync fixed overlays to their reference elements' actual position */
+    function syncOverlayPositions() {
+      const heroRect    = textHero.getBoundingClientRect();
+      const captionRect = captionWrap.getBoundingClientRect();
+      textAbout.style.top = heroRect.top + 'px';
+      p3Wrap.style.top    = captionRect.top + 'px';
+    }
+
     function getHeroProgress() {
       const rect  = scrollWrap.getBoundingClientRect();
-      const total = scrollWrap.offsetHeight - window.innerHeight; // 250vh of travel
+      const total = scrollWrap.offsetHeight - window.innerHeight;
       if (total <= 0) return 1;
       return clamp01(-rect.top / total);
     }
 
     function updateHeroScroll() {
+      const wrapRect = scrollWrap.getBoundingClientRect();
+      const inZone   = wrapRect.top < window.innerHeight && wrapRect.bottom > 0;
+
+      if (!inZone) {
+        textAbout.style.visibility = 'hidden';
+        p3Wrap.style.visibility    = 'hidden';
+        /* Reset hero text to full visibility when zone not active */
+        textHero.style.opacity   = '1';
+        textHero.style.transform = 'translateY(0)';
+        captionWrap.style.opacity   = '1';
+        captionWrap.style.transform = 'translateY(0)';
+        return;
+      }
+
+      textAbout.style.visibility = '';
+      p3Wrap.style.visibility    = '';
+
+      /* Re-sync positions on every tick (handles resize mid-scroll) */
+      syncOverlayPositions();
+
       const p = getHeroProgress();
 
-      /* ── Phase 2: text-hero + caption OUT, text-about IN ── */
+      /* Phase 2 — hero text + caption OUT, about text IN */
       const t2 = rampUp(p, 0.15, 0.55);
 
       textHero.style.opacity   = String(1 - t2);
@@ -905,17 +895,16 @@
       textAbout.style.opacity   = String(t2);
       textAbout.style.transform = `translateY(${50 * (1 - t2)}px)`;
 
-      /* ── Phase 3: p3-wrap (quote) IN ── */
+      /* Phase 3 — quote IN */
       const t3 = rampUp(p, 0.55, 0.90);
 
       p3Wrap.style.opacity   = String(t3);
-      p3Wrap.style.transform = `translateX(-50%) translateY(${40 * (1 - t3)}px)`;
+      p3Wrap.style.transform = `translateX(-50%) translateY(${30 * (1 - t3)}px)`;
 
-      /* Keep these in sync with assistive tech / cursor-blur skip logic */
-      textHero.setAttribute('aria-hidden', t2 >= 1 ? 'true' : 'false');
-      textAbout.setAttribute('aria-hidden', t2 <= 0 ? 'true' : 'false');
+      textHero.setAttribute('aria-hidden',    t2 >= 1 ? 'true' : 'false');
+      textAbout.setAttribute('aria-hidden',   t2 <= 0 ? 'true' : 'false');
       captionWrap.setAttribute('aria-hidden', t2 >= 1 ? 'true' : 'false');
-      p3Wrap.setAttribute('aria-hidden', t3 <= 0 ? 'true' : 'false');
+      p3Wrap.setAttribute('aria-hidden',      t3 <= 0 ? 'true' : 'false');
     }
 
     let heroRaf = null;
@@ -929,8 +918,16 @@
     }
 
     window.addEventListener('scroll', onHeroScroll, { passive: true });
-    window.addEventListener('resize', onHeroScroll, { passive: true });
-    updateHeroScroll(); /* paint initial state on load */
+    window.addEventListener('resize', () => {
+      syncOverlayPositions();
+      onHeroScroll();
+    }, { passive: true });
+
+    /* Initial paint — wait one frame so layout is complete */
+    requestAnimationFrame(() => {
+      syncOverlayPositions();
+      updateHeroScroll();
+    });
 
   })();
   </script>
