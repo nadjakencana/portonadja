@@ -483,23 +483,34 @@
     ========================================================= */
     #about-bio {
       position: relative;
-      min-height: 60vh;
+      min-height: 40vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: clamp(48px, 10vh, 120px) clamp(24px, 8vw, 120px);
+      padding: clamp(32px, 5vh, 64px) clamp(24px, 8vw, 120px) clamp(48px, 10vh, 120px);
       text-align: center;
     }
     .bio-content {
       display: flex;
       flex-direction: column;
-      gap: 1.1em;
+      gap: 0.8em;
       max-width: 680px;
+    }
+    /* Static quote that lives in the bio section (always scrolls with page) */
+    .p3-quote-static {
+      font-family: var(--f-serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(18px, 2vw, 28px);
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 0.3em;
     }
     .bio-text {
       font-family: var(--f-radio);
       font-weight: 400;
-      font-size: clamp(15px, 1.3vw, 19px);
+      font-size: clamp(14px, 1.2vw, 18px);
       line-height: 1.7;
       color: var(--mute);
     }
@@ -621,20 +632,20 @@
 
   <!-- =====================================================
        ABOUT — BIO
-       ─────────────────────────────────────────────────────
-       Normal scroll content. Appears once the sticky hero
-       releases (Phase 4) — this is where the page "becomes
-       scrollable" again.
+       Normal scroll content after sticky releases.
+       Quote is included here too so it reads as one
+       connected unit with the bio text (no large gap).
   ===================================================== -->
   <section id="about-bio">
     <div class="bio-content">
+      <p class="p3-quote-static blur-text">
+        "I believe great stories can come from anywhere."
+      </p>
       <p class="bio-text blur-text">
         Gua adalah mahasiswa Teknologi Rekayasa Komputer yang tertarik
         pada teknologi, AI, dan visual storytelling. Lewat video dan
         konten, gua senang mengubah ide, pengalaman, serta perspektif
         menjadi cerita yang dapat terhubung dengan orang lain.
-      </p>
-      <p class="bio-text blur-text">
         Bagi gua, hal paling menarik terjadi ketika teknologi dan
         kreativitas bertemu.
       </p>
@@ -822,16 +833,12 @@
     /* ═══════════════════════════════════════════════════
        5. CINEMATIC HERO → ABOUT SCROLL TRANSITION
        ───────────────────────────────────────────────────
-       Strategy:
-       - #text-about (fixed) → its `top` is set ONCE (and on
-         resize) to match #text-hero's actual top in the viewport.
-         This is the only reliable way to align across all screens.
-       - #p3-wrap (fixed) → its `top` is set to match where
-         #caption-wrap actually sits so the quote appears right
-         where the caption was.
-       - Both are hidden (visibility:hidden) when the sticky
-         zone is not visible, so they don't ghost over other
-         page sections.
+       KEY FIX: capture the natural (untransformed) positions
+       of #text-hero and #caption-wrap ONCE at load time and
+       on resize — BEFORE any animation starts. Using
+       getBoundingClientRect() mid-scroll is wrong because the
+       elements have already been translateY'd, which shifts
+       their rect and causes #text-about to appear too high/low.
     ═══════════════════════════════════════════════════ */
     const scrollWrap   = document.getElementById('hero-about-scroll');
     const textHero     = document.getElementById('text-hero');
@@ -840,17 +847,32 @@
     const p3Wrap       = document.getElementById('p3-wrap');
 
     const clamp01 = (x) => Math.min(1, Math.max(0, x));
+    const rampUp  = (p, a, b) => clamp01((p - a) / (b - a));
 
-    function rampUp(p, start, end) {
-      return clamp01((p - start) / (end - start));
-    }
+    /* Natural positions — captured when elements are at rest (p=0) */
+    let naturalHeroTop    = 0;
+    let naturalCaptionTop = 0;
 
-    /* Sync fixed overlays to their reference elements' actual position */
-    function syncOverlayPositions() {
-      const heroRect    = textHero.getBoundingClientRect();
-      const captionRect = captionWrap.getBoundingClientRect();
-      textAbout.style.top = heroRect.top + 'px';
-      p3Wrap.style.top    = captionRect.top + 'px';
+    function captureNaturalPositions() {
+      /* Temporarily zero out any in-progress transforms before measuring */
+      const prevHeroT    = textHero.style.transform;
+      const prevCapOp    = captionWrap.style.opacity;
+      const prevCapT     = captionWrap.style.transform;
+      textHero.style.transform    = 'none';
+      captionWrap.style.transform = 'none';
+      captionWrap.style.opacity   = '1';
+
+      naturalHeroTop    = textHero.getBoundingClientRect().top;
+      naturalCaptionTop = captionWrap.getBoundingClientRect().top;
+
+      /* Restore */
+      textHero.style.transform    = prevHeroT;
+      captionWrap.style.transform = prevCapT;
+      captionWrap.style.opacity   = prevCapOp;
+
+      /* Apply to fixed overlays */
+      textAbout.style.top = naturalHeroTop + 'px';
+      p3Wrap.style.top    = naturalCaptionTop + 'px';
     }
 
     function getHeroProgress() {
@@ -867,10 +889,9 @@
       if (!inZone) {
         textAbout.style.visibility = 'hidden';
         p3Wrap.style.visibility    = 'hidden';
-        /* Reset hero text to full visibility when zone not active */
-        textHero.style.opacity   = '1';
-        textHero.style.transform = 'translateY(0)';
-        captionWrap.style.opacity   = '1';
+        textHero.style.opacity     = '1';
+        textHero.style.transform   = 'translateY(0)';
+        captionWrap.style.opacity  = '1';
         captionWrap.style.transform = 'translateY(0)';
         return;
       }
@@ -878,17 +899,13 @@
       textAbout.style.visibility = '';
       p3Wrap.style.visibility    = '';
 
-      /* Re-sync positions on every tick (handles resize mid-scroll) */
-      syncOverlayPositions();
-
       const p = getHeroProgress();
 
-      /* Phase 2 — hero text + caption OUT, about text IN */
+      /* Phase 2 — hero OUT, about IN */
       const t2 = rampUp(p, 0.15, 0.55);
 
-      textHero.style.opacity   = String(1 - t2);
-      textHero.style.transform = `translateY(${-40 * t2}px)`;
-
+      textHero.style.opacity      = String(1 - t2);
+      textHero.style.transform    = `translateY(${-40 * t2}px)`;
       captionWrap.style.opacity   = String(1 - t2);
       captionWrap.style.transform = `translateY(${-20 * t2}px)`;
 
@@ -910,24 +927,21 @@
     let heroRaf = null;
     function onHeroScroll() {
       if (!heroRaf) {
-        heroRaf = requestAnimationFrame(() => {
-          heroRaf = null;
-          updateHeroScroll();
-        });
+        heroRaf = requestAnimationFrame(() => { heroRaf = null; updateHeroScroll(); });
       }
     }
 
     window.addEventListener('scroll', onHeroScroll, { passive: true });
     window.addEventListener('resize', () => {
-      syncOverlayPositions();
+      captureNaturalPositions();
       onHeroScroll();
     }, { passive: true });
 
-    /* Initial paint — wait one frame so layout is complete */
-    requestAnimationFrame(() => {
-      syncOverlayPositions();
+    /* Initial: wait for fonts + layout to settle before measuring */
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      captureNaturalPositions();
       updateHeroScroll();
-    });
+    }));
 
   })();
   </script>
