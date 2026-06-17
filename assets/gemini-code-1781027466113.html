@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kencana Ikhsanun Nadja | Visual Storyteller & Engineer</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        :root {
+            --bg-color: #fcfcfc;
+            --text-dark: #111;
+            --text-light: #555;
+            --yellow: #d4af37; /* Adjusted for elegant milestone bg */
+            --blue-checker: #253361;
+            --font-sans: 'Radio Canada Big', sans-serif;
+            --font-serif: 'Source Serif 4', serif;
+        }
+
+        /* GLOBAL STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            /* Subtle Grid Texture */
+            background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
+            background-size: 24px 24px;
+            overflow-x: hidden;
+        }
+
+        .blur-hover {
+            transition: filter 0.3s ease, transform 0.3s ease;
+            cursor: default;
+        }
+
+        .blur-hover:hover {
+            filter: blur(2px) drop-shadow(0px 4px 10px rgba(0,0,0,0.1));
+            transform: scale(1.01);
+        }
+
+        /* NAVBAR */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: background 0.3s, backdrop-filter 0.3s;
+        }
+
+        nav.scrolled {
+            background: rgba(252, 252, 252, 0.7);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .nav-logo img {
+            height: 30px;
+        }
+
+        .nav-links {
+            display: none;
+            gap: 30px;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links { display: flex; }
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--yellow);
+        }
+
+        /* SCROLL ANIMATION WRAPPER (HERO & ABOUT) */
+        .scroll-wrapper {
+            height: 200vh; /* Allows scrolling to trigger animation */
+            position: relative;
+        }
+
+        .sticky-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* HERO TEXT */
+        .hero-text-layer {
+            position: absolute;
+            top: 20%;
+            text-align: center;
+            z-index: 1;
+            width: 100%;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            padding: 0 20px;
+        }
+
+        .hero-text-layer h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(40px, 6vw, 80px);
+            letter-spacing: -0.04em;
+            font-weight: 400;
+        }
+
+        .hero-text-layer h2 {
+            font-family: var(--font-sans);
+            font-size: clamp(30px, 5vw, 80px);
+            letter-spacing: -0.05em;
+            font-weight: 400;
+        }
+
+        .hero-text-layer p {
+            font-family: var(--font-serif);
+            font-size: clamp(16px, 2vw, 20px);
+            letter-spacing: -0.04em;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 20px auto 0;
+        }
+
+        /* ABOUT TEXT (Hidden initially) */
+        .about-text-layer {
+            position: absolute;
+            top: 20%;
+            text-align: center;
+            z-index: 1;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            padding: 0 20px;
+        }
+
+        .about-text-layer h2 {
+            font-size: clamp(30px, 5vw, 80px);
+            letter-spacing: -0.05em;
+            font-weight: 400;
+        }
+
+        .about-text-layer .sans { font-family: var(--font-sans); }
+        .about-text-layer .serif { font-family: var(--font-serif); }
+
+        .about-text-layer .quote {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: clamp(20px, 3vw, 40px);
+            letter-spacing: -0.04em;
+            margin: 30px 0;
+            color: #333;
+        }
+
+        .about-text-layer .desc {
+            font-family: var(--font-sans);
+            font-size: clamp(16px, 2vw, 20px);
+            line-height: 1.2;
+            letter-spacing: -0.04em;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* HERO IMAGE Z-INDEX TRICK */
+        .hero-image-layer {
+            position: absolute;
+            bottom: 0;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .hero-image-layer img {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+        }
+
+        /* MILESTONES */
+        .milestones {
+            background: url('kuning_milestones.png') center/cover, var(--yellow);
+            padding: 100px 5%;
+            text-align: center;
+        }
+
+        .milestones h2 {
+            font-family: var(--font-sans);
+            font-size: clamp(40px, 6vw, 80px);
+            letter-spacing: -0.05em;
+            mix-blend-mode: difference;
+            color: #FFFFFF;
+            margin-bottom: 60px;
+        }
+
+        .milestone-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (min-width: 1024px) {
+            .milestone-cards { flex-direction: row; }
+        }
+
+        .m-card {
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 350px;
+            height: 250px;
+        }
+
+        .m-card img, .m-card iframe {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: none;
+        }
+
+        /* JOURNEY TIMELINE */
+        .journey {
+            padding: 100px 5%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .journey-title {
+            text-align: center;
+            font-family: var(--font-sans);
+            font-size: clamp(30px, 4vw, 50px);
+            margin-bottom: 60px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .timeline { padding-left: 50%; }
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 15px;
+            width: 2px;
+            background: #e0e0e0;
+        }
+
+        @media (min-width: 768px) {
+            .timeline::before { left: 50%; transform: translateX(-50%); }
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .timeline-item { width: 50%; }
+            .timeline-item:nth-child(odd) { left: 0; padding-right: 40px; text-align: right; }
+            .timeline-item:nth-child(even) { left: 50%; padding-left: 40px; text-align: left; }
+        }
+
+        .timeline-dot {
+            position: absolute;
+            top: 0;
+            left: -23px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--text-dark);
+            border: 3px solid var(--bg-color);
+        }
+
+        @media (min-width: 768px) {
+            .timeline-item:nth-child(odd) .timeline-dot { right: -8px; left: auto; }
+            .timeline-item:nth-child(even) .timeline-dot { left: -8px; }
+        }
+
+        .t-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .timeline-item:nth-child(odd) .t-header { flex-direction: row-reverse; }
+        }
+
+        .t-header img { height: 40px; }
+        .t-header h3 { font-family: var(--font-sans); font-size: 20px; }
+        
+        .t-list {
+            list-style: none;
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* SKILLS SECTION */
+        .skills {
+            padding: 100px 5%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .skill-blocks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .skill-box {
+            padding: 30px 40px;
+            border-radius: 20px;
+            text-align: center;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .skill-eng {
+            background: var(--yellow);
+            color: #fff;
+        }
+
+        .skill-cre {
+            background: #fff;
+            border: 2px solid var(--yellow);
+            color: var(--yellow);
+            animation-delay: 1s; /* Offset float */
+        }
+
+        .skill-box h3 {
+            font-family: var(--font-sans);
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .skill-box p {
+            font-size: 14px;
+            line-height: 1.8;
+            max-width: 250px;
+        }
+
+        /* TASKBAR DOCK */
+        .taskbar {
+            display: flex;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .app-icon {
+            position: relative;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .app-icon:hover {
+            transform: scale(1.3) translateY(-10px);
+        }
+
+        .app-icon::after {
+            content: attr(data-percent);
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.2s;
+            font-weight: bold;
+        }
+
+        .app-icon:hover::after {
+            opacity: 1;
+            top: -45px;
+        }
+
+        /* PORTFOLIO SECTION */
+        .portfolio-section {
+            background-color: #ffffff;
+            background-image: 
+                linear-gradient(45deg, var(--blue-checker) 25%, transparent 25%, transparent 75%, var(--blue-checker) 75%, var(--blue-checker)),
+                linear-gradient(45deg, var(--blue-checker) 25%, transparent 25%, transparent 75%, var(--blue-checker) 75%, var(--blue-checker));
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            padding: 100px 0;
+            color: #fff;
+        }
+
+        .porto-hero-title {
+            text-align: center;
+            font-family: var(--font-sans);
+            font-size: clamp(40px, 8vw, 100px);
+            font-weight: 500;
+            margin-bottom: 60px;
+            display: flex;
+            justify-content: center;
+            background: #fff; /* Contrast block behind title */
+            color: var(--blue-checker);
+            padding: 20px 0;
+        }
+
+        .porto-hero-title span {
+            display: inline-block;
+            transition: transform 0.2s ease-out;
+            cursor: default;
+        }
+
+        .porto-hero-title span:hover {
+            transform: scaleY(1.6);
+        }
+
+        .porto-category {
+            margin-bottom: 60px;
+        }
+
+        .container {
+            padding: 0 5%;
+        }
+
+        .cat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: #111;
+            padding: 15px 30px;
+            border-radius: 15px;
+        }
+
+        .cat-title {
+            font-family: var(--font-sans);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+        }
+
+        .cat-nav button {
+            background: #333;
+            border: none;
+            color: #fff;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .cat-nav button:hover { background: var(--yellow); }
+
+        .reel-slider-wrap, .photo-slider-wrap {
+            padding: 0 5%;
+        }
+
+        .reel-slider, .photo-slider {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 20px;
+        }
+
+        .reel-slider::-webkit-scrollbar, .photo-slider::-webkit-scrollbar { display: none; }
+        
+        .reel-item, .photo-item {
+            flex: 0 0 auto;
+            scroll-snap-align: start;
+            width: 280px;
+            background: #111;
+            padding: 15px;
+            border-radius: 20px;
+        }
+
+        .phone-frame {
+            background: #000;
+            border-radius: 30px;
+            padding: 10px;
+            border: 2px solid #333;
+        }
+
+        .phone-screen {
+            background: #222;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 480px;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .reel-info, .photo-info {
+            margin-top: 15px;
+            text-align: center;
+            font-family: var(--font-sans);
+        }
+
+        .reel-info h4, .photo-info h4 { font-size: 16px; margin-bottom: 5px; color: var(--yellow);}
+        .reel-info p, .photo-info p { font-size: 13px; color: #aaa; }
+
+        /* FOOTER */
+        .footer-transition {
+            height: 150px;
+            background: linear-gradient(to bottom, var(--blue-checker), transparent);
+        }
+
+        footer {
+            padding: 100px 5%;
+            text-align: center;
+        }
+
+        footer h2 {
+            font-family: var(--font-sans);
+            font-size: clamp(24px, 4vw, 40px);
+            font-weight: 400;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+
+        footer h1 {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: clamp(30px, 6vw, 70px);
+            margin-bottom: 60px;
+        }
+
+        .social-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: #f0f0f0;
+            color: var(--text-dark);
+            text-decoration: none;
+            border-radius: 50px;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .social-link:hover {
+            background: #111;
+            color: #fff;
+            transform: translateY(-5px);
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav id="navbar">
+        <a href="#" class="nav-logo">
+            <img src="nadjacreative_logo.svg" alt="N Logo" onerror="this.src='https://placehold.co/100x30/000/fff?text=N'">
+        </a>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#journey">Journey</a>
+            <a href="#skills">Skills</a>
+            <a href="#portfolio">Vault</a>
+            <a href="#contact">Let's Talk &rarr;</a>
+        </div>
+    </nav>
+
+    <div class="scroll-wrapper" id="about">
+        <div class="sticky-container">
+            
+            <div class="hero-text-layer" id="hero-text">
+                <h1 class="blur-hover">Hi, I'm Nadja,</h1>
+                <h2 class="blur-hover">I tell stories through visuals.</h2>
+                <p>Through videos and visual storytelling, I share ideas, experiences, and moments that leave a lasting impact.</p>
+            </div>
+
+            <div class="about-text-layer" id="about-text">
+                <h2>
+                    <span class="sans">Memadukan logika </span><span class="serif">engineering</span><br>
+                    <span class="sans">dengan jiwa </span><span class="serif">visual storytelling.</span>
+                </h2>
+                <p class="quote">"I believe great stories can come from anywhere."</p>
+                <p class="desc">Gua adalah mahasiswa Teknologi Rekayasa Komputer yang tertarik pada teknologi, AI, dan visual storytelling. Lewat video dan konten, gua senang mengubah ide, pengalaman, serta perspektif menjadi cerita yang dapat terhubung dengan orang lain. Bagi gua, hal paling menarik terjadi ketika teknologi dan kreativitas bertemu.</p>
+            </div>
+
+            <div class="hero-image-layer">
+                <img src="nadja-hero.webp" alt="Nadja" onerror="this.src='https://placehold.co/600x800/ccc/333?text=Nadja+Photo'">
+            </div>
+            
+        </div>
+    </div>
+
+    <section class="milestones" id="milestones">
+        <h2>the milestones</h2>
+        <div class="milestone-cards">
+            <div class="m-card">
+                <img src="Google.webp" alt="Google Student Ambassador" onerror="this.src='https://placehold.co/350x250/fff/333?text=Google+Student+Ambassador'">
+            </div>
+            <div class="m-card">
+                <img src="serahterimapoint9.jpg" alt="1st Winner Point Coffee" onerror="this.src='https://placehold.co/350x250/fff/333?text=Point+Coffee+Winner'">
+            </div>
+            <div class="m-card">
+                <iframe src="https://www.youtube.com/embed/ZsuILfpE0TU?si=qE6MZSKeFLYMyx_u" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+
+    <section class="journey" id="journey">
+        <h2 class="journey-title blur-hover">The Journey</h2>
+        <div class="timeline">
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="t-header">
+                    <img src="Logo-Polines.png" alt="Polines" onerror="this.src='https://placehold.co/40x40/333/fff?text=P'">
+                    <h3>Politeknik Negeri Semarang</h3>
+                </div>
+                <ul class="t-list">
+                    <li>Google Student Ambassador 2026</li>
+                    <li>Koordinator Pendamping Jurusan Elektro WaRNA 2025</li>
+                    <li>Kadiv PDD LKMM Madya 2025</li>
+                    <li>Director of Video Profile — MOSAIC</li>
+                    <li>UI/UX Designer and Frontend Developer — MOSAIC</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="t-header">
+                    <img src="logo-smait-ibnu-abbas.png" alt="SMA IT" onerror="this.src='https://placehold.co/40x40/333/fff?text=S'">
+                    <h3>SMA IT Ibnu Abbas Klaten</h3>
+                </div>
+                <ul class="t-list">
+                    <li>Ketua Divisi Kreatif — Literacy Festival 2023</li>
+                    <li>Ketua Divisi Media & Dokumentasi HUT RI 77</li>
+                    <li>Ketua Divisi Media & Dokumentasi Ibaska Ramadhan 2022 & 2023</li>
+                    <li>Ketua Divisi Desain & Dokumentasi — SIA GAMES X</li>
+                    <li>Ketua Divisi Desain & Dok. Olimpiade Santri Ibaska 2023</li>
+                    <li>Ketua Divisi Media LDK OSIS 2023</li>
+                    <li>Sekretaris Dewan Ambalan Jenderal Sudirman 2022/2023</li>
+                    <li>Sekretaris Umum Stage of Talent 9</li>
+                    <li>Divisi Kebersihan OSIS 2021/2022</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="skills" id="skills">
+        <div class="skill-blocks">
+            <div class="skill-box skill-eng">
+                <h3>Engineering</h3>
+                <p>Python • HTML/CSS • Software • Computer Vision • Networking • MikroTik • UI/UX Design • IOT</p>
+            </div>
+            <div class="skill-box skill-cre">
+                <h3>Creativity</h3>
+                <p>Cinematography • Photography • Video Editing • Color Grading • Content Creation • Graphic Design • Visual Direction</p>
+            </div>
+        </div>
+
+        <div class="taskbar">
+            <div class="app-icon" data-percent="90%"><img src="DaVinci_Resolve_Studio.png" alt="DaVinci" onerror="this.src='https://placehold.co/50/000/fff?text=DR'"></div>
+            <div class="app-icon" data-percent="90%"><img src="coreldraw-logo-png_seeklogo-485082.png" alt="Corel" onerror="this.src='https://placehold.co/50/000/fff?text=CD'"></div>
+            <div class="app-icon" data-percent="80%"><img src="figma.png" alt="Figma" onerror="this.src='https://placehold.co/50/000/fff?text=Fg'"></div>
+            <div class="app-icon" data-percent="80%"><img src="Adobe_Premiere_Pro_CC_icon.svg.png" alt="Premiere" onerror="this.src='https://placehold.co/50/000/fff?text=Pr'"></div>
+            <div class="app-icon" data-percent="82%"><img src="Adobe_Photoshop_CC_icon.svg.png" alt="Photoshop" onerror="this.src='https://placehold.co/50/000/fff?text=Ps'"></div>
+            <div class="app-icon" data-percent="95%"><img src="capcut-logo-png_seeklogo-437025.png" alt="CapCut" onerror="this.src='https://placehold.co/50/000/fff?text=CC'"></div>
+            <div class="app-icon" data-percent="20%"><img src="Blender_logo_no_text.svg.png" alt="Blender" onerror="this.src='https://placehold.co/50/000/fff?text=Bl'"></div>
+            <div class="app-icon" data-percent="90%"><img src="vscode.jpg" alt="VSCode" onerror="this.src='https://placehold.co/50/000/fff?text=VS'"></div>
+        </div>
+    </section>
+
+    <section class="portfolio-section" id="portfolio">
+        <h2 class="porto-hero-title">
+            <span>P</span><span>O</span><span>R</span><span>T</span><span>F</span><span>O</span><span>L</span><span>I</span><span>O</span>
+        </h2>
+
+        <div class="porto-category">
+            <div class="container">
+                <div class="cat-header">
+                    <h3 class="cat-title"><i class="ph ph-video-camera"></i> Videography</h3>
+                    <div class="cat-nav">
+                        <button class="cat-prev" data-target="slider-video"><i class="ph ph-arrow-left"></i></button>
+                        <button class="cat-next" data-target="slider-video"><i class="ph ph-arrow-right"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="reel-slider-wrap">
+                <div class="reel-slider" id="slider-video">
+                    <div class="reel-item">
+                        <div class="phone-frame">
+                            <div class="phone-screen">
+                                <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DKMr1hcSm62/" data-instgrm-version="14"></blockquote>
+                            </div>
+                        </div>
+                        <div class="reel-info"><h4>9th Point Coffee</h4><p>Video Competition Winner</p></div>
+                    </div>
+                    <div class="reel-item">
+                        <div class="phone-frame">
+                            <div class="phone-screen">
+                                <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DXXCKllj9Bv/" data-instgrm-version="14"></blockquote>
+                            </div>
+                        </div>
+                        <div class="reel-info"><h4>Lyria 3</h4><p>AI Mode — Tech Content</p></div>
+                    </div>
+                    <div class="reel-item">
+                        <div class="phone-frame">
+                            <div class="phone-screen">
+                                <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DXI80dkjx2s/" data-instgrm-version="14"></blockquote>
+                            </div>
+                        </div>
+                        <div class="reel-info"><h4>AI Mode</h4><p>Eksplorasi Sinematografi AI</p></div>
+                    </div>
+                    <div class="reel-item">
+                        <div class="phone-frame">
+                            <div class="phone-screen">
+                                <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DLFXggjS3tG/" data-instgrm-version="14"></blockquote>
+                            </div>
+                        </div>
+                        <div class="reel-info"><h4>Bakmie Papaden</h4><p>Commercial Video</p></div>
+                    </div>
+                    <div class="reel-item">
+                        <div class="phone-frame">
+                            <div class="phone-screen">
+                                <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DKiwuAgSpHJ/" data-instgrm-version="14"></blockquote>
+                            </div>
+                        </div>
+                        <div class="reel-info"><h4>Idul Adha di Perantauan</h4><p>Cinematic Storytelling</p></div>
+                    </div>
+                    <div class="reel-item">
+                        <div class="phone-frame">
+                            <div class="phone-screen">
+                                <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DIi4mZzSQF-/" data-instgrm-version="14"></blockquote>
+                            </div>
+                        </div>
+                        <div class="reel-info"><h4>Kedan</h4><p>Cinematic Vlog</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="porto-category">
+            <div class="container">
+                <div class="cat-header">
+                    <h3 class="cat-title"><i class="ph ph-aperture"></i> Photography</h3>
+                    <div class="cat-nav">
+                        <button class="cat-prev" data-target="slider-photo"><i class="ph ph-arrow-left"></i></button>
+                        <button class="cat-next" data-target="slider-photo"><i class="ph ph-arrow-right"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="photo-slider-wrap">
+                <div class="photo-slider" id="slider-photo">
+                    <div class="photo-item">
+                        <div class="photo-frame"><img src="assets/SAL WOILAH.webp" alt="Sal Woilah" onerror="this.src='https://placehold.co/600x750/0d1117/c8a96e?text=Portrait'"></div>
+                        <div class="photo-info"><h4>Foto Panggung</h4><p>Color Grading and Portrait</p></div>
+                    </div>
+                    <div class="photo-item">
+                        <div class="photo-frame"><img src="assets/SAL WOILAH2.webp" alt="SAL WOILAH2" onerror="this.src='https://placehold.co/600x750/0d1117/7eb8f7?text=Urban+Shots'"></div>
+                        <div class="photo-info"><h4>FOTO PANGGUNG 2</h4><p>Foto panggung cuy</p></div>
+                    </div>
+                    <div class="photo-item">
+                        <div class="photo-frame"><img src="assets/SAL WOILAH3.webp" alt="SAL WOILAH3" onerror="this.src='https://placehold.co/600x750/0d1117/7eb8f7?text=Urban+Shots'"></div>
+                        <div class="photo-info"><h4>FOTO PANGGUNG 3</h4><p>Foto panggung juga</p></div>
+                    </div>
+                    <div class="photo-item">
+                        <div class="photo-frame"><img src="assets/fidelamadya.webp" alt="Fidelamadya" onerror="this.src='https://placehold.co/600x750/0d1117/7eb8f7?text=Urban+Shots'"></div>
+                        <div class="photo-info"><h4>FOTO Event</h4><p>Foto event Fidela Huwaida</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="porto-category" style="padding-bottom:20px">
+            <div class="container">
+                <div class="cat-header">
+                    <h3 class="cat-title"><i class="ph ph-bezier-curve"></i> Graphic and UI/UX Design</h3>
+                    <div class="cat-nav">
+                        <button class="cat-prev" data-target="slider-design"><i class="ph ph-arrow-left"></i></button>
+                        <button class="cat-next" data-target="slider-design"><i class="ph ph-arrow-right"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="photo-slider-wrap">
+                <div class="photo-slider" id="slider-design">
+                    <div class="photo-item">
+                        <div class="photo-frame"><img src="assets/futsalpsiums24.jpg" alt="Logo Tim Futsal UMS" onerror="this.src='https://placehold.co/600x750/0d1117/4a9eff?text=Logo+Design'"></div>
+                        <div class="photo-info"><h4>Logo Design</h4><p>Logo Tim Futsal Psikologi UMS 2024</p></div>
+                    </div>
+                    <div class="photo-item">
+                        <div class="photo-frame"><img src="assets/kolegauiux.webp" alt="Kolega UI/UX Design" onerror="this.src='https://placehold.co/600x750/0d1117/63b3ed?text=UI/UX+Design'"></div>
+                        <div class="photo-info"><h4>UI/UX Design</h4><p>Design Aplikasi Kolega</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="footer-transition"></div>
+    <footer id="contact">
+        <h2>Available for freelance projects, collaborations, and opportunities.</h2>
+        <h1>let's create something iconic</h1>
+        
+        <div class="social-grid">
+            <a href="https://wa.me/6285707198324" target="_blank" rel="noopener" class="social-link">
+                <i class="ph ph-whatsapp-logo"></i><span>WhatsApp</span>
+            </a>
+            <a href="https://instagram.com/nadjakencana" target="_blank" rel="noopener" class="social-link">
+                <i class="ph ph-instagram-logo"></i><span>Instagram</span>
+            </a>
+            <a href="https://linkedin.com/in/nadjakencana" target="_blank" rel="noopener" class="social-link">
+                <i class="ph ph-linkedin-logo"></i><span>LinkedIn</span>
+            </a>
+            <a href="mailto:ikhsanunnadja1@gmail.com" class="social-link">
+                <i class="ph ph-envelope"></i><span>Email</span>
+            </a>
+        </div>
+    </footer>
+
+    <script async src="//www.instagram.com/embed.js"></script>
+
+    <script>
+        // Navbar Glassmorphism on Scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Hero to About Scroll Animation Interpolation
+        const heroText = document.getElementById('hero-text');
+        const aboutText = document.getElementById('about-text');
+        
+        window.addEventListener('scroll', () => {
+            let scrollY = window.scrollY;
+            // The effect triggers between 0 and 400px of scroll
+            let progress = Math.min(scrollY / 400, 1);
+            
+            // Fade out & up Hero
+            heroText.style.opacity = 1 - (progress * 2);
+            heroText.style.transform = `translateY(-${progress * 100}px)`;
+            
+            // Fade in & up About
+            if (progress > 0.3) {
+                let aboutProgress = Math.min((progress - 0.3) / 0.7, 1);
+                aboutText.style.opacity = aboutProgress;
+                aboutText.style.transform = `translateY(${50 - (aboutProgress * 50)}px)`;
+            } else {
+                aboutText.style.opacity = 0;
+                aboutText.style.transform = `translateY(50px)`;
+            }
+        });
+
+        // Slider Navigation Logic
+        document.querySelectorAll('.cat-nav button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                const targetSlider = document.getElementById(targetId);
+                // Menghitung lebar item + gap
+                const scrollAmount = btn.classList.contains('cat-prev') ? -300 : 300; 
+                targetSlider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
