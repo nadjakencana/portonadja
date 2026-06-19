@@ -10,29 +10,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400;0,500;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet" />
 
   <style>
-    /* =========================================================
-       RESET
-    ========================================================= */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* =========================================================
-       TOKENS
-    ========================================================= */
     :root {
-      --bg:        #F7F6F3;
-      --ink:       #0E0E0E;
-      --mute:      #6B6B6B;
-      --sky:       #BDD8EF;
-      --nav-h:     64px;
-      --f-radio:   'Radio Canada Big', sans-serif;
-      --f-serif:   'Source Serif 4', serif;
-      --fs-hl:     clamp(36px, 5.2vw, 86px);
-      --photo-h:   clamp(300px, 50vh, 540px);
+      --bg:       #F7F6F3;
+      --ink:      #0E0E0E;
+      --mute:     #6B6B6B;
+      --sky:      #BDD8EF;
+      --nav-h:    64px;
+      --f-radio:  'Radio Canada Big', sans-serif;
+      --f-serif:  'Source Serif 4', serif;
+      --fs-hl:    clamp(36px, 5.2vw, 86px);
+      --photo-h:  clamp(300px, 50vh, 540px);
     }
 
-    /* =========================================================
-       BASE
-    ========================================================= */
     html { scroll-behavior: smooth; }
 
     body {
@@ -43,7 +34,6 @@
       overflow-x: hidden;
     }
 
-    /* Dot matrix texture – fixed, inert */
     body::after {
       content: '';
       position: fixed;
@@ -54,17 +44,7 @@
       background-size: 22px 22px;
     }
 
-    /* =========================================================
-       CURSOR-RADIUS MOTION BLUR
-       ─────────────────────────────────────────────────────
-       JS (at bottom of <body>) wraps every word of .blur-text
-       elements in <span class="hw">. No CSS :hover here — the
-       blur amount is driven entirely by JS based on the
-       distance between the cursor and each word's center.
-       Words within ~3cm (≈110px) of the cursor get a soft
-       blur that fades out smoothly with distance. No scale /
-       zoom — purely a blur "spotlight" that follows the mouse.
-    ========================================================= */
+    /* ── CURSOR BLUR ── */
     .hw {
       display: inline-block;
       white-space: pre;
@@ -75,9 +55,7 @@
       .hw { transition: none; filter: none !important; }
     }
 
-    /* =========================================================
-       NAVBAR
-    ========================================================= */
+    /* ── NAVBAR ── */
     #navbar {
       position: fixed;
       inset: 0 0 auto 0;
@@ -94,9 +72,8 @@
       background: rgba(247, 246, 243, 0.4);
       backdrop-filter: blur(24px) saturate(200%);
       -webkit-backdrop-filter: blur(24px) saturate(200%);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
     }
-
     .nav-logo { display: flex; align-items: center; text-decoration: none; }
     .nav-logo img { height: 26px; width: auto; display: block; }
     .nav-logo-fallback {
@@ -107,8 +84,6 @@
       letter-spacing: -0.03em;
       color: var(--ink);
     }
-
-    /* Nav pill hover (desktop inline links) */
     .nav-links {
       list-style: none;
       display: flex;
@@ -142,30 +117,13 @@
     .nav-links a:hover { color: var(--bg); }
     .nav-links a:hover::before { opacity: 1; transform: scale(1); }
 
-    /* =========================================================
-       MOBILE NAV — "more" button (horizontal ⋯) + dropdown
-       ─────────────────────────────────────────────────────
-       Desktop: .nav-item-collapsible links show inline (normal
-       pill behaviour above), .nav-more is hidden entirely.
-
-       Mobile (≤600px): the four collapsible links (About,
-       Journey, Skills, Vault) are hidden inline and instead
-       live inside #navMoreMenu, a small dropdown panel anchored
-       under a round "⋯" button (three HORIZONTAL dots — built
-       from three <span class="dot">, not the usual two/three
-       horizontal LINES, and not vertical dots either).
-       "Let's Talk →" stays visible at all times, outside the
-       collapsible group.
-    ========================================================= */
     .nav-more { display: none; position: relative; }
-
     .nav-more-btn {
       display: none;
       align-items: center;
       justify-content: center;
       gap: 4px;
-      width: 38px;
-      height: 38px;
+      width: 38px; height: 38px;
       padding: 0;
       border: none;
       border-radius: 50%;
@@ -174,17 +132,13 @@
       transition: background 0.2s ease;
     }
     .nav-more-btn:hover,
-    .nav-more-btn[aria-expanded="true"] {
-      background: rgba(14, 14, 14, 0.06);
-    }
+    .nav-more-btn[aria-expanded="true"] { background: rgba(14,14,14,0.06); }
     .nav-more-btn .dot {
       display: block;
-      width: 4px;
-      height: 4px;
+      width: 4px; height: 4px;
       border-radius: 50%;
       background: var(--ink);
     }
-
     .nav-more-menu {
       position: absolute;
       top: calc(100% + 10px);
@@ -195,22 +149,18 @@
       gap: 2px;
       min-width: 140px;
       padding: 8px;
-      background: rgba(247, 246, 243, 0.92);
+      background: rgba(247,246,243,0.92);
       backdrop-filter: blur(24px) saturate(200%);
       -webkit-backdrop-filter: blur(24px) saturate(200%);
-      border: 1px solid rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0,0,0,0.08);
       border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(14, 14, 14, 0.08);
+      box-shadow: 0 8px 24px rgba(14,14,14,0.08);
       opacity: 0;
       transform: translateY(-8px) scale(0.96);
       pointer-events: none;
       transition: opacity 0.22s ease, transform 0.22s ease;
     }
-    .nav-more-menu.open {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
-    }
+    .nav-more-menu.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
     .nav-more-menu a {
       font-family: var(--f-radio);
       font-weight: 500;
@@ -219,69 +169,40 @@
       text-decoration: none;
       padding: 9px 14px;
       border-radius: 12px;
-      text-align: left;
       transition: background 0.2s ease, color 0.2s ease;
     }
-    .nav-more-menu a:hover {
-      background: var(--ink);
-      color: var(--bg);
-    }
-
+    .nav-more-menu a:hover { background: var(--ink); color: var(--bg); }
     @media (max-width: 600px) {
       .nav-item-collapsible { display: none; }
       .nav-more { display: block; }
       .nav-more-btn { display: flex; }
     }
 
-    /* =========================================================
-       HERO SECTION
-       ─────────────────────────────────────────────────────
-       Flex-column flow. The headline, photo, and caption form
-       ONE group — overlap between the photo and the headline is
-       em-based (proportional to --fs-hl, so it's consistent on
-       every screen), and the gap between the photo and the
-       caption is a small, near-constant value (clamp).
-
-       The group as a whole is centered BOTH horizontally
-       (align-items:center on #hero, plus text-align:center +
-       align-self:stretch on each child) AND vertically
-       (justify-content:center on #hero) within the 100vh
-       viewport — on every device, laptop, monitor, tablet, or
-       phone. There is no longer a bottom-only spacer; equal
-       breathing room appears above and below the group.
-
-       ── CINEMATIC SCROLL (new) ──────────────────────────────
-       #hero now lives inside #hero-about-scroll (height:350vh).
-       #hero itself becomes position:sticky; top:0, so it stays
-       pinned to the viewport for the full 250vh of scroll travel
-       (350vh - 100vh) while JS cross-fades its internal layers:
-
-         Phase 1  hold:           #text-hero + #hero-caption shown.
-         Phase 2  cross-fade:     #text-hero + caption fade/slide
-                                   out; #text-about fades in at the
-                                   EXACT same coordinates (overlay).
-         Phase 3  quote reveal:   #text-about holds; #p3-wrap
-                                   (the QUOTE only) fades in below
-                                   the photo, in the empty area.
-         Phase 4  release:        sticky ends, page scrolls
-                                   normally into #about-bio, which
-                                   holds the BIO paragraphs.
-
-       NONE of the flex/centering rules below changed — #hero is
-       still the same flex column, just pinned via `position`.
-       #hero-photo NEVER moves, in any phase (true "parallax
-       hold" — everything else moves around it).
-    ========================================================= */
+    /* ═══════════════════════════════════════════════════════
+       HERO SCROLL WRAPPER
+       350vh total. #hero is sticky for 250vh of travel.
+    ═══════════════════════════════════════════════════════ */
     #hero-about-scroll {
       position: relative;
       height: 350vh;
     }
 
+    /* ═══════════════════════════════════════════════════════
+       #hero — the sticky viewport canvas
+       ─────────────────────────────────────────────────────
+       CRITICAL: overflow:hidden would clip anything that
+       sticks out — but we need #text-about and #p3-wrap to
+       be positioned relative to #hero (as absolute children)
+       so they SCROLL WITH THE PAGE when sticky releases.
+       Therefore: overflow is NOT set (defaults to visible).
+       The masking of the photo bottom edge is handled by
+       mask-image on the <img> itself, not by overflow.
+    ═══════════════════════════════════════════════════════ */
     #hero {
       position: sticky;
       top: 0;
       height: 100vh;
-      overflow: hidden;
+      /* NO overflow:hidden — lets absolute children sit correctly */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -289,7 +210,6 @@
       padding-top: var(--nav-h);
     }
 
-    /* L0 — Sky gradient */
     #layer-bg {
       position: absolute;
       inset: 0;
@@ -297,21 +217,22 @@
       background: linear-gradient(175deg, var(--sky) 0%, #cde5f5 20%, #e4f0f9 48%, var(--bg) 100%);
     }
 
-    /* L2 — Headline text
-       align-self:stretch spans #hero's full width so
-       text-align:center + side padding control centering and
-       wrapping on narrow screens. z-index:5 sits BELOW the
-       photo (z:20).
+    /* ── Headline text group ──
+       #text-hero is a flex item (flex: 0 0 auto) that sizes
+       itself to its two <h1> children. It is also
+       position:relative so that #text-about can be
+       position:absolute; inset:0 inside it.
+
+       BUT: #text-about must be at least as tall as the two
+       <h2> lines, which may be taller than the two <h1>
+       lines on some viewports. To handle that, #text-hero
+       is given min-height via JS after measuring both.
     */
     #text-hero {
       position: relative;
       z-index: 5;
       align-self: stretch;
       flex: 0 0 auto;
-      /* No padding-top here — #hero's own padding-top:var(--nav-h)
-         + justify-content:center already reserves navbar space and
-         centers the group in what's left. An extra top padding here
-         would skew the group off-center. */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -338,20 +259,20 @@
       color: var(--ink);
     }
 
-    /* L2b — About headline (#text-about)
-       position:fixed, full viewport width.
-       The EXACT top value is set by JS on every scroll/resize
-       by reading #text-hero's actual getBoundingClientRect().top.
-       This is the only reliable way to match the position across
-       all screens regardless of flex centering math.
-       z-index:6 — above text-hero (5), below photo (20).
+    /*
+      #text-about: absolute inside #hero (NOT inside #text-hero).
+      top is set once by JS = textHero.offsetTop.
+      This makes it sit at the exact same vertical position as
+      #text-hero, relative to #hero, which is its containing block.
+      Scrolls with the page when sticky releases — no ghosting.
+      left/right:0 + flex column + align-items:center reproduces
+      the same horizontal centering as #text-hero.
     */
     #text-about {
-      position: fixed;
+      position: absolute;
+      top: 0; /* set precisely by JS */
       left: 0;
       right: 0;
-      /* top is set dynamically by JS */
-      z-index: 6;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -362,8 +283,9 @@
       opacity: 0;
       transform: translateY(50px);
       will-change: opacity, transform;
+      z-index: 6;
     }
-    #text-about .hl-about {
+    .hl-about {
       font-family: var(--f-radio);
       font-weight: 400;
       font-size: var(--fs-hl);
@@ -371,22 +293,13 @@
       letter-spacing: -0.03em;
       color: var(--ink);
     }
-    #text-about .hl-italic {
+    .hl-italic {
       font-family: var(--f-serif);
       font-style: italic;
       font-weight: 300;
     }
 
-    /* L3 — Photo
-       font-size: var(--fs-hl) makes "em" on THIS element equal
-       to the headline's text size — margin-top: -0.30em is
-       always ~30% of the headline's font-size, on any screen.
-       z-index:20 sits ABOVE the headline (z:5).
-
-       This element is NEVER touched by the scroll JS — it is
-       the fixed "anchor" the whole cinematic sequence revolves
-       around (the parallax-hold effect).
-    */
+    /* ── Photo ── */
     #hero-photo-wrap {
       position: relative;
       z-index: 20;
@@ -398,7 +311,6 @@
       line-height: 0;
       pointer-events: none;
     }
-
     #hero-photo {
       display: inline-block;
       height: var(--photo-h);
@@ -407,22 +319,11 @@
       object-fit: contain;
       object-position: bottom center;
       user-select: none;
-
       -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 72%, rgba(0,0,0,0) 100%);
       mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 72%, rgba(0,0,0,0) 100%);
     }
 
-    /* L4 — Caption
-       ─────────────────────────────────────────────────────
-       Sits DIRECTLY below the photo with a small, near-constant
-       gap (clamp — mostly a fixed px value with a tiny vh
-       allowance), matching how it sits close to the photo on a
-       laptop. This is the LAST item in the group; the group's
-       total height (text+photo+caption) is what gets centered
-       by #hero's justify-content:center.
-
-       Fades out together with #text-hero in Phase 2.
-    */
+    /* ── Caption (Phase 1, fades out Phase 2) ── */
     #caption-wrap {
       position: relative;
       z-index: 21;
@@ -441,63 +342,41 @@
       line-height: 1.6;
     }
 
-    /* L4b — Quote (#p3-wrap)
-       position:fixed, centered. JS sets the `top` value to match
-       exactly where #caption-wrap sits (the same area below the
-       photo), so it appears to "replace" the caption in Phase 3.
-       z-index:25 — above photo (20).
-    */
-    #p3-wrap {
-      position: fixed;
-      left: 50%;
-      /* top is set dynamically by JS to match #caption-wrap position */
-      z-index: 25;
-      width: min(600px, 88vw);
-      text-align: center;
-      pointer-events: none;
-      opacity: 0;
-      transform: translateX(-50%) translateY(30px);
-      will-change: opacity, transform;
-    }
-    .p3-quote {
-      font-family: var(--f-serif);
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(18px, 2vw, 28px);
-      line-height: 1.3;
-      letter-spacing: -0.01em;
-      color: var(--ink);
-    }
-
-    /* =========================================================
-       ABOUT — BIO SECTION (#about-bio)
-       ─────────────────────────────────────────────────────
-       Normal flow, AFTER #hero-about-scroll. Once the 350vh
-       sticky travel completes and #hero releases, this section
-       scrolls into view like any regular page content — this is
-       Phase 4 ("page-nya jadi bisa di-scroll").
-
-       Same background/dot-texture as the rest of the page
-       (body::after covers everything via position:fixed), so it
-       reads as a seamless continuation below the photo.
-    ========================================================= */
+    /* ═══════════════════════════════════════════════════════
+       BIO SECTION — normal flow after sticky releases
+    ═══════════════════════════════════════════════════════ */
     #about-bio {
       position: relative;
-      min-height: 40vh;
+      z-index: 1;
+      /*
+        Gradient instead of solid color: fades in from transparent
+        at the top (where it overlaps #hero's sky gradient, which
+        is already fading toward --bg at that point) into solid
+        --bg by ~15% down. This removes the hard seam that solid
+        background:var(--bg) created when this section overlaps
+        the still-blueish lower portion of #layer-bg.
+      */
+      background: linear-gradient(to bottom, transparent 0%, var(--bg) 15%, var(--bg) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: clamp(32px, 5vh, 64px) clamp(24px, 8vw, 120px) clamp(48px, 10vh, 120px);
+      /*
+        negative margin-top pulls this section up into the empty
+        space at the bottom of #hero (100vh), right below the photo.
+        Value ≈ the gap between caption and viewport bottom.
+        JS also sets this precisely via captionWrap measurement.
+      */
+      margin-top: -28vh;
+      padding: clamp(12px, 2vh, 24px) clamp(24px, 8vw, 120px) clamp(48px, 10vh, 120px);
       text-align: center;
     }
     .bio-content {
       display: flex;
       flex-direction: column;
-      gap: 0.8em;
+      gap: 0.6em;
       max-width: 680px;
     }
-    /* Static quote that lives in the bio section (always scrolls with page) */
-    .p3-quote-static {
+    .bio-content .p3-quote {
       font-family: var(--f-serif);
       font-style: italic;
       font-weight: 300;
@@ -505,7 +384,6 @@
       line-height: 1.3;
       letter-spacing: -0.01em;
       color: var(--ink);
-      margin-bottom: 0.3em;
     }
     .bio-text {
       font-family: var(--f-radio);
@@ -515,14 +393,6 @@
       color: var(--mute);
     }
 
-    /* =========================================================
-       MOBILE
-       ─────────────────────────────────────────────────────
-       Only --photo-h needs tuning. The hair/text overlap
-       (-0.30em), the photo→caption gap (clamp), and the
-       vertical centering (justify-content:center on #hero)
-       all auto-scale already.
-    ========================================================= */
     @media (max-width: 768px) {
       :root { --photo-h: clamp(240px, 42vh, 420px); }
     }
@@ -534,33 +404,20 @@
 </head>
 <body>
 
-  <!-- =====================================================
-       NAVBAR
-  ===================================================== -->
   <nav id="navbar" role="navigation" aria-label="Main navigation">
     <a class="nav-logo" href="#" aria-label="Nadja — Home">
-      <img
-        src="nadjacreative_logo.svg"
-        alt="N Logo"
+      <img src="nadjacreative_logo.svg" alt="N Logo"
         onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
       /><span class="nav-logo-fallback">N</span>
     </a>
-
     <ul class="nav-links">
       <li class="nav-item-collapsible"><a href="#about">About</a></li>
       <li class="nav-item-collapsible"><a href="#journey">Journey</a></li>
       <li class="nav-item-collapsible"><a href="#skills">Skills</a></li>
       <li class="nav-item-collapsible"><a href="#vault">Vault</a></li>
-
-      <!-- Mobile-only "more" button — three HORIZONTAL dots -->
       <li class="nav-more">
-        <button
-          class="nav-more-btn"
-          id="navMoreBtn"
-          aria-label="More navigation links"
-          aria-expanded="false"
-          aria-controls="navMoreMenu"
-        >
+        <button class="nav-more-btn" id="navMoreBtn"
+          aria-label="More links" aria-expanded="false" aria-controls="navMoreMenu">
           <span class="dot"></span><span class="dot"></span><span class="dot"></span>
         </button>
         <div class="nav-more-menu" id="navMoreMenu" role="menu">
@@ -570,48 +427,35 @@
           <a href="#vault"   role="menuitem">Vault</a>
         </div>
       </li>
-
       <li><a href="#contact">Let's Talk →</a></li>
     </ul>
   </nav>
 
 
-  <!-- =====================================================
-       HERO  +  CINEMATIC SCROLL TRANSITION
-       ─────────────────────────────────────────────────────
-       #hero-about-scroll is 350vh tall. #hero (position:sticky)
-       stays pinned to the viewport for 250vh of scroll travel
-       while JS cross-fades #text-hero → #text-about and fades
-       in #p3-wrap (the quote) below the photo. The photo itself
-       NEVER moves — true parallax-hold. Once the 350vh is
-       exhausted, #hero releases and #about-bio scrolls into
-       view normally.
-  ===================================================== -->
   <div id="hero-about-scroll">
     <section id="hero">
 
-      <!-- L0: Sky gradient -->
       <div id="layer-bg"></div>
 
-      <!-- L2a: Hero headline (Phase 1) -->
+      <!-- Headline: #text-hero is the flex item -->
       <div id="text-hero">
         <h1 class="hl-serif blur-text">Hi, I'm Nadja,</h1>
         <h1 class="hl-sans  blur-text">I tell stories through visuals.</h1>
       </div>
 
-      <!-- L2b: About headline (Phase 2/3) — position:fixed, exact same
-           viewport coordinates as #text-hero. Starts invisible. -->
+      <!-- About text: absolute inside #hero, top set by JS to match
+           #text-hero's offsetTop. Scrolls with page on release. -->
       <div id="text-about" aria-hidden="true">
         <h2 class="hl-about blur-text">Memadukan logika <span class="hl-italic">engineering</span></h2>
         <h2 class="hl-about blur-text">dengan jiwa <span class="hl-italic">visual storytelling.</span></h2>
       </div>
 
-      <!-- L3: Photo — overlaps headline by -0.30em (≈30% of --fs-hl). NEVER moves. -->
+      <!-- Photo: flex item, never moved by JS -->
       <div id="hero-photo-wrap" aria-hidden="true">
         <img id="hero-photo" src="nadja-hero.webp" alt="" />
       </div>
 
-      <!-- L4: Caption — small fixed gap directly below the photo (Phase 1, fades out Phase 2) -->
+      <!-- Caption: flex item, fades out in Phase 2 -->
       <div id="caption-wrap">
         <p id="hero-caption" class="blur-text">
           Through videos and visual storytelling, I share ideas,
@@ -619,26 +463,18 @@
         </p>
       </div>
 
-      <!-- L4b: Quote — absolute, below the photo, fades in Phase 3 -->
-      <div id="p3-wrap" aria-hidden="true">
-        <p class="p3-quote blur-text">
-          "I believe great stories can come from anywhere."
-        </p>
-      </div>
-
     </section>
   </div>
 
 
-  <!-- =====================================================
-       ABOUT — BIO
-       Normal scroll content after sticky releases.
-       Quote is included here too so it reads as one
-       connected unit with the bio text (no large gap).
-  ===================================================== -->
+  <!-- Bio: normal flow after sticky releases (Phase 4)
+       Quote is placed here directly — sits visually 1-2 lines
+       above the bio, no gap, scrolls with the page. The #p3-wrap
+       fade-in in Phase 3 still animates the quote appearing,
+       then when sticky releases it's already here in normal flow. -->
   <section id="about-bio">
     <div class="bio-content">
-      <p class="p3-quote-static blur-text">
+      <p class="p3-quote blur-text">
         "I believe great stories can come from anywhere."
       </p>
       <p class="bio-text blur-text">
@@ -653,294 +489,180 @@
   </section>
 
 
-  <!-- =====================================================
-       JAVASCRIPT
-  ===================================================== -->
   <script>
   (() => {
     'use strict';
 
-    /* ═══════════════════════════════════════════════════
-       1. SPLIT TEXT INTO PER-WORD <span class="hw">
-       ───────────────────────────────────────────────────
-       All whitespace runs (incl. \n / tabs from HTML
-       formatting) are collapsed to single spaces FIRST, so
-       no stray "\n"-only <span class="hw"> can ever be
-       created (which would render as a line break under
-       white-space:pre). Spaces stay as plain text nodes
-       BETWEEN spans, preserving normal word spacing.
-    ═══════════════════════════════════════════════════ */
+    /* ── 1. WORD SPLIT for cursor blur ── */
     function wrapWords(el) {
       const nodes = Array.from(el.childNodes);
       el.innerHTML = '';
-
       nodes.forEach(node => {
         if (node.nodeType === Node.TEXT_NODE) {
           const raw = node.textContent.replace(/\s+/g, ' ');
-          if (raw === '') return;
-
+          if (!raw) return;
           const leading  = raw.startsWith(' ');
           const trailing = raw.endsWith(' ');
           const words    = raw.trim().split(' ').filter(Boolean);
-
           if (leading) el.appendChild(document.createTextNode(' '));
-
-          words.forEach((word, i) => {
-            const span = document.createElement('span');
-            span.className = 'hw';
-            span.textContent = word;
-            el.appendChild(span);
-            if (i < words.length - 1) {
-              el.appendChild(document.createTextNode(' '));
-            }
+          words.forEach((w, i) => {
+            const s = document.createElement('span');
+            s.className = 'hw';
+            s.textContent = w;
+            el.appendChild(s);
+            if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
           });
-
           if (trailing) el.appendChild(document.createTextNode(' '));
-
         } else if (node.nodeType === Node.ELEMENT_NODE) {
-          if (node.tagName === 'BR') {
-            el.appendChild(node.cloneNode(false));
-          } else {
-            wrapWords(node);
-            el.appendChild(node);
-          }
+          if (node.tagName === 'BR') { el.appendChild(node.cloneNode(false)); }
+          else { wrapWords(node); el.appendChild(node); }
         }
       });
     }
-
     document.querySelectorAll('.blur-text').forEach(wrapWords);
 
-
-    /* ═══════════════════════════════════════════════════
-       2. CURSOR-RADIUS BLUR
-       ───────────────────────────────────────────────────
-       Every word ( .hw ) within RADIUS px of the cursor
-       gets blurred. The blur amount fades smoothly from
-       MAX_BLUR (cursor right on top of the word's center)
-       down to 0 (at the edge of the radius) — like a soft
-       blur "spotlight" that follows the mouse. No scale,
-       no zoom — filter only.
-
-       RADIUS ≈ 110px ≈ 3cm on a standard 96dpi screen.
-    ═══════════════════════════════════════════════════ */
-    const RADIUS   = 110;  // px
-    const MAX_BLUR = 4;    // px
-
-    const words = Array.from(document.querySelectorAll('.hw'));
-
-    let mouseX = -9999;
-    let mouseY = -9999;
-    let raf = null;
+    /* ── 2. CURSOR RADIUS BLUR ── */
+    const RADIUS = 110, MAX_BLUR = 4;
+    const hwEls = Array.from(document.querySelectorAll('.hw'));
+    let mx = -9999, my = -9999, blurRaf = null;
 
     function updateBlur() {
-      raf = null;
-      words.forEach(w => {
-        const r  = w.getBoundingClientRect();
-        const cx = r.left + r.width  / 2;
-        const cy = r.top  + r.height / 2;
-        const dist = Math.hypot(mouseX - cx, mouseY - cy);
-
-        if (dist < RADIUS) {
-          const t = 1 - dist / RADIUS;       // 0 (edge) → 1 (center)
-          w.style.filter = `blur(${(t * MAX_BLUR).toFixed(2)}px)`;
-        } else if (w.style.filter) {
-          w.style.filter = '';
-        }
+      blurRaf = null;
+      hwEls.forEach(w => {
+        const r = w.getBoundingClientRect();
+        const d = Math.hypot(mx - (r.left + r.width/2), my - (r.top + r.height/2));
+        w.style.filter = d < RADIUS ? `blur(${((1 - d/RADIUS)*MAX_BLUR).toFixed(2)}px)` : '';
       });
     }
-
-    function onMouseMove(e) {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      if (!raf) raf = requestAnimationFrame(updateBlur);
-    }
-
-    function clearAllBlur() {
-      mouseX = -9999;
-      mouseY = -9999;
-      words.forEach(w => { w.style.filter = ''; });
-    }
-
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
-    window.addEventListener('mouseleave', clearAllBlur);
-    /* Re-evaluate on scroll/resize since word positions shift */
-    window.addEventListener('scroll', () => {
-      if (!raf) raf = requestAnimationFrame(updateBlur);
+    window.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      if (!blurRaf) blurRaf = requestAnimationFrame(updateBlur);
     }, { passive: true });
-    window.addEventListener('resize', () => {
-      if (!raf) raf = requestAnimationFrame(updateBlur);
-    }, { passive: true });
+    window.addEventListener('mouseleave', () => {
+      mx = -9999; my = -9999;
+      hwEls.forEach(w => { w.style.filter = ''; });
+    });
+    window.addEventListener('scroll',  () => { if (!blurRaf) blurRaf = requestAnimationFrame(updateBlur); }, { passive: true });
+    window.addEventListener('resize',  () => { if (!blurRaf) blurRaf = requestAnimationFrame(updateBlur); }, { passive: true });
 
-
-    /* ═══════════════════════════════════════════════════
-       3. NAVBAR GLASSMORPHISM ON SCROLL
-    ═══════════════════════════════════════════════════ */
+    /* ── 3. NAVBAR GLASS ── */
     const navbar = document.getElementById('navbar');
-
-    function onScroll() {
+    window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 40);
-    }
+    }, { passive: true });
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-
-
-    /* ═══════════════════════════════════════════════════
-       4. MOBILE "MORE" DROPDOWN (⋯)
-       ───────────────────────────────────────────────────
-       Toggles the dropdown on button click. Closes when:
-         - the button is clicked again (toggle off)
-         - a link inside the dropdown is clicked
-         - a click happens anywhere outside the menu/button
-         - the Escape key is pressed
-    ═══════════════════════════════════════════════════ */
+    /* ── 4. MOBILE MORE MENU ── */
     const moreBtn  = document.getElementById('navMoreBtn');
     const moreMenu = document.getElementById('navMoreMenu');
-
-    function closeMoreMenu() {
-      moreMenu.classList.remove('open');
-      moreBtn.setAttribute('aria-expanded', 'false');
-    }
-
-    function openMoreMenu() {
-      moreMenu.classList.add('open');
-      moreBtn.setAttribute('aria-expanded', 'true');
-    }
-
     if (moreBtn && moreMenu) {
-      moreBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = moreMenu.classList.contains('open');
-        isOpen ? closeMoreMenu() : openMoreMenu();
-      });
-
-      moreMenu.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', closeMoreMenu);
-      });
-
-      document.addEventListener('click', (e) => {
-        if (!moreMenu.contains(e.target) && e.target !== moreBtn) {
-          closeMoreMenu();
-        }
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeMoreMenu();
-      });
+      const close = () => { moreMenu.classList.remove('open'); moreBtn.setAttribute('aria-expanded','false'); };
+      const open  = () => { moreMenu.classList.add('open');    moreBtn.setAttribute('aria-expanded','true');  };
+      moreBtn.addEventListener('click', e => { e.stopPropagation(); moreMenu.classList.contains('open') ? close() : open(); });
+      moreMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+      document.addEventListener('click', e => { if (!moreMenu.contains(e.target) && e.target !== moreBtn) close(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
     }
 
+    /* ── 5. CINEMATIC SCROLL ──────────────────────────────
+       Architecture: NO position:fixed overlays.
+       ─────────────────────────────────────────────────────
+       #text-about: position:absolute inside #text-hero.
+         • inset:0 → same coordinates as the hero headlines.
+         • scrolls with the page when sticky releases → no ghost.
+         • doesn't affect flex centering (abs. children are
+           out-of-flow).
 
-    /* ═══════════════════════════════════════════════════
-       5. CINEMATIC HERO → ABOUT SCROLL TRANSITION
-       ───────────────────────────────────────────────────
-       KEY FIX: capture the natural (untransformed) positions
-       of #text-hero and #caption-wrap ONCE at load time and
-       on resize — BEFORE any animation starts. Using
-       getBoundingClientRect() mid-scroll is wrong because the
-       elements have already been translateY'd, which shifts
-       their rect and causes #text-about to appear too high/low.
-    ═══════════════════════════════════════════════════ */
-    const scrollWrap   = document.getElementById('hero-about-scroll');
-    const textHero     = document.getElementById('text-hero');
-    const textAbout    = document.getElementById('text-about');
-    const captionWrap  = document.getElementById('caption-wrap');
-    const p3Wrap       = document.getElementById('p3-wrap');
+       #p3-wrap: position:absolute inside #hero.
+         • top = captionWrap.offsetTop (measured once, on load
+           and on resize, at rest before any animation).
+         • scrolls with the page when sticky releases → no ghost,
+           no duplicate (only one copy of the quote exists).
 
-    const clamp01 = (x) => Math.min(1, Math.max(0, x));
-    const rampUp  = (p, a, b) => clamp01((p - a) / (b - a));
+       #hero: NO overflow:hidden — lets both absolute children
+       render without clipping while the page is sticky.
 
-    /* Natural positions — captured when elements are at rest (p=0) */
-    let naturalHeroTop    = 0;
-    let naturalCaptionTop = 0;
+       When p = 1 and sticky releases, both absolute children
+       move up with the page (since their containing block
+       #hero is also moving), and the quote appears just above
+       #about-bio. The bio text follows naturally.
+    ═══════════════════════════════════════════════════════ */
+    const scrollWrap  = document.getElementById('hero-about-scroll');
+    const heroEl      = document.getElementById('hero');
+    const textHero    = document.getElementById('text-hero');
+    const textAbout   = document.getElementById('text-about');
+    const captionWrap = document.getElementById('caption-wrap');
+    const aboutBio    = document.getElementById('about-bio');
 
-    function captureNaturalPositions() {
-      /* Temporarily zero out any in-progress transforms before measuring */
-      const prevHeroT    = textHero.style.transform;
-      const prevCapOp    = captionWrap.style.opacity;
-      const prevCapT     = captionWrap.style.transform;
-      textHero.style.transform    = 'none';
-      captionWrap.style.transform = 'none';
-      captionWrap.style.opacity   = '1';
+    const clamp01 = v => Math.min(1, Math.max(0, v));
+    const ramp    = (p, a, b) => clamp01((p - a) / (b - a));
 
-      naturalHeroTop    = textHero.getBoundingClientRect().top;
-      naturalCaptionTop = captionWrap.getBoundingClientRect().top;
+    /* Set overlay positions — both measured from #hero's coordinate space */
+    function setOverlayPositions() {
+      /* text-about floats at same top as text-hero */
+      textAbout.style.top = textHero.offsetTop + 'px';
 
-      /* Restore */
-      textHero.style.transform    = prevHeroT;
-      captionWrap.style.transform = prevCapT;
-      captionWrap.style.opacity   = prevCapOp;
-
-      /* Apply to fixed overlays */
-      textAbout.style.top = naturalHeroTop + 'px';
-      p3Wrap.style.top    = naturalCaptionTop + 'px';
+      /* Pull #about-bio up so it starts right below the caption,
+         not at the very bottom of the 100vh #hero.
+         gap = space between caption bottom and hero bottom edge. */
+      const captionBottom = captionWrap.offsetTop + captionWrap.offsetHeight;
+      const gap           = heroEl.offsetHeight - captionBottom;
+      aboutBio.style.marginTop = `-${Math.max(0, gap + 60)}px`;
     }
 
-    function getHeroProgress() {
+    function progress() {
       const rect  = scrollWrap.getBoundingClientRect();
       const total = scrollWrap.offsetHeight - window.innerHeight;
-      if (total <= 0) return 1;
-      return clamp01(-rect.top / total);
+      return total > 0 ? clamp01(-rect.top / total) : 1;
     }
 
-    function updateHeroScroll() {
-      const wrapRect = scrollWrap.getBoundingClientRect();
-      const inZone   = wrapRect.top < window.innerHeight && wrapRect.bottom > 0;
+    function tick() {
+      heroRaf = null;
+      const wRect  = scrollWrap.getBoundingClientRect();
+      const inZone = wRect.top < window.innerHeight && wRect.bottom > 0;
 
       if (!inZone) {
-        textAbout.style.visibility = 'hidden';
-        p3Wrap.style.visibility    = 'hidden';
-        textHero.style.opacity     = '1';
-        textHero.style.transform   = 'translateY(0)';
-        captionWrap.style.opacity  = '1';
+        /* Outside the sticky zone: reset to Phase-1 state */
+        textHero.style.opacity      = '1';
+        textHero.style.transform    = 'translateY(0)';
+        captionWrap.style.opacity   = '1';
         captionWrap.style.transform = 'translateY(0)';
+        textAbout.style.opacity     = '0';
+        textAbout.style.transform   = 'translateY(50px)';
+        textAbout.setAttribute('aria-hidden', 'true');
         return;
       }
 
-      textAbout.style.visibility = '';
-      p3Wrap.style.visibility    = '';
+      const p  = progress();
+      const t2 = ramp(p, 0.15, 0.75); // hero OUT, about IN
 
-      const p = getHeroProgress();
-
-      /* Phase 2 — hero OUT, about IN */
-      const t2 = rampUp(p, 0.15, 0.55);
-
+      /* hero text + caption fade/slide out */
       textHero.style.opacity      = String(1 - t2);
       textHero.style.transform    = `translateY(${-40 * t2}px)`;
       captionWrap.style.opacity   = String(1 - t2);
       captionWrap.style.transform = `translateY(${-20 * t2}px)`;
 
+      /* about text fades/slides in */
       textAbout.style.opacity   = String(t2);
       textAbout.style.transform = `translateY(${50 * (1 - t2)}px)`;
-
-      /* Phase 3 — quote IN */
-      const t3 = rampUp(p, 0.55, 0.90);
-
-      p3Wrap.style.opacity   = String(t3);
-      p3Wrap.style.transform = `translateX(-50%) translateY(${30 * (1 - t3)}px)`;
 
       textHero.setAttribute('aria-hidden',    t2 >= 1 ? 'true' : 'false');
       textAbout.setAttribute('aria-hidden',   t2 <= 0 ? 'true' : 'false');
       captionWrap.setAttribute('aria-hidden', t2 >= 1 ? 'true' : 'false');
-      p3Wrap.setAttribute('aria-hidden',      t3 <= 0 ? 'true' : 'false');
     }
 
     let heroRaf = null;
-    function onHeroScroll() {
-      if (!heroRaf) {
-        heroRaf = requestAnimationFrame(() => { heroRaf = null; updateHeroScroll(); });
-      }
+    function onScroll() {
+      if (!heroRaf) heroRaf = requestAnimationFrame(tick);
     }
 
-    window.addEventListener('scroll', onHeroScroll, { passive: true });
-    window.addEventListener('resize', () => {
-      captureNaturalPositions();
-      onHeroScroll();
-    }, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', () => { setOverlayPositions(); onScroll(); }, { passive: true });
 
-    /* Initial: wait for fonts + layout to settle before measuring */
+    /* Wait two frames for fonts + layout before measuring */
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      captureNaturalPositions();
-      updateHeroScroll();
+      setOverlayPositions();
+      tick();
     }));
 
   })();
