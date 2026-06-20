@@ -400,6 +400,199 @@
       :root { --photo-h: clamp(220px, 40vh, 380px); }
       #hero-photo { max-width: 92vw; }
     }
+
+    /* ═══════════════════════════════════════════════════════
+       THE MILESTONES
+       ─────────────────────────────────────────────────────
+       --milestone-card: avg of kuning_milestones.png ≈ #c7ae3f,
+       used as a base-color fallback behind the tiled texture.
+       Reuses --bg / --ink / --mute / --f-radio / --f-serif —
+       no new color/font system introduced.
+    ═══════════════════════════════════════════════════════ */
+    :root {
+      --milestone-card: #C7AE3F;
+    }
+
+    #milestones {
+      position: relative;
+      padding: clamp(48px, 8vh, 96px) clamp(16px, 5vw, 60px) clamp(64px, 10vh, 120px);
+    }
+
+    .milestone-card {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      border-radius: clamp(24px, 4vw, 40px);
+      overflow: hidden;
+      background-color: var(--milestone-card);
+      /*
+        Texture tiled at its native 1226×712 resolution instead of
+        background-size:cover. Stretching the 1226px-wide source up
+        to fill an ~1100px+ card via "cover" softened/blurred the
+        grain. Tiling at true size keeps the fibers crisp; the
+        texture is a seamless-enough painterly pattern that a tile
+        seam is not noticeable against the busy grain.
+      */
+      background-image: url('assets/kuning_milestones.png');
+      background-repeat: repeat;
+      background-size: 1226px 712px;
+      background-position: center;
+      padding: clamp(28px, 5vw, 56px) clamp(20px, 4.5vw, 48px) clamp(36px, 5.5vw, 56px);
+      box-shadow: 0 24px 60px rgba(14, 14, 14, 0.12);
+    }
+
+    /*
+      Title: matches the hero's "I tell stories through visuals."
+      treatment exactly — same family/weight, scaled spec values
+      (80px desktop, -5% tracking). White + mix-blend-mode:difference
+      against the yellow texture produces the eye-catching inverted
+      look from the Figma reference, without hardcoding a separate
+      blue color.
+    */
+    .milestone-title {
+      font-family: var(--f-radio);
+      font-weight: 400;
+      font-style: normal;
+      font-size: clamp(34px, 6vw, 80px);
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+      color: #FFFFFF;
+      mix-blend-mode: difference;
+      margin-bottom: clamp(18px, 3vw, 28px);
+    }
+
+    /* ── Inner pill: Google Student Ambassador badge ── */
+    .milestone-pill {
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 2.2vw, 20px);
+      background: rgba(247, 246, 243, 0.88);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: clamp(18px, 3vw, 28px);
+      padding: clamp(14px, 2.4vw, 22px) clamp(16px, 3vw, 26px);
+      margin-bottom: clamp(18px, 3vw, 28px);
+      box-shadow: 0 8px 24px rgba(14, 14, 14, 0.06);
+    }
+    .milestone-pill img {
+      flex: 0 0 auto;
+      width: clamp(40px, 5.5vw, 56px);
+      height: clamp(40px, 5.5vw, 56px);
+      object-fit: contain;
+    }
+    .milestone-pill-text h3 {
+      font-family: var(--f-radio);
+      font-weight: 600;
+      font-size: clamp(16px, 2.4vw, 22px);
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .milestone-pill-text p {
+      font-family: var(--f-radio);
+      font-weight: 400;
+      font-size: clamp(11px, 1.25vw, 13px);
+      line-height: 1.5;
+      color: var(--mute);
+    }
+
+    /* ── 2-col grid of media cards ── */
+    .milestone-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(12px, 2vw, 20px);
+    }
+    @media (max-width: 700px) {
+      .milestone-grid { grid-template-columns: 1fr; }
+    }
+
+    .milestone-media {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border-radius: clamp(14px, 2.4vw, 22px);
+      overflow: hidden;
+      background: #111;
+      isolation: isolate;
+    }
+    .milestone-media img,
+    .milestone-media iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: 0;
+      display: block;
+    }
+    .milestone-media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 45%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .milestone-caption {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      z-index: 2;
+      padding: clamp(14px, 2.6vw, 22px);
+      font-family: var(--f-radio);
+      font-weight: 600;
+      font-size: clamp(12.5px, 1.7vw, 16px);
+      line-height: 1.35;
+      color: #fff;
+      pointer-events: none;
+    }
+
+    /* ── Play button for the video card ── */
+    .milestone-play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 3;
+      transform: translate(-50%, -50%);
+      width: clamp(48px, 7vw, 64px);
+      height: clamp(48px, 7vw, 64px);
+      border: none;
+      border-radius: 50%;
+      background: rgba(247, 246, 243, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      transition: transform 0.25s ease, background 0.25s ease;
+    }
+    .milestone-play-btn:hover {
+      transform: translate(-50%, -50%) scale(1.08);
+      background: #fff;
+    }
+    .milestone-play-btn svg {
+      width: 38%;
+      height: 38%;
+      margin-left: 3px;
+      fill: var(--ink);
+    }
+    .milestone-media.is-playing .milestone-play-btn,
+    .milestone-media.is-playing .milestone-caption,
+    .milestone-media.is-playing::after {
+      display: none;
+    }
+
+    /* ── Reveal-on-scroll, matches the hero's reveal feel ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .milestone-grid .milestone-media.reveal:nth-child(2) { transition-delay: 0.12s; }
   </style>
 </head>
 <body>
@@ -485,6 +678,63 @@
         Bagi gua, hal paling menarik terjadi ketika teknologi dan
         kreativitas bertemu.
       </p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       THE MILESTONES
+  ═══════════════════════════════════════════════════════ -->
+  <section id="milestones">
+    <div class="milestone-card">
+
+      <h2 class="milestone-title reveal blur-text">the milestones</h2>
+
+      <div class="milestone-pill reveal">
+        <img src="assets/Google.webp" alt="Google logo" />
+        <div class="milestone-pill-text">
+          <h3>Google Student Ambassador</h3>
+          <p>
+            Menjadi bagian dari 2.000 ambassador Google yang terpilih dari
+            81.000+ kandidat, membangun komunitas dan menyebarkan literasi
+            teknologi di kampus.
+          </p>
+        </div>
+      </div>
+
+      <div class="milestone-grid">
+
+        <article class="milestone-media reveal">
+          <img
+            src="assets/serahterimapoint9.jpg"
+            alt="Tim Nadja menerima hadiah dari Point Coffee bersama staf toko"
+            loading="lazy"
+          />
+          <p class="milestone-caption">
+            1st Winner Point Coffee 9th Birthday<br />Video Competition
+          </p>
+        </article>
+
+        <article class="milestone-media reveal" id="mosaicMedia">
+          <img
+            src="https://img.youtube.com/vi/ZsuILfpE0TU/maxresdefault.jpg"
+            alt="Thumbnail video Director of Profile MOSAIC"
+            loading="lazy"
+          />
+          <button
+            class="milestone-play-btn"
+            id="mosaicPlayBtn"
+            type="button"
+            aria-label="Putar video Director of Profile MOSAIC: a Project Based Learning"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <p class="milestone-caption">
+            Director of Profile MOSAIC:<br />a Project Based Learning
+          </p>
+        </article>
+
+      </div>
     </div>
   </section>
 
@@ -664,6 +914,43 @@
       setOverlayPositions();
       tick();
     }));
+
+    /* ── 6. MILESTONES: reveal-on-scroll ──
+       Same easing/feel as the hero reveal, driven by
+       IntersectionObserver instead of the scroll-jack math
+       (this section is normal flow, no sticky pinning needed).
+    ═══════════════════════════════════════════════════════ */
+    const revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+      revealEls.forEach(el => io.observe(el));
+    } else {
+      revealEls.forEach(el => el.classList.add('in-view'));
+    }
+
+    /* ── 7. MOSAIC video: lazy-load iframe only on click ── */
+    const mosaicMedia   = document.getElementById('mosaicMedia');
+    const mosaicPlayBtn = document.getElementById('mosaicPlayBtn');
+    if (mosaicMedia && mosaicPlayBtn) {
+      mosaicPlayBtn.addEventListener('click', () => {
+        const iframe = document.createElement('iframe');
+        iframe.src = 'https://www.youtube.com/embed/ZsuILfpE0TU?si=lzYZxAvKWv8CsEH8&autoplay=1';
+        iframe.title = 'YouTube video player';
+        iframe.setAttribute('frameborder', '0');
+        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+        iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        iframe.setAttribute('allowfullscreen', '');
+        mosaicMedia.appendChild(iframe);
+        mosaicMedia.classList.add('is-playing');
+      });
+    }
 
   })();
   </script>
