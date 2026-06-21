@@ -22,6 +22,13 @@
       --f-serif:  'Source Serif 4', serif;
       --fs-hl:    clamp(36px, 5.2vw, 86px);
       --photo-h:  clamp(300px, 50vh, 540px);
+
+      /* #milestones — avg color of kuning_milestones.png, used as
+         a base-color fallback behind the tiled texture */
+      --milestone-card: #C7AE3F;
+
+      /* #journey — timeline accent (line end-color + dot hover) */
+      --journey-accent: #3D5CCB;
     }
 
     html { scroll-behavior: smooth; }
@@ -404,15 +411,12 @@
     /* ═══════════════════════════════════════════════════════
        THE MILESTONES
        ─────────────────────────────────────────────────────
-       --milestone-card: avg of kuning_milestones.png ≈ #c7ae3f,
-       used as a base-color fallback behind the tiled texture.
+       --milestone-card (defined in the top :root above) holds
+       the avg color of kuning_milestones.png ≈ #c7ae3f, used as
+       a base-color fallback behind the tiled texture.
        Reuses --bg / --ink / --mute / --f-radio / --f-serif —
        no new color/font system introduced.
     ═══════════════════════════════════════════════════════ */
-    :root {
-      --milestone-card: #C7AE3F;
-    }
-
     #milestones {
       position: relative;
       padding: clamp(48px, 8vh, 96px) clamp(16px, 5vw, 60px) clamp(64px, 10vh, 120px);
@@ -593,6 +597,249 @@
       transform: translateY(0);
     }
     .milestone-grid .milestone-media.reveal:nth-child(2) { transition-delay: 0.12s; }
+
+    /* ═══════════════════════════════════════════════════════
+       THE JOURNEY
+       ─────────────────────────────────────────────────────
+       Ported from index_lama.html's #journey concept/animation,
+       re-skinned onto this file's own tokens only:
+         --c-yellow/--c-blue → --milestone-card (reused) / --journey-accent
+         --c-border          → rgba(14,14,14, .12) inline (matches --ink)
+         --ff-display         → var(--f-radio)  (already in :root)
+       --journey-accent is defined once, in the top-level :root.
+    ═══════════════════════════════════════════════════════ */
+    #journey {
+      position: relative;
+      z-index: 1;
+      padding: clamp(64px, 10vh, 120px) clamp(16px, 5vw, 60px);
+    }
+
+    /*
+      Title: "The " is static, the 2nd word is the typewriter
+      target. Sizing matches .milestone-title / hero headline
+      treatment — var(--f-radio), negative tracking.
+    */
+    .journey-title {
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      font-family: var(--f-radio);
+      font-weight: 400;
+      font-size: clamp(34px, 6vw, 64px);
+      letter-spacing: -0.03em;
+      text-align: center;
+      color: var(--ink);
+      margin: 0 auto clamp(48px, 8vh, 88px);
+      cursor: default;
+    }
+    /*
+      #journeyWord wraps the typed characters AND the caret as a
+      single inline-flex unit. The caret sits right after the
+      last typed character and moves with it naturally — it's a
+      true sibling of the text node inside the same box, not a
+      separately-positioned element nailed to a fixed-width slot
+      (which is what made the caret look "stuck" before).
+
+      min-width reserves space for the longest looped word so
+      "The " never jiggles horizontally as words cycle in/out —
+      but text-align:left + the caret being inline (not absolute)
+      means it still tracks the actual character count.
+    */
+    #journeyWord {
+      display: inline-flex;
+      align-items: baseline;
+      min-width: 9.5ch;
+    }
+    #journeyWordText { white-space: pre; }
+
+    /*
+      Caret: explicit height tied to the title's own font-size via
+      em, so it always spans the full cap-height of the text next
+      to it — like a real text-cursor, not a collapsed sliver.
+      steps(1) keeps the blink crisp/instant (no fade), matching
+      a terminal/Word-style cursor rather than a soft pulse.
+    */
+    .journey-caret {
+      display: inline-block;
+      width: 0.05em;
+      height: 0.82em;
+      margin-left: 0.03em;
+      background: var(--journey-accent);
+      animation: caretBlink 0.85s steps(1) infinite;
+    }
+    /* While a keystroke is actively being typed/deleted, the
+       caret is forced fully solid — blinking only resumes during
+       the idle HOLD/GAP pauses. Matches real typing behavior. */
+    .journey-caret.is-typing {
+      animation: none;
+      opacity: 1;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .journey-caret { animation: none; opacity: 1; }
+    }
+    @keyframes caretBlink {
+      0%, 49%  { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    /* Screen-reader-only static fallback for the animated title */
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .journey-columns {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(28px, 5vw, 64px);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    /*
+      Center divider: a 2-column equal-width CSS Grid always
+      splits its `gap` evenly between the two tracks, so the
+      exact midline of that gap — and therefore of the whole
+      grid — IS left:50%. (The earlier version got this right;
+      kept as-is, just re-pointed to this file's --ink token.)
+      Fades top/bottom via the gradient, same as the source.
+    */
+    .journey-columns::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(14, 14, 14, 0.14) 12%,
+        rgba(14, 14, 14, 0.14) 88%,
+        transparent
+      );
+    }
+    @media (max-width: 720px) {
+      .journey-columns { grid-template-columns: 1fr; }
+      .journey-columns::before { display: none; }
+    }
+
+    .journey-col-header {
+      display: flex;
+      align-items: center;
+      gap: clamp(10px, 1.6vw, 14px);
+      margin-bottom: clamp(20px, 3vw, 32px);
+    }
+    .journey-col-logo {
+      width: clamp(32px, 4vw, 40px);
+      height: clamp(32px, 4vw, 40px);
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+    .journey-col-title {
+      font-family: var(--f-radio);
+      font-weight: 600;
+      font-size: clamp(15px, 1.6vw, 18px);
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+
+    /*
+      ── TIMELINE: dot-on-line centering math ──
+      All three numbers below are tied to the SAME two CSS
+      variables, so the dot is guaranteed centered on the line
+      regardless of future resizing — no magic numbers floating
+      independently like in index_lama.html (which hardcoded
+      `left:-1.5rem` for an 8px dot against a 2px line with no
+      shared variable, making the relationship opaque/fragile).
+
+        --tl-line-w : line thickness
+        --tl-dot-d  : dot diameter
+        --tl-gutter : .timeline's padding-left (space the line+dot live in)
+
+      Line sits at left:0, centered within the gutter:
+        line-left = (gutter - line-w) / 2
+      Dot must share the line's horizontal center:
+        dot-left  = line-left + (line-w / 2) - (dot-d / 2)
+      Vertical centering uses top:50%; transform:translateY(-50%)
+      — correct ONLY because the dot's height (--tl-dot-d) is
+      fixed and symmetric, which it is here.
+    */
+    .timeline {
+      --tl-line-w: 2px;
+      --tl-dot-d: 8px;
+      --tl-gutter: 22px;
+      list-style: none;
+      position: relative;
+      padding-left: var(--tl-gutter);
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: calc((var(--tl-gutter) - var(--tl-line-w)) / 2);
+      top: 6px;
+      bottom: 6px;
+      width: var(--tl-line-w);
+      border-radius: var(--tl-line-w);
+      background: linear-gradient(
+        to bottom,
+        var(--milestone-card),
+        var(--journey-accent) 70%,
+        transparent
+      );
+    }
+
+    .timeline li {
+      position: relative;
+      padding: 0.5rem 0;
+      margin-bottom: 0.3rem;
+
+      /* Reveal-on-scroll (reuses .reveal/.in-view from #milestones) */
+      opacity: 0;
+      transform: translateX(-18px);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .journey-col.right .timeline li { transform: translateX(18px); }
+    .timeline li.in-view { opacity: 1; transform: translateX(0); }
+
+    .timeline li::before {
+      content: '';
+      position: absolute;
+      left: calc(
+        ((var(--tl-gutter) - var(--tl-line-w)) / 2)
+        + (var(--tl-line-w) / 2)
+        - (var(--tl-dot-d) / 2)
+        - var(--tl-gutter)
+      );
+      top: 50%;
+      transform: translateY(-50%);
+      width: var(--tl-dot-d);
+      height: var(--tl-dot-d);
+      border-radius: 50%;
+      background: var(--milestone-card);
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 0 1.5px var(--milestone-card);
+      transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .timeline li:hover::before {
+      background: var(--journey-accent);
+      box-shadow: 0 0 0 1.5px var(--journey-accent);
+      transform: translateY(-50%) scale(1.4);
+    }
+
+    .timeline-item-title {
+      font-family: var(--f-radio);
+      font-weight: 500;
+      font-size: clamp(13.5px, 1.25vw, 14.5px);
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+      color: var(--ink);
+    }
   </style>
 </head>
 <body>
@@ -735,6 +982,70 @@
         </article>
 
       </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       THE JOURNEY
+  ═══════════════════════════════════════════════════════ -->
+  <section id="journey" aria-label="The Journey">
+
+    <h2 class="journey-title">
+      <span aria-hidden="true">The&nbsp;</span><span id="journeyWord" aria-hidden="true"><span id="journeyWordText">Journey</span><span class="journey-caret"></span></span>
+      <span class="visually-hidden">The Journey</span>
+    </h2>
+
+    <div class="journey-columns">
+
+      <!-- Left: Politeknik Negeri Semarang -->
+      <div class="journey-col left">
+        <div class="journey-col-header reveal">
+          <img
+            src="assets/Logo-Polines.png"
+            alt="Logo Politeknik Negeri Semarang"
+            class="journey-col-logo"
+            onerror="this.style.display='none'"
+          />
+          <h3 class="journey-col-title">Politeknik Negeri Semarang</h3>
+        </div>
+        <ul class="timeline" aria-label="Linimasa Politeknik Negeri Semarang">
+          <li><span class="timeline-item-title">Google Student Ambassador 2026</span></li>
+          <li><span class="timeline-item-title">Deputi Kementerian PSDM BEM KBM Polines 2025–2026</span></li>
+          <li><span class="timeline-item-title">Koordinator Pendamping Jurusan Elektro WaRNA 2025</span></li>
+          <li><span class="timeline-item-title">Kadiv PDD Makrab Internal BEM KBM POLINES</span></li>
+          <li><span class="timeline-item-title">Koordinator Acara Staff Muda BEM KBM POLINES 2025/2026</span></li>
+          <li><span class="timeline-item-title">Kadiv PDD LKMM Madya 2025</span></li>
+          <li><span class="timeline-item-title">Director of Video Profile — MOSAIC</span></li>
+          <li><span class="timeline-item-title">UI/UX Designer and Frontend Developer — MOSAIC</span></li>
+        </ul>
+      </div>
+
+      <!-- Right: SMA IT Ibnu Abbas Klaten -->
+      <div class="journey-col right">
+        <div class="journey-col-header reveal">
+          <img
+            src="assets/logo-smait-ibnu-abbas.png"
+            alt="Logo SMA IT Ibnu Abbas Klaten"
+            class="journey-col-logo"
+            onerror="this.style.display='none'"
+          />
+          <h3 class="journey-col-title">SMA IT Ibnu Abbas Klaten</h3>
+        </div>
+        <ul class="timeline" aria-label="Linimasa SMA IT Ibnu Abbas Klaten">
+          <li><span class="timeline-item-title">Ketua Divisi Kreatif — Literacy Festival 2023</span></li>
+          <li><span class="timeline-item-title">Ketua Divisi Media and Dokumentasi Dirgahayu HUT RI 77</span></li>
+          <li><span class="timeline-item-title">Ketua Divisi Media and Dokumentasi Ibaska Ramadhan Festival 2022</span></li>
+          <li><span class="timeline-item-title">Ketua Divisi Media and Dokumentasi Ibaska Ramadhan Festival 2023</span></li>
+          <li><span class="timeline-item-title">Ketua Divisi Desain and Dokumentasi — Class Meeting SIA GAMES X</span></li>
+          <li><span class="timeline-item-title">Ketua Divisi Desain and Dokumentasi Olimpiade Santri Ibaska 2023</span></li>
+          <li><span class="timeline-item-title">Ketua Divisi Media Latihan Dasar Kepemimpinan OSIS Ibnu Abbas 2023</span></li>
+          <li><span class="timeline-item-title">Sekretaris Dewan Ambalan Jenderal Sudirman 2022/2023</span></li>
+          <li><span class="timeline-item-title">Sekretaris Umum Stage of Talent 9</span></li>
+          <li><span class="timeline-item-title">Divisi Kebersihan OSIS SMA IT Ibnu Abbas Klaten 2021/2022</span></li>
+        </ul>
+      </div>
+
     </div>
   </section>
 
@@ -915,12 +1226,25 @@
       tick();
     }));
 
-    /* ── 6. MILESTONES: reveal-on-scroll ──
+    /* ── 6. MILESTONES + JOURNEY: reveal-on-scroll ──
        Same easing/feel as the hero reveal, driven by
        IntersectionObserver instead of the scroll-jack math
-       (this section is normal flow, no sticky pinning needed).
+       (these sections are normal flow, no sticky pinning needed).
+
+       .timeline li already carries its own opacity/transform
+       rules (not .reveal's), so it's added to the SAME observer
+       here rather than duplicating a second IntersectionObserver
+       — only its CSS differs (translateX instead of translateY),
+       its JS behavior (toggle .in-view, unobserve once) is
+       identical. Each <li> gets a small stagger delay so the
+       column cascades in rather than popping in all at once.
     ═══════════════════════════════════════════════════════ */
     const revealEls = document.querySelectorAll('.reveal');
+    const timelineItems = document.querySelectorAll('.timeline li');
+    timelineItems.forEach((li, i) => {
+      li.style.transitionDelay = `${(i % 8) * 0.06}s`;
+    });
+
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -931,8 +1255,10 @@
         });
       }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
       revealEls.forEach(el => io.observe(el));
+      timelineItems.forEach(li => io.observe(li));
     } else {
       revealEls.forEach(el => el.classList.add('in-view'));
+      timelineItems.forEach(li => li.classList.add('in-view'));
     }
 
     /* ── 7. MOSAIC video: lazy-load iframe only on click ── */
@@ -950,6 +1276,95 @@
         mosaicMedia.appendChild(iframe);
         mosaicMedia.classList.add('is-playing');
       });
+    }
+
+    /* ── 8. JOURNEY TITLE: typewriter word loop ──
+       ─────────────────────────────────────────────────────
+       "The " stays fully static. #journeyWordText is the ONLY
+       node whose text content changes — the caret next to it
+       is a separate, untouched <span>, so it never gets erased
+       along with the word and always sits exactly at the end
+       of whatever's currently typed (it's an inline sibling in
+       the same flex box, not a fixed-position element glued to
+       a static slot — that's what made it feel "off" before).
+
+       Two behaviors make this read as real typing rather than a
+       generic fade/swap:
+         1. JITTER — each keystroke's delay is randomized within
+            a small range (not a robotic constant interval), the
+            way actual typing speed varies per character.
+         2. CARET STATE — while characters are actively being
+            typed/deleted, the caret is forced solid (.is-typing
+            suppresses the CSS blink). It only resumes blinking
+            during the HOLD pause (word fully typed, sitting
+            still) and the GAP pause (briefly empty) — exactly
+            how a cursor behaves in Word/a terminal: solid while
+            you're actively typing, blinking when idle.
+
+       Respects prefers-reduced-motion: skips straight to a
+       static first word, no animation, caret fully solid.
+    ═══════════════════════════════════════════════════════ */
+    const journeyWordTextEl = document.getElementById('journeyWordText');
+    const journeyCaretEl    = document.querySelector('.journey-caret');
+
+    if (journeyWordTextEl && journeyCaretEl) {
+      const WORDS = ['Journey', 'Education', 'Experience', 'Growth'];
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduceMotion) {
+        journeyWordTextEl.textContent = WORDS[0];
+        journeyCaretEl.classList.add('is-typing'); // solid, no blink
+      } else {
+        const TYPE_MS_BASE   = 75;   // base per-character typing delay
+        const TYPE_JITTER    = 55;   // +/- random ms added to typing
+        const DELETE_MS_BASE = 38;   // base per-character delete delay
+        const DELETE_JITTER  = 25;
+        const HOLD_MS        = 1500; // pause once fully typed (caret blinks)
+        const GAP_MS         = 350;  // pause once fully deleted (caret blinks)
+
+        const jitter = (base, range) => base + Math.random() * range;
+
+        let wordIndex = 0;
+        let charIndex = 0;
+        let deleting  = false;
+
+        function setTyping(active) {
+          journeyCaretEl.classList.toggle('is-typing', active);
+        }
+
+        function typeLoop() {
+          const word = WORDS[wordIndex];
+
+          if (!deleting) {
+            setTyping(true);
+            charIndex++;
+            journeyWordTextEl.textContent = word.slice(0, charIndex);
+
+            if (charIndex === word.length) {
+              setTyping(false); // idle hold → caret resumes blinking
+              setTimeout(() => { deleting = true; typeLoop(); }, HOLD_MS);
+              return;
+            }
+            setTimeout(typeLoop, jitter(TYPE_MS_BASE, TYPE_JITTER));
+          } else {
+            setTyping(true);
+            charIndex--;
+            journeyWordTextEl.textContent = word.slice(0, charIndex);
+
+            if (charIndex === 0) {
+              setTyping(false); // idle gap → caret resumes blinking
+              deleting = false;
+              wordIndex = (wordIndex + 1) % WORDS.length;
+              setTimeout(typeLoop, GAP_MS);
+              return;
+            }
+            setTimeout(typeLoop, jitter(DELETE_MS_BASE, DELETE_JITTER));
+          }
+        }
+
+        journeyWordTextEl.textContent = '';
+        setTimeout(typeLoop, TYPE_MS_BASE);
+      }
     }
 
   })();
