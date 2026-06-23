@@ -800,6 +800,12 @@
       background: var(--milestone-card);
       color: var(--ink);
     }
+    /* Hover: hollow out — mirror image of creative's fill-in effect */
+    .skill-tag.eng:hover {
+      background: transparent;
+      color: var(--milestone-card);
+      border: 1.5px solid var(--milestone-card);
+    }
     .skill-tag.creative {
       background: transparent;
       color: var(--milestone-card);
@@ -873,12 +879,26 @@
       opacity: 1;
       transform: translateX(-50%) scale(1);
     }
-    @media (max-width: 480px) {
+    @media (max-width: 600px) {
+      /* Kecilkan icon + gap agar 8 icon muat dalam 1 baris tanpa scroll/wrap */
       .skills-taskbar {
-        flex-wrap: wrap;
-        border-radius: clamp(16px, 4vw, 28px);
-        padding: clamp(12px, 3vw, 18px);
-        gap: clamp(10px, 3vw, 14px);
+        flex-wrap: nowrap;
+        gap: 6px;
+        padding: 8px 14px;
+        max-width: calc(100vw - 32px);
+      }
+      .taskbar-icon img {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+      }
+      /* Tap state — tooltip muncul saat icon di-tap di mobile */
+      .taskbar-icon.tapped .taskbar-tooltip {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+      }
+      .taskbar-icon.tapped img {
+        transform: translateY(-8px) scale(1.1);
       }
     }
   </style>
@@ -1398,6 +1418,27 @@
         journeyWordTextEl.textContent = '';
         setTimeout(typeLoop, TYPE_MS_BASE);
       }
+    }
+
+    /* ── 9. SKILLS TASKBAR: tap-to-show tooltip on touch devices ──
+       Hover nggak kerja di HP, jadi pakai tap/touchstart.
+       Tap icon → toggle .tapped (tooltip + lift muncul via CSS).
+       Tap di luar taskbar → dismiss semua tooltip yang terbuka.
+    ══════════════════════════════════════════════════════ */
+    const taskbarIcons = document.querySelectorAll('.taskbar-icon');
+    if (taskbarIcons.length) {
+      const clearTapped = () => taskbarIcons.forEach(ic => ic.classList.remove('tapped'));
+
+      taskbarIcons.forEach(icon => {
+        icon.addEventListener('touchstart', e => {
+          e.stopPropagation();
+          const wasActive = icon.classList.contains('tapped');
+          clearTapped();
+          if (!wasActive) icon.classList.add('tapped');
+        }, { passive: true });
+      });
+
+      document.addEventListener('touchstart', clearTapped, { passive: true });
     }
 
   })();
