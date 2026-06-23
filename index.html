@@ -41,14 +41,68 @@
       overflow-x: hidden;
     }
 
+    /*
+      Warm paper-grain texture, vignette-distributed.
+      ─────────────────────────────────────────────────────────────
+      FIXED (2 bugs from the previous pass):
+        1. Alpha was left at full opacity (the 2nd feColorMatrix's
+           alpha row was "0 0 0 1 0" — i.e. unchanged from the first
+           pass). That made the grain a solid, fully-opaque noisy
+           layer instead of a faint accent. Alpha row is now
+           "0 0 0 0.16 0" — scales it down to a real 16% ceiling.
+        2. The SVG had no explicit width/height, so its intrinsic
+           size fell back to a tiny default canvas — then
+           background-size:cover stretched that tiny canvas across
+           the ENTIRE viewport, turning fine grain into huge blurry
+           blotches (the "moldy" look). Fixed by giving the SVG an
+           explicit 260×260 canvas and switching back to tiling
+           (background-repeat + background-size:260px 260px) instead
+           of cover — stitchTiles="stitch" keeps the tile seamless,
+           so there's no visible seam at the 260px boundary even
+           though it repeats.
+
+      Color pipeline inside the SVG filter (two feColorMatrix passes):
+        Pass 1 — collapses feTurbulence's per-channel-random RGBA
+                 noise to true grayscale (R=G=B, equal-weighted avg).
+                 Skipping this step left visible rainbow speckling
+                 (R/G/B each independently random).
+        Pass 2 — scales that neutral gray by a fixed ratio per
+                 channel (R 0.90 / G 0.77 / B 0.33) to tint it toward
+                 --milestone-card's golden hue (#C7AE3F), AND scales
+                 alpha down to 0.16 so the whole thing stays a faint
+                 accent, never a solid layer.
+
+      mix-blend-mode:multiply means this layer can only ever DARKEN
+      whatever sits beneath it — never lightens or washes out.
+
+      mask-image is the vignette: fully transparent (grain hidden)
+      across the center ~32% of the viewport, fully opaque (grain
+      shown) toward the edges/corners. Center sits at 45% from the
+      top, not dead-center 50%, per the brief. This part already
+      worked correctly in the previous pass — kept as-is.
+    */
     body::after {
       content: '';
       position: fixed;
       inset: 0;
       z-index: 9000;
       pointer-events: none;
-      background-image: radial-gradient(circle, rgba(14,14,14,0.04) 1px, transparent 1px);
-      background-size: 22px 22px;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22260%22%20height%3D%22260%22%3E%3Cfilter%20id%3D%22g%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.045%22%20numOctaves%3D%223%22%20stitchTiles%3D%22stitch%22%20result%3D%22n%22/%3E%3CfeColorMatrix%20in%3D%22n%22%20type%3D%22matrix%22%20values%3D%220.33%200.33%200.33%200%200%200.33%200.33%200.33%200%200%200.33%200.33%200.33%200%200%200%200%200%201%200%22%20result%3D%22gray%22/%3E%3CfeColorMatrix%20in%3D%22gray%22%20type%3D%22matrix%22%20values%3D%220.90%200%200%200%200%200%200.77%200%200%200%200%200%200.33%200%200%200%200%200%200.16%200%22/%3E%3C/filter%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url%28%23g%29%22/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 260px 260px;
+      -webkit-mask-image: radial-gradient(
+        ellipse 42% 38% at 50% 45%,
+        transparent 0%,
+        transparent 55%,
+        black 100%
+      );
+      mask-image: radial-gradient(
+        ellipse 42% 38% at 50% 45%,
+        transparent 0%,
+        transparent 55%,
+        black 100%
+      );
     }
 
     /* ── CURSOR BLUR ── */
@@ -194,22 +248,10 @@
       height: 350vh;
     }
 
-    /* ═══════════════════════════════════════════════════════
-       #hero — the sticky viewport canvas
-       ─────────────────────────────────────────────────────
-       CRITICAL: overflow:hidden would clip anything that
-       sticks out — but we need #text-about and #p3-wrap to
-       be positioned relative to #hero (as absolute children)
-       so they SCROLL WITH THE PAGE when sticky releases.
-       Therefore: overflow is NOT set (defaults to visible).
-       The masking of the photo bottom edge is handled by
-       mask-image on the <img> itself, not by overflow.
-    ═══════════════════════════════════════════════════════ */
     #hero {
       position: sticky;
       top: 0;
       height: 100vh;
-      /* NO overflow:hidden — lets absolute children sit correctly */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -224,17 +266,6 @@
       background: linear-gradient(175deg, var(--sky) 0%, #cde5f5 20%, #e4f0f9 48%, var(--bg) 100%);
     }
 
-    /* ── Headline text group ──
-       #text-hero is a flex item (flex: 0 0 auto) that sizes
-       itself to its two <h1> children. It is also
-       position:relative so that #text-about can be
-       position:absolute; inset:0 inside it.
-
-       BUT: #text-about must be at least as tall as the two
-       <h2> lines, which may be taller than the two <h1>
-       lines on some viewports. To handle that, #text-hero
-       is given min-height via JS after measuring both.
-    */
     #text-hero {
       position: relative;
       z-index: 5;
@@ -266,18 +297,9 @@
       color: var(--ink);
     }
 
-    /*
-      #text-about: absolute inside #hero (NOT inside #text-hero).
-      top is set once by JS = textHero.offsetTop.
-      This makes it sit at the exact same vertical position as
-      #text-hero, relative to #hero, which is its containing block.
-      Scrolls with the page when sticky releases — no ghosting.
-      left/right:0 + flex column + align-items:center reproduces
-      the same horizontal centering as #text-hero.
-    */
     #text-about {
       position: absolute;
-      top: 0; /* set precisely by JS */
+      top: 0;
       left: 0;
       right: 0;
       display: flex;
@@ -306,7 +328,6 @@
       font-weight: 300;
     }
 
-    /* ── Photo ── */
     #hero-photo-wrap {
       position: relative;
       z-index: 20;
@@ -330,7 +351,6 @@
       mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 72%, rgba(0,0,0,0) 100%);
     }
 
-    /* ── Caption (Phase 1, fades out Phase 2) ── */
     #caption-wrap {
       position: relative;
       z-index: 21;
@@ -349,30 +369,13 @@
       line-height: 1.6;
     }
 
-    /* ═══════════════════════════════════════════════════════
-       BIO SECTION — normal flow after sticky releases
-    ═══════════════════════════════════════════════════════ */
     #about-bio {
       position: relative;
       z-index: 1;
-      /*
-        Gradient instead of solid color: fades in from transparent
-        at the top (where it overlaps #hero's sky gradient, which
-        is already fading toward --bg at that point) into solid
-        --bg by ~15% down. This removes the hard seam that solid
-        background:var(--bg) created when this section overlaps
-        the still-blueish lower portion of #layer-bg.
-      */
       background: linear-gradient(to bottom, transparent 0%, var(--bg) 15%, var(--bg) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      /*
-        negative margin-top pulls this section up into the empty
-        space at the bottom of #hero (100vh), right below the photo.
-        Value ≈ the gap between caption and viewport bottom.
-        JS also sets this precisely via captionWrap measurement.
-      */
       margin-top: -28vh;
       padding: clamp(12px, 2vh, 24px) clamp(24px, 8vw, 120px) clamp(48px, 10vh, 120px);
       text-align: center;
@@ -408,15 +411,6 @@
       #hero-photo { max-width: 92vw; }
     }
 
-    /* ═══════════════════════════════════════════════════════
-       THE MILESTONES
-       ─────────────────────────────────────────────────────
-       --milestone-card (defined in the top :root above) holds
-       the avg color of kuning_milestones.png ≈ #c7ae3f, used as
-       a base-color fallback behind the tiled texture.
-       Reuses --bg / --ink / --mute / --f-radio / --f-serif —
-       no new color/font system introduced.
-    ═══════════════════════════════════════════════════════ */
     #milestones {
       position: relative;
       padding: clamp(48px, 8vh, 96px) clamp(16px, 5vw, 60px) clamp(64px, 10vh, 120px);
@@ -429,14 +423,6 @@
       border-radius: clamp(24px, 4vw, 40px);
       overflow: hidden;
       background-color: var(--milestone-card);
-      /*
-        Texture tiled at its native 1226×712 resolution instead of
-        background-size:cover. Stretching the 1226px-wide source up
-        to fill an ~1100px+ card via "cover" softened/blurred the
-        grain. Tiling at true size keeps the fibers crisp; the
-        texture is a seamless-enough painterly pattern that a tile
-        seam is not noticeable against the busy grain.
-      */
       background-image: url('assets/kuning_milestones.png');
       background-repeat: repeat;
       background-size: 1226px 712px;
@@ -445,14 +431,6 @@
       box-shadow: 0 24px 60px rgba(14, 14, 14, 0.12);
     }
 
-    /*
-      Title: matches the hero's "I tell stories through visuals."
-      treatment exactly — same family/weight, scaled spec values
-      (80px desktop, -5% tracking). White + mix-blend-mode:difference
-      against the yellow texture produces the eye-catching inverted
-      look from the Figma reference, without hardcoding a separate
-      blue color.
-    */
     .milestone-title {
       font-family: var(--f-radio);
       font-weight: 400;
@@ -465,7 +443,6 @@
       margin-bottom: clamp(18px, 3vw, 28px);
     }
 
-    /* ── Inner pill: Google Student Ambassador badge ── */
     .milestone-pill {
       display: flex;
       align-items: center;
@@ -501,7 +478,6 @@
       color: var(--mute);
     }
 
-    /* ── 2-col grid of media cards ── */
     .milestone-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -550,7 +526,6 @@
       pointer-events: none;
     }
 
-    /* ── Play button for the video card ── */
     .milestone-play-btn {
       position: absolute;
       top: 50%;
@@ -585,7 +560,6 @@
       display: none;
     }
 
-    /* ── Reveal-on-scroll, matches the hero's reveal feel ── */
     .reveal {
       opacity: 0;
       transform: translateY(36px);
@@ -598,27 +572,12 @@
     }
     .milestone-grid .milestone-media.reveal:nth-child(2) { transition-delay: 0.12s; }
 
-    /* ═══════════════════════════════════════════════════════
-       THE JOURNEY
-       ─────────────────────────────────────────────────────
-       Ported from index_lama.html's #journey concept/animation,
-       re-skinned onto this file's own tokens only:
-         --c-yellow/--c-blue → --milestone-card (reused) / --journey-accent
-         --c-border          → rgba(14,14,14, .12) inline (matches --ink)
-         --ff-display         → var(--f-radio)  (already in :root)
-       --journey-accent is defined once, in the top-level :root.
-    ═══════════════════════════════════════════════════════ */
     #journey {
       position: relative;
       z-index: 1;
       padding: clamp(64px, 10vh, 120px) clamp(16px, 5vw, 60px);
     }
 
-    /*
-      Title: "The " is static, the 2nd word is the typewriter
-      target. Sizing matches .milestone-title / hero headline
-      treatment — var(--f-radio), negative tracking.
-    */
     .journey-title {
       display: flex;
       justify-content: center;
@@ -632,19 +591,6 @@
       margin: 0 auto clamp(48px, 8vh, 88px);
       cursor: default;
     }
-    /*
-      #journeyWord wraps the typed characters AND the caret as a
-      single inline-flex unit. The caret sits right after the
-      last typed character and moves with it naturally — it's a
-      true sibling of the text node inside the same box, not a
-      separately-positioned element nailed to a fixed-width slot
-      (which is what made the caret look "stuck" before).
-
-      min-width reserves space for the longest looped word so
-      "The " never jiggles horizontally as words cycle in/out —
-      but text-align:left + the caret being inline (not absolute)
-      means it still tracks the actual character count.
-    */
     #journeyWord {
       display: inline-flex;
       align-items: baseline;
@@ -652,13 +598,6 @@
     }
     #journeyWordText { white-space: pre; }
 
-    /*
-      Caret: explicit height tied to the title's own font-size via
-      em, so it always spans the full cap-height of the text next
-      to it — like a real text-cursor, not a collapsed sliver.
-      steps(1) keeps the blink crisp/instant (no fade), matching
-      a terminal/Word-style cursor rather than a soft pulse.
-    */
     .journey-caret {
       display: inline-block;
       width: 0.05em;
@@ -667,9 +606,6 @@
       background: var(--journey-accent);
       animation: caretBlink 0.85s steps(1) infinite;
     }
-    /* While a keystroke is actively being typed/deleted, the
-       caret is forced fully solid — blinking only resumes during
-       the idle HOLD/GAP pauses. Matches real typing behavior. */
     .journey-caret.is-typing {
       animation: none;
       opacity: 1;
@@ -682,7 +618,6 @@
       50%, 100% { opacity: 0; }
     }
 
-    /* Screen-reader-only static fallback for the animated title */
     .visually-hidden {
       position: absolute;
       width: 1px; height: 1px;
@@ -701,14 +636,6 @@
       max-width: 1100px;
       margin: 0 auto;
     }
-    /*
-      Center divider: a 2-column equal-width CSS Grid always
-      splits its `gap` evenly between the two tracks, so the
-      exact midline of that gap — and therefore of the whole
-      grid — IS left:50%. (The earlier version got this right;
-      kept as-is, just re-pointed to this file's --ink token.)
-      Fades top/bottom via the gradient, same as the source.
-    */
     .journey-columns::before {
       content: '';
       position: absolute;
@@ -748,27 +675,6 @@
       color: var(--ink);
     }
 
-    /*
-      ── TIMELINE: dot-on-line centering math ──
-      All three numbers below are tied to the SAME two CSS
-      variables, so the dot is guaranteed centered on the line
-      regardless of future resizing — no magic numbers floating
-      independently like in index_lama.html (which hardcoded
-      `left:-1.5rem` for an 8px dot against a 2px line with no
-      shared variable, making the relationship opaque/fragile).
-
-        --tl-line-w : line thickness
-        --tl-dot-d  : dot diameter
-        --tl-gutter : .timeline's padding-left (space the line+dot live in)
-
-      Line sits at left:0, centered within the gutter:
-        line-left = (gutter - line-w) / 2
-      Dot must share the line's horizontal center:
-        dot-left  = line-left + (line-w / 2) - (dot-d / 2)
-      Vertical centering uses top:50%; transform:translateY(-50%)
-      — correct ONLY because the dot's height (--tl-dot-d) is
-      fixed and symmetric, which it is here.
-    */
     .timeline {
       --tl-line-w: 2px;
       --tl-dot-d: 8px;
@@ -797,8 +703,6 @@
       position: relative;
       padding: 0.5rem 0;
       margin-bottom: 0.3rem;
-
-      /* Reveal-on-scroll (reuses .reveal/.in-view from #milestones) */
       opacity: 0;
       transform: translateX(-18px);
       transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
@@ -840,6 +744,143 @@
       line-height: 1.4;
       color: var(--ink);
     }
+
+    /* ═══ THE SKILLS ═══ */
+    #skills {
+      position: relative;
+      z-index: 1;
+      padding: clamp(64px, 10vh, 120px) clamp(16px, 5vw, 60px);
+      text-align: center;
+    }
+    .skills-title {
+      font-family: var(--f-radio);
+      font-weight: 400;
+      font-size: clamp(34px, 6vw, 64px);
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin: 0 auto clamp(40px, 7vh, 72px);
+      cursor: default;
+    }
+    .skills-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: clamp(8px, 1.2vw, 12px);
+      justify-content: center;
+      max-width: 860px;
+      margin: 0 auto clamp(40px, 7vh, 64px);
+    }
+    .skill-tag {
+      display: inline-block;
+      padding: 0.52em 1.1em;
+      border-radius: 100px;
+      font-family: var(--f-radio);
+      font-weight: 500;
+      font-size: clamp(13px, 1.4vw, 15.5px);
+      letter-spacing: -0.01em;
+      cursor: default;
+      animation: skillFloat var(--float-dur, 4s) var(--float-delay, 0s) ease-in-out infinite alternate;
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.28s ease,
+                  background 0.22s ease,
+                  color 0.22s ease;
+    }
+    .skill-tag:hover {
+      transform: translateY(-6px) scale(1.06);
+      box-shadow: 0 12px 28px rgba(14, 14, 14, 0.13);
+      animation-play-state: paused;
+    }
+    @keyframes skillFloat {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-8px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .skill-tag { animation: none; }
+    }
+    .skill-tag.eng {
+      background: var(--milestone-card);
+      color: var(--ink);
+    }
+    .skill-tag.creative {
+      background: transparent;
+      color: var(--milestone-card);
+      border: 1.5px solid var(--milestone-card);
+    }
+    .skill-tag.creative:hover {
+      background: var(--milestone-card);
+      color: var(--ink);
+    }
+    .skills-taskbar {
+      display: flex;
+      align-items: flex-end;
+      gap: clamp(8px, 1.4vw, 14px);
+      justify-content: center;
+      background: rgba(247, 246, 243, 0.7);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(14, 14, 14, 0.08);
+      border-radius: 100px;
+      padding: clamp(10px, 1.4vw, 14px) clamp(16px, 2.4vw, 28px);
+      width: fit-content;
+      margin: 0 auto;
+      box-shadow: 0 8px 32px rgba(14, 14, 14, 0.07);
+    }
+    .taskbar-icon {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: default;
+    }
+    .taskbar-icon img {
+      width: clamp(36px, 4.2vw, 48px);
+      height: clamp(36px, 4.2vw, 48px);
+      object-fit: contain;
+      border-radius: 10px;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: block;
+    }
+    .taskbar-icon:hover img {
+      transform: translateY(-14px) scale(1.22);
+    }
+    .taskbar-tooltip {
+      position: absolute;
+      bottom: calc(100% + 20px);
+      left: 50%;
+      transform: translateX(-50%) scale(0.82);
+      background: var(--ink);
+      color: var(--bg);
+      font-family: var(--f-radio);
+      font-weight: 500;
+      font-size: clamp(11px, 1vw, 12.5px);
+      letter-spacing: -0.01em;
+      padding: 0.28em 0.65em;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .taskbar-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--ink);
+    }
+    .taskbar-icon:hover .taskbar-tooltip {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+    @media (max-width: 480px) {
+      .skills-taskbar {
+        flex-wrap: wrap;
+        border-radius: clamp(16px, 4vw, 28px);
+        padding: clamp(12px, 3vw, 18px);
+        gap: clamp(10px, 3vw, 14px);
+      }
+    }
   </style>
 </head>
 <body>
@@ -877,25 +918,20 @@
 
       <div id="layer-bg"></div>
 
-      <!-- Headline: #text-hero is the flex item -->
       <div id="text-hero">
         <h1 class="hl-serif blur-text">Hi, I'm Nadja,</h1>
         <h1 class="hl-sans  blur-text">I tell stories through visuals.</h1>
       </div>
 
-      <!-- About text: absolute inside #hero, top set by JS to match
-           #text-hero's offsetTop. Scrolls with page on release. -->
       <div id="text-about" aria-hidden="true">
         <h2 class="hl-about blur-text">Memadukan logika <span class="hl-italic">engineering</span></h2>
         <h2 class="hl-about blur-text">dengan jiwa <span class="hl-italic">visual storytelling.</span></h2>
       </div>
 
-      <!-- Photo: flex item, never moved by JS -->
       <div id="hero-photo-wrap" aria-hidden="true">
         <img id="hero-photo" src="nadja-hero.webp" alt="" />
       </div>
 
-      <!-- Caption: flex item, fades out in Phase 2 -->
       <div id="caption-wrap">
         <p id="hero-caption" class="blur-text">
           Through videos and visual storytelling, I share ideas,
@@ -907,11 +943,6 @@
   </div>
 
 
-  <!-- Bio: normal flow after sticky releases (Phase 4)
-       Quote is placed here directly — sits visually 1-2 lines
-       above the bio, no gap, scrolls with the page. The #p3-wrap
-       fade-in in Phase 3 still animates the quote appearing,
-       then when sticky releases it's already here in normal flow. -->
   <section id="about-bio">
     <div class="bio-content">
       <p class="p3-quote blur-text">
@@ -1050,6 +1081,77 @@
   </section>
 
 
+  <!-- ═══════════════════════════════════════════════════════
+       THE SKILLS
+  ═══════════════════════════════════════════════════════ -->
+  <section id="skills" aria-label="The Skills">
+
+    <h2 class="skills-title reveal blur-text">The skills</h2>
+
+    <div class="skills-cloud reveal" style="transition-delay:0.08s" aria-label="Skill tags">
+      <span class="skill-tag eng"      style="--float-dur:4.2s;--float-delay:0s">Python</span>
+      <span class="skill-tag eng"      style="--float-dur:3.8s;--float-delay:0.4s">HTML/CSS</span>
+      <span class="skill-tag eng"      style="--float-dur:4.6s;--float-delay:0.8s">Software</span>
+      <span class="skill-tag eng"      style="--float-dur:3.5s;--float-delay:0.2s">Computer Vision</span>
+      <span class="skill-tag eng"      style="--float-dur:4.9s;--float-delay:0.6s">Networking</span>
+      <span class="skill-tag eng"      style="--float-dur:4.1s;--float-delay:1s">MikroTik</span>
+      <span class="skill-tag eng"      style="--float-dur:3.7s;--float-delay:0.3s">UI/UX Design</span>
+      <span class="skill-tag eng"      style="--float-dur:5s;--float-delay:0.7s">IOT</span>
+      <span class="skill-tag creative" style="--float-dur:4.4s;--float-delay:0.5s">Cinematography</span>
+      <span class="skill-tag creative" style="--float-dur:3.9s;--float-delay:0.9s">Photography</span>
+      <span class="skill-tag creative" style="--float-dur:4.7s;--float-delay:0.1s">Video Editing</span>
+      <span class="skill-tag creative" style="--float-dur:4.3s;--float-delay:0.6s">Color Grading</span>
+      <span class="skill-tag creative" style="--float-dur:3.6s;--float-delay:0.2s">Content Creation</span>
+      <span class="skill-tag creative" style="--float-dur:4.8s;--float-delay:0.8s">Graphic Design</span>
+      <span class="skill-tag creative" style="--float-dur:4.0s;--float-delay:0.4s">Visual Direction</span>
+    </div>
+
+    <div class="skills-taskbar reveal" style="transition-delay:0.16s" role="list" aria-label="Software tools">
+      <div class="taskbar-icon" role="listitem">
+        <img src="assets/DaVinci_Resolve_Studio.png" alt="DaVinci Resolve"
+             onerror="this.src='https://placehold.co/48x48/1a1a2e/FFFFFF?text=DR'" />
+        <div class="taskbar-tooltip">DaVinci Resolve — 90%</div>
+      </div>
+      <div class="taskbar-icon" role="listitem">
+        <img src="assets/coreldraw.png" alt="CorelDRAW"
+             onerror="this.src='https://placehold.co/48x48/009856/FFFFFF?text=CDR'" />
+        <div class="taskbar-tooltip">CorelDRAW — 90%</div>
+      </div>
+      <div class="taskbar-icon" role="listitem">
+        <img src="assets/figma.png" alt="Figma"
+             onerror="this.src='https://placehold.co/48x48/f24e1e/FFFFFF?text=Fig'" />
+        <div class="taskbar-tooltip">Figma — 80%</div>
+      </div>
+      <div class="taskbar-icon" role="listitem">
+        <img src="assets/premiere-pro.png" alt="Adobe Premiere Pro"
+             onerror="this.src='https://placehold.co/48x48/9999FF/FFFFFF?text=Pr'" />
+        <div class="taskbar-tooltip">Adobe Premiere Pro — 80%</div>
+      </div>
+      <div class="taskbar-icon" role="listitem">
+        <img src="assets/photoshop.png" alt="Adobe Photoshop"
+             onerror="this.src='https://placehold.co/48x48/31A8FF/FFFFFF?text=Ps'" />
+        <div class="taskbar-tooltip">Adobe Photoshop — 82%</div>
+      </div>
+      <div class="taskbar-icon" role="listitem">
+        <img src="assets/capcut.png" alt="CapCut"
+             onerror="this.src='https://placehold.co/48x48/0E0E0E/FFFFFF?text=CC'" />
+        <div class="taskbar-tooltip">CapCut — 95%</div>
+      </div>
+      <div class="taskbar-icon" role="listitem">
+        <img src="assets/blender.png" alt="Blender"
+             onerror="this.src='https://placehold.co/48x48/E87D0D/FFFFFF?text=Bld'" />
+        <div class="taskbar-tooltip">Blender — 20%</div>
+      </div>
+      <div class="taskbar-icon" role="listitem">
+        <img src="assets/vscode.png" alt="VS Code"
+             onerror="this.src='https://placehold.co/48x48/007ACC/FFFFFF?text=VSC'" />
+        <div class="taskbar-tooltip">VS Code — 90%</div>
+      </div>
+    </div>
+
+  </section>
+
+
   <script>
   (() => {
     'use strict';
@@ -1125,29 +1227,7 @@
       document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
     }
 
-    /* ── 5. CINEMATIC SCROLL ──────────────────────────────
-       Architecture: NO position:fixed overlays.
-       ─────────────────────────────────────────────────────
-       #text-about: position:absolute inside #text-hero.
-         • inset:0 → same coordinates as the hero headlines.
-         • scrolls with the page when sticky releases → no ghost.
-         • doesn't affect flex centering (abs. children are
-           out-of-flow).
-
-       #p3-wrap: position:absolute inside #hero.
-         • top = captionWrap.offsetTop (measured once, on load
-           and on resize, at rest before any animation).
-         • scrolls with the page when sticky releases → no ghost,
-           no duplicate (only one copy of the quote exists).
-
-       #hero: NO overflow:hidden — lets both absolute children
-       render without clipping while the page is sticky.
-
-       When p = 1 and sticky releases, both absolute children
-       move up with the page (since their containing block
-       #hero is also moving), and the quote appears just above
-       #about-bio. The bio text follows naturally.
-    ═══════════════════════════════════════════════════════ */
+    /* ── 5. CINEMATIC SCROLL ── */
     const scrollWrap  = document.getElementById('hero-about-scroll');
     const heroEl      = document.getElementById('hero');
     const textHero    = document.getElementById('text-hero');
@@ -1158,14 +1238,8 @@
     const clamp01 = v => Math.min(1, Math.max(0, v));
     const ramp    = (p, a, b) => clamp01((p - a) / (b - a));
 
-    /* Set overlay positions — both measured from #hero's coordinate space */
     function setOverlayPositions() {
-      /* text-about floats at same top as text-hero */
       textAbout.style.top = textHero.offsetTop + 'px';
-
-      /* Pull #about-bio up so it starts right below the caption,
-         not at the very bottom of the 100vh #hero.
-         gap = space between caption bottom and hero bottom edge. */
       const captionBottom = captionWrap.offsetTop + captionWrap.offsetHeight;
       const gap           = heroEl.offsetHeight - captionBottom;
       aboutBio.style.marginTop = `-${Math.max(0, gap + 60)}px`;
@@ -1183,7 +1257,6 @@
       const inZone = wRect.top < window.innerHeight && wRect.bottom > 0;
 
       if (!inZone) {
-        /* Outside the sticky zone: reset to Phase-1 state */
         textHero.style.opacity      = '1';
         textHero.style.transform    = 'translateY(0)';
         captionWrap.style.opacity   = '1';
@@ -1195,15 +1268,13 @@
       }
 
       const p  = progress();
-      const t2 = ramp(p, 0.15, 0.75); // hero OUT, about IN
+      const t2 = ramp(p, 0.15, 0.75);
 
-      /* hero text + caption fade/slide out */
       textHero.style.opacity      = String(1 - t2);
       textHero.style.transform    = `translateY(${-40 * t2}px)`;
       captionWrap.style.opacity   = String(1 - t2);
       captionWrap.style.transform = `translateY(${-20 * t2}px)`;
 
-      /* about text fades/slides in */
       textAbout.style.opacity   = String(t2);
       textAbout.style.transform = `translateY(${50 * (1 - t2)}px)`;
 
@@ -1220,25 +1291,12 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', () => { setOverlayPositions(); onScroll(); }, { passive: true });
 
-    /* Wait two frames for fonts + layout before measuring */
     requestAnimationFrame(() => requestAnimationFrame(() => {
       setOverlayPositions();
       tick();
     }));
 
-    /* ── 6. MILESTONES + JOURNEY: reveal-on-scroll ──
-       Same easing/feel as the hero reveal, driven by
-       IntersectionObserver instead of the scroll-jack math
-       (these sections are normal flow, no sticky pinning needed).
-
-       .timeline li already carries its own opacity/transform
-       rules (not .reveal's), so it's added to the SAME observer
-       here rather than duplicating a second IntersectionObserver
-       — only its CSS differs (translateX instead of translateY),
-       its JS behavior (toggle .in-view, unobserve once) is
-       identical. Each <li> gets a small stagger delay so the
-       column cascades in rather than popping in all at once.
-    ═══════════════════════════════════════════════════════ */
+    /* ── 6. MILESTONES + JOURNEY: reveal-on-scroll ── */
     const revealEls = document.querySelectorAll('.reveal');
     const timelineItems = document.querySelectorAll('.timeline li');
     timelineItems.forEach((li, i) => {
@@ -1278,32 +1336,7 @@
       });
     }
 
-    /* ── 8. JOURNEY TITLE: typewriter word loop ──
-       ─────────────────────────────────────────────────────
-       "The " stays fully static. #journeyWordText is the ONLY
-       node whose text content changes — the caret next to it
-       is a separate, untouched <span>, so it never gets erased
-       along with the word and always sits exactly at the end
-       of whatever's currently typed (it's an inline sibling in
-       the same flex box, not a fixed-position element glued to
-       a static slot — that's what made it feel "off" before).
-
-       Two behaviors make this read as real typing rather than a
-       generic fade/swap:
-         1. JITTER — each keystroke's delay is randomized within
-            a small range (not a robotic constant interval), the
-            way actual typing speed varies per character.
-         2. CARET STATE — while characters are actively being
-            typed/deleted, the caret is forced solid (.is-typing
-            suppresses the CSS blink). It only resumes blinking
-            during the HOLD pause (word fully typed, sitting
-            still) and the GAP pause (briefly empty) — exactly
-            how a cursor behaves in Word/a terminal: solid while
-            you're actively typing, blinking when idle.
-
-       Respects prefers-reduced-motion: skips straight to a
-       static first word, no animation, caret fully solid.
-    ═══════════════════════════════════════════════════════ */
+    /* ── 8. JOURNEY TITLE: typewriter word loop ── */
     const journeyWordTextEl = document.getElementById('journeyWordText');
     const journeyCaretEl    = document.querySelector('.journey-caret');
 
@@ -1313,14 +1346,14 @@
 
       if (reduceMotion) {
         journeyWordTextEl.textContent = WORDS[0];
-        journeyCaretEl.classList.add('is-typing'); // solid, no blink
+        journeyCaretEl.classList.add('is-typing');
       } else {
-        const TYPE_MS_BASE   = 75;   // base per-character typing delay
-        const TYPE_JITTER    = 55;   // +/- random ms added to typing
-        const DELETE_MS_BASE = 38;   // base per-character delete delay
+        const TYPE_MS_BASE   = 75;
+        const TYPE_JITTER    = 55;
+        const DELETE_MS_BASE = 38;
         const DELETE_JITTER  = 25;
-        const HOLD_MS        = 1500; // pause once fully typed (caret blinks)
-        const GAP_MS         = 350;  // pause once fully deleted (caret blinks)
+        const HOLD_MS        = 1500;
+        const GAP_MS         = 350;
 
         const jitter = (base, range) => base + Math.random() * range;
 
@@ -1341,7 +1374,7 @@
             journeyWordTextEl.textContent = word.slice(0, charIndex);
 
             if (charIndex === word.length) {
-              setTyping(false); // idle hold → caret resumes blinking
+              setTyping(false);
               setTimeout(() => { deleting = true; typeLoop(); }, HOLD_MS);
               return;
             }
@@ -1352,7 +1385,7 @@
             journeyWordTextEl.textContent = word.slice(0, charIndex);
 
             if (charIndex === 0) {
-              setTyping(false); // idle gap → caret resumes blinking
+              setTyping(false);
               deleting = false;
               wordIndex = (wordIndex + 1) % WORDS.length;
               setTimeout(typeLoop, GAP_MS);
