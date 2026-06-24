@@ -659,12 +659,18 @@
 
     .timeline li {
       position: relative;
-      padding: 0.5rem 0;
-      margin-bottom: 0.3rem;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 14px;
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                  background 0.3s ease,
+                  border-color 0.3s ease,
+                  box-shadow 0.3s ease;
       opacity: 0;
       transform: translateX(-18px);
-      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .journey-col.right .timeline li { transform: translateX(18px); }
     .timeline li.in-view { opacity: 1; transform: translateX(0); }
@@ -678,7 +684,7 @@
         - (var(--tl-dot-d) / 2)
         - var(--tl-gutter)
       );
-      top: 50%;
+      top: 24px;
       transform: translateY(-50%);
       width: var(--tl-dot-d);
       height: var(--tl-dot-d);
@@ -693,14 +699,45 @@
       box-shadow: 0 0 0 1.5px var(--journey-accent);
       transform: translateY(-50%) scale(1.4);
     }
+    .timeline li:hover {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(61, 92, 203, 0.25);
+      box-shadow: 0 12px 28px rgba(14, 14, 14, 0.05);
+      transform: translateY(-2px);
+    }
 
-    .timeline-item-title {
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .timeline-role {
+      font-family: var(--f-radio);
+      font-weight: 600;
+      font-size: clamp(13.5px, 1.3vw, 15px);
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+    .timeline-year {
       font-family: var(--f-radio);
       font-weight: 500;
-      font-size: clamp(13.5px, 1.25vw, 14.5px);
-      letter-spacing: -0.01em;
-      line-height: 1.4;
-      color: var(--ink);
+      font-size: clamp(10px, 0.9vw, 11px);
+      color: #FFFFFF;
+      background: var(--journey-accent);
+      padding: 2px 8px;
+      border-radius: 20px;
+      flex-shrink: 0;
+      letter-spacing: 0.02em;
+    }
+    .timeline-org {
+      font-family: var(--f-radio);
+      font-weight: 400;
+      font-size: clamp(11.5px, 1.1vw, 12.5px);
+      color: var(--mute);
+      line-height: 1.35;
     }
 
     /* ═══ THE SKILLS ═══ */
@@ -1653,7 +1690,7 @@
       z-index: 999;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-end;
       font-family: monospace;
       color: var(--ink);
       opacity: 0.65;
@@ -1950,18 +1987,6 @@
 
   <!-- Camera Viewfinder HUD Overlay -->
   <div id="viewfinder-hud-overlay">
-    <div class="hud-top">
-      <div class="hud-rec">
-        <span class="rec-dot"></span>
-        <span>REC</span>
-      </div>
-      <div class="hud-time" id="hudTimer">00:00:00:00</div>
-      <div class="hud-battery">
-        <span>98%</span>
-        <div class="battery-icon"></div>
-      </div>
-    </div>
-    
     <div class="hud-bottom">
       <div class="hud-info">
         <span id="hudSceneReadout">SCENE: HERO</span>
@@ -2017,8 +2042,6 @@
     <section id="hero">
 
       <div id="layer-bg">
-        <div class="film-cell hero-cell-1">SCENE: HERO</div>
-        <div class="film-cell hero-cell-2">16mm FILM</div>
       </div>
 
       <div id="text-hero">
@@ -2146,14 +2169,59 @@
           <h3 class="journey-col-title">Politeknik Negeri Semarang</h3>
         </div>
         <ul class="timeline" aria-label="Linimasa Politeknik Negeri Semarang">
-          <li><span class="timeline-item-title">Google Student Ambassador 2026</span></li>
-          <li><span class="timeline-item-title">Deputi Kementerian PSDM BEM KBM Polines 2025–2026</span></li>
-          <li><span class="timeline-item-title">Koordinator Pendamping Jurusan Elektro WaRNA 2025</span></li>
-          <li><span class="timeline-item-title">Kadiv PDD Makrab Internal BEM KBM POLINES</span></li>
-          <li><span class="timeline-item-title">Koordinator Acara Staff Muda BEM KBM POLINES 2025/2026</span></li>
-          <li><span class="timeline-item-title">Kadiv PDD LKMM Madya 2025</span></li>
-          <li><span class="timeline-item-title">Director of Video Profile — MOSAIC</span></li>
-          <li><span class="timeline-item-title">UI/UX Designer and Frontend Developer — MOSAIC</span></li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Google Student Ambassador</span>
+              <span class="timeline-year">2026</span>
+            </div>
+            <div class="timeline-org">Google</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Deputi Kementerian PSDM</span>
+              <span class="timeline-year">2025–2026</span>
+            </div>
+            <div class="timeline-org">BEM KBM Polines</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Koordinator Pendamping Jurusan Elektro</span>
+              <span class="timeline-year">2025</span>
+            </div>
+            <div class="timeline-org">WaRNA</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Kadiv PDD</span>
+            </div>
+            <div class="timeline-org">Makrab Internal BEM KBM Polines</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Koordinator Acara Staff Muda</span>
+              <span class="timeline-year">2025/2026</span>
+            </div>
+            <div class="timeline-org">BEM KBM Polines</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Kadiv PDD</span>
+              <span class="timeline-year">2025</span>
+            </div>
+            <div class="timeline-org">LKMM Madya</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Director of Video Profile</span>
+            </div>
+            <div class="timeline-org">MOSAIC</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">UI/UX Designer &amp; Frontend Developer</span>
+            </div>
+            <div class="timeline-org">MOSAIC</div>
+          </li>
         </ul>
       </div>
 
@@ -2169,16 +2237,73 @@
           <h3 class="journey-col-title">SMA IT Ibnu Abbas Klaten</h3>
         </div>
         <ul class="timeline" aria-label="Linimasa SMA IT Ibnu Abbas Klaten">
-          <li><span class="timeline-item-title">Ketua Divisi Kreatif — Literacy Festival 2023</span></li>
-          <li><span class="timeline-item-title">Ketua Divisi Media and Dokumentasi Dirgahayu HUT RI 77</span></li>
-          <li><span class="timeline-item-title">Ketua Divisi Media and Dokumentasi Ibaska Ramadhan Festival 2022</span></li>
-          <li><span class="timeline-item-title">Ketua Divisi Media and Dokumentasi Ibaska Ramadhan Festival 2023</span></li>
-          <li><span class="timeline-item-title">Ketua Divisi Desain and Dokumentasi — Class Meeting SIA GAMES X</span></li>
-          <li><span class="timeline-item-title">Ketua Divisi Desain and Dokumentasi Olimpiade Santri Ibaska 2023</span></li>
-          <li><span class="timeline-item-title">Ketua Divisi Media Latihan Dasar Kepemimpinan OSIS Ibnu Abbas 2023</span></li>
-          <li><span class="timeline-item-title">Sekretaris Dewan Ambalan Jenderal Sudirman 2022/2023</span></li>
-          <li><span class="timeline-item-title">Sekretaris Umum Stage of Talent 9</span></li>
-          <li><span class="timeline-item-title">Divisi Kebersihan OSIS SMA IT Ibnu Abbas Klaten 2021/2022</span></li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Ketua Divisi Kreatif</span>
+              <span class="timeline-year">2023</span>
+            </div>
+            <div class="timeline-org">Literacy Festival</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Ketua Divisi Media &amp; Dokumentasi</span>
+            </div>
+            <div class="timeline-org">Dirgahayu HUT RI 77</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Ketua Divisi Media &amp; Dokumentasi</span>
+              <span class="timeline-year">2022</span>
+            </div>
+            <div class="timeline-org">Ibaska Ramadhan Festival</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Ketua Divisi Media &amp; Dokumentasi</span>
+              <span class="timeline-year">2023</span>
+            </div>
+            <div class="timeline-org">Ibaska Ramadhan Festival</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Ketua Divisi Desain &amp; Dokumentasi</span>
+            </div>
+            <div class="timeline-org">Class Meeting SIA GAMES X</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Ketua Divisi Desain &amp; Dokumentasi</span>
+              <span class="timeline-year">2023</span>
+            </div>
+            <div class="timeline-org">Olimpiade Santri Ibaska</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Ketua Divisi Media</span>
+              <span class="timeline-year">2023</span>
+            </div>
+            <div class="timeline-org">Latihan Dasar Kepemimpinan OSIS Ibnu Abbas</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Sekretaris</span>
+              <span class="timeline-year">2022/2023</span>
+            </div>
+            <div class="timeline-org">Dewan Ambalan Jenderal Sudirman</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Sekretaris Umum</span>
+            </div>
+            <div class="timeline-org">Stage of Talent 9</div>
+          </li>
+          <li>
+            <div class="timeline-header">
+              <span class="timeline-role">Divisi Kebersihan</span>
+              <span class="timeline-year">2021/2022</span>
+            </div>
+            <div class="timeline-org">OSIS SMA IT Ibnu Abbas Klaten</div>
+          </li>
         </ul>
       </div>
 
@@ -3044,24 +3169,7 @@
     }
 
     /* ── 13. VIEWPORT CAMERA HUD TIMER ── */
-    const hudTimer = document.getElementById('hudTimer');
-    if (hudTimer && !reduceMotion) {
-      let frameCount = 0;
-      setInterval(() => {
-        frameCount++;
-        const sec = Math.floor(frameCount / 30) % 60;
-        const min = Math.floor(frameCount / 1800) % 60;
-        const hr = Math.floor(frameCount / 108000) % 24;
-        const frames = frameCount % 30;
-        
-        const fStr = frames.toString().padStart(2, '0');
-        const sStr = sec.toString().padStart(2, '0');
-        const mStr = min.toString().padStart(2, '0');
-        const hStr = hr.toString().padStart(2, '0');
-        
-        hudTimer.textContent = `${hStr}:${mStr}:${sStr}:${fStr}`;
-      }, 33.3);
-    }
+    // Timer element has been removed from Viewfinder HUD overlay.
 
     /* ── 14. DYNAMIC HUD CAMERA READOUTS ON SCROLL ── */
     const sections = [
