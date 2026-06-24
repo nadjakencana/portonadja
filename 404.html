@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>(404) — Page Not Found</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Scene Out of Frame. Halaman yang Anda cari tidak ada dalam storyboard kami." />
+  <meta name="robots" content="noindex, follow" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400;0,500;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:       #F7F6F3;
+      --ink:      #0E0E0E;
+      --mute:     #6B6B6B;
+      --sky:      #BDD8EF;
+      --nav-h:    64px;
+      --f-radio:  'Radio Canada Big', sans-serif;
+      --f-serif:  'Source Serif 4', serif;
+
+      --milestone-card: #C7AE3F;
+      --journey-accent: #3D5CCB;
+      
+      /* Shared easing curves */
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--f-radio);
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+
+
+    /* ── NAVBAR ── */
+    #navbar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: var(--nav-h);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(20px, 4vw, 60px);
+      background: rgba(247, 246, 243, 0.4);
+      backdrop-filter: blur(24px) saturate(200%);
+      -webkit-backdrop-filter: blur(24px) saturate(200%);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; }
+    .nav-logo img { height: 26px; width: auto; display: block; }
+    .nav-logo-fallback {
+      display: none;
+      font-family: var(--f-radio);
+      font-weight: 500;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      align-items: center;
+    }
+    .nav-links a {
+      font-family: var(--f-radio);
+      font-weight: 500;
+      font-size: clamp(13px, 1.05vw, 15px);
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      position: relative;
+      z-index: 1;
+      padding: 8px 16px;
+      border: 1px solid rgba(14, 14, 14, 0.15);
+      border-radius: 20px;
+      transition: color 0.3s ease, border-color 0.3s ease;
+    }
+    .nav-links a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: var(--ink);
+      z-index: -1;
+      opacity: 0;
+      transform: scale(0.82);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--bg); border-color: var(--ink); }
+    .nav-links a:hover::before { opacity: 1; transform: scale(1); }
+
+    /* ── VIEWFINDER WRAPPER ── */
+    #viewfinder {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding-top: var(--nav-h);
+      background: linear-gradient(175deg, var(--sky) 0%, #cde5f5 20%, #e4f0f9 48%, var(--bg) 100%);
+    }
+
+    /* Cinematic Depth-of-Field Lens Overlay */
+    .blur-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 8;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(247, 246, 243, 0.38);
+      pointer-events: none;
+      /* Radial transparent hole following the cursor coordinates */
+      -webkit-mask-image: radial-gradient(circle 140px at var(--mouse-x, 50%) var(--mouse-y, 45%), rgba(0,0,0,0) 0%, rgba(0,0,0,0) 62%, rgba(0,0,0,1) 100%);
+      mask-image: radial-gradient(circle 140px at var(--mouse-x, 50%) var(--mouse-y, 45%), rgba(0,0,0,0) 0%, rgba(0,0,0,0) 62%, rgba(0,0,0,1) 100%);
+    }
+
+    /* Active Camera lens cursor focus reticle */
+    .lens-cursor {
+      position: fixed;
+      width: 280px;
+      height: 280px;
+      color: var(--ink);
+      pointer-events: none;
+      z-index: 100;
+      transform: translate(-50%, -50%);
+      left: var(--mouse-x, 50%);
+      top: var(--mouse-y, 45%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s ease, transform 0.2s var(--ease-back);
+    }
+    .lens-cursor.focus-locked {
+      color: #10B981; /* Autofocus Green lock style */
+      transform: translate(-50%, -50%) scale(0.95);
+    }
+    .lens-meta {
+      position: absolute;
+      font-family: monospace;
+      font-size: 9px;
+      font-weight: 500;
+      color: currentColor;
+      opacity: 0.8;
+      letter-spacing: 0.1em;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .lens-meta.top-left {
+      top: 18px;
+      left: 18px;
+    }
+    .lens-meta.bottom-right {
+      bottom: 18px;
+      right: 18px;
+    }
+
+    /* ── CAMERA HUD DISPLAY ── */
+    .viewfinder-hud {
+      position: absolute;
+      inset: 0;
+      padding: clamp(20px, 4vw, 40px);
+      padding-top: calc(var(--nav-h) + 20px);
+      pointer-events: none;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-family: monospace;
+      color: var(--ink);
+      opacity: 0.75;
+    }
+    .hud-top, .hud-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    .hud-rec {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: bold;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+    }
+    .rec-dot {
+      width: 10px;
+      height: 10px;
+      background: #E53E3E;
+      border-radius: 50%;
+      animation: rec-blink 1s steps(1) infinite;
+    }
+    @keyframes rec-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .hud-battery {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    .battery-icon {
+      width: 22px;
+      height: 12px;
+      border: 1.5px solid var(--ink);
+      border-radius: 2px;
+      position: relative;
+    }
+    .battery-icon::before {
+      content: '';
+      position: absolute;
+      right: -3px;
+      top: 2.5px;
+      width: 2px;
+      height: 4px;
+      background: var(--ink);
+      border-radius: 0 1px 1px 0;
+    }
+    .battery-icon::after {
+      content: '';
+      position: absolute;
+      left: 1.5px;
+      top: 1.5px;
+      bottom: 1.5px;
+      width: 4px;
+      background: #E53E3E;
+      animation: rec-blink 1s steps(1) infinite;
+    }
+    .hud-time {
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+    }
+    .hud-info, .hud-settings {
+      display: flex;
+      gap: clamp(12px, 3vw, 24px);
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Brackets framing center area */
+    .hud-brackets {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(88%, 980px);
+      height: min(72%, 580px);
+      pointer-events: none;
+      z-index: 15;
+    }
+    .hud-brackets::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        /* Top-left */
+        linear-gradient(var(--ink), var(--ink)) 0 0 / 24px 2px no-repeat,
+        linear-gradient(var(--ink), var(--ink)) 0 0 / 2px 24px no-repeat,
+        /* Top-right */
+        linear-gradient(var(--ink), var(--ink)) 100% 0 / 24px 2px no-repeat,
+        linear-gradient(var(--ink), var(--ink)) 100% 0 / 2px 24px no-repeat,
+        /* Bottom-left */
+        linear-gradient(var(--ink), var(--ink)) 0 100% / 24px 2px no-repeat,
+        linear-gradient(var(--ink), var(--ink)) 0 100% / 2px 24px no-repeat,
+        /* Bottom-right */
+        linear-gradient(var(--ink), var(--ink)) 100% 100% / 24px 2px no-repeat,
+        linear-gradient(var(--ink), var(--ink)) 100% 100% / 2px 24px no-repeat;
+      opacity: 0.25;
+      transition: opacity 0.3s ease;
+    }
+
+    /* ── FLOATING FILM CELLS ── */
+    .film-cell {
+      position: absolute;
+      width: 128px;
+      height: 96px;
+      border: 1.5px solid rgba(14, 14, 14, 0.1);
+      background: rgba(14, 14, 14, 0.015);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 1;
+      font-family: var(--f-radio);
+      font-size: 9px;
+      font-weight: 500;
+      color: rgba(14, 14, 14, 0.25);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: transform 0.2s ease-out;
+    }
+    .film-cell::before, .film-cell::after {
+      content: '';
+      position: absolute;
+      left: 3px;
+      right: 3px;
+      height: 4px;
+      background-image: repeating-linear-gradient(to right, rgba(14, 14, 14, 0.12), rgba(14, 14, 14, 0.12) 5px, transparent 5px, transparent 10px);
+    }
+    .film-cell::before { top: 3px; }
+    .film-cell::after { bottom: 3px; }
+
+    /* Placement and floating animations for each cell */
+    .cell-1 {
+      top: 15%;
+      left: 12%;
+      animation: float-cell-1 8s ease-in-out infinite alternate;
+    }
+    .cell-2 {
+      bottom: 18%;
+      left: 15%;
+      animation: float-cell-2 9s ease-in-out infinite alternate;
+    }
+    .cell-3 {
+      top: 20%;
+      right: 12%;
+      animation: float-cell-2 7s ease-in-out infinite alternate;
+    }
+    .cell-4 {
+      bottom: 15%;
+      right: 15%;
+      animation: float-cell-1 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes float-cell-1 {
+      0% { transform: translate(0, 0) rotate(3deg); }
+      100% { transform: translate(12px, -15px) rotate(-3deg); }
+    }
+    @keyframes float-cell-2 {
+      0% { transform: translate(0, 0) rotate(-4deg); }
+      100% { transform: translate(-10px, 12px) rotate(2deg); }
+    }
+
+    @media (max-width: 768px) {
+      .film-cell { display: none; } /* Hide clutter on tablets/mobile */
+    }
+
+    /* ── VIEWFINDER CONTENT ── */
+    .viewfinder-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: clamp(24px, 4.5vh, 48px);
+      max-width: 620px;
+      padding: 0 24px;
+      z-index: 10;
+      position: relative;
+    }
+
+    /* Clapperboard SVG/CSS design */
+    .clapperboard-wrapper {
+      perspective: 1000px;
+      margin-bottom: 5px;
+    }
+    .clapperboard {
+      position: relative;
+      width: 250px;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.4s var(--ease-back);
+    }
+    /* Small black block for hinge on the left */
+    .clapperboard::before {
+      content: '';
+      position: absolute;
+      left: -2px;
+      top: 10px;
+      width: 6px;
+      height: 24px;
+      background: #1e1e1e;
+      border-radius: 1px;
+      z-index: 10;
+    }
+    .clapperboard:hover {
+      transform: scale(1.04) rotate(1deg);
+    }
+    .clapperboard:active {
+      transform: scale(0.98);
+    }
+    .clapper-top {
+      position: relative;
+      width: 100%;
+      height: 22px;
+      background: repeating-linear-gradient(-45deg, #0e0e0e, #0e0e0e 12px, #f7f6f3 12px, #f7f6f3 24px);
+      border-bottom: 2px solid #0e0e0e;
+      border-radius: 4px 4px 0 0;
+      transform-origin: 0% 100%;
+      transform: rotate(-18deg); /* initially open */
+      transition: transform 0.4s var(--ease-back);
+    }
+    .clapper-bottom {
+      position: relative;
+      width: 100%;
+      border-radius: 0 0 8px 8px;
+      overflow: hidden;
+      box-shadow: 0 24px 50px rgba(14,14,14,0.1);
+    }
+    .clapper-bottom-bar {
+      width: 100%;
+      height: 22px;
+      background: repeating-linear-gradient(-45deg, #0e0e0e, #0e0e0e 12px, #f7f6f3 12px, #f7f6f3 24px);
+      border-bottom: 2px solid #0e0e0e;
+    }
+    .clapper-content {
+      background: #0e0e0e;
+      color: #f7f6f3;
+      padding: 14px 16px;
+      font-family: var(--f-radio);
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+    }
+    .clapper-row {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      border-bottom: 1px solid rgba(247, 246, 243, 0.15);
+      padding-bottom: 5px;
+    }
+    .clapper-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .clapper-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      border-bottom: 1px solid rgba(247, 246, 243, 0.15);
+      padding-bottom: 5px;
+    }
+    .clapper-content span {
+      color: #6B6B6B;
+      font-size: 8px;
+      font-weight: 500;
+    }
+    .clapper-content strong {
+      color: #f7f6f3;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* Clacking animation trigger class */
+    .clapperboard.clack-active .clapper-top {
+      animation: clack-anim 0.5s var(--ease-back);
+    }
+    @keyframes clack-anim {
+      0% { transform: rotate(-18deg); }
+      22% { transform: rotate(0deg); }
+      40% { transform: rotate(-5deg); }
+      55% { transform: rotate(0deg); }
+      100% { transform: rotate(-18deg); }
+    }
+
+    /* Text details layout */
+    .text-error-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .text-error-wrap h1 {
+      font-family: var(--f-serif);
+      font-size: clamp(32px, 5.5vw, 54px);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .error-typewriter-container {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--f-radio);
+      font-size: clamp(16px, 2.2vw, 22px);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: var(--journey-accent);
+      min-height: 1.4em;
+    }
+    .typewriter-caret {
+      display: inline-block;
+      width: 2px;
+      height: 0.85em;
+      margin-left: 4px;
+      background: var(--journey-accent);
+      animation: caretBlink 0.85s steps(1) infinite;
+    }
+    .typewriter-caret.is-typing {
+      animation: none;
+      opacity: 1;
+    }
+    @keyframes caretBlink {
+      0%, 49%  { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .error-description {
+      font-family: var(--f-radio);
+      font-size: clamp(14px, 1.25vw, 16px);
+      color: var(--mute);
+      line-height: 1.6;
+      max-width: 460px;
+      margin: 6px auto 0;
+    }
+
+    /* ── CTA BUTTONS ── */
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--f-radio);
+      font-weight: 500;
+      font-size: 15px;
+      color: var(--bg);
+      background: var(--ink);
+      text-decoration: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      box-shadow: 0 10px 24px rgba(14, 14, 14, 0.12);
+      transition: background 0.3s ease, transform 0.3s var(--ease-back), box-shadow 0.3s ease;
+    }
+    .btn-back:hover {
+      background: var(--journey-accent);
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 16px 28px rgba(61, 92, 203, 0.28);
+    }
+    .btn-back:active {
+      transform: translateY(1px) scale(0.98);
+    }
+    .btn-back .arrow {
+      transition: transform 0.3s var(--ease-back);
+    }
+    .btn-back:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rec-dot, .battery-icon::after, .typewriter-caret, .film-cell, .clapper-top {
+        animation: none !important;
+      }
+      .clapper-top { transform: rotate(0deg); }
+      .lens-cursor { transition: none !important; }
+      .blur-overlay { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(247, 246, 243, 0.95); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- FIXED NAVBAR HEADER -->
+  <header>
+    <nav id="navbar" role="navigation" aria-label="Main navigation">
+      <a class="nav-logo" href="index.html" aria-label="Nadja — Home">
+        <img src="nadjacreative_logo.svg" alt="N Logo"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
+        /><span class="nav-logo-fallback">N</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Kembali ke Beranda</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- VIEWFINDER GRAPHIC CAMERA CONTAINER -->
+  <main id="viewfinder">
+    
+    <!-- Viewfinder Brackets framing the screen -->
+    <div class="hud-brackets"></div>
+
+    <!-- Viewfinder Camera HUD -->
+    <div class="viewfinder-hud">
+      <div class="hud-top">
+        <div class="hud-rec">
+          <span class="rec-dot"></span>
+          <span>REC</span>
+        </div>
+        <div class="hud-time" id="hudTimer">00:04:04:00</div>
+        <div class="hud-battery">
+          <span>1%</span>
+          <div class="battery-icon"></div>
+        </div>
+      </div>
+      
+      <div class="hud-bottom">
+        <div class="hud-info">
+          <span>SCENE 404</span>
+          <span>TAKE 01</span>
+        </div>
+        <div class="hud-settings">
+          <span>F1.8</span>
+          <span>1/404s</span>
+          <span>ISO 404</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Background Floating Film Cells -->
+    <div class="film-cell cell-1">SCENE 404</div>
+    <div class="film-cell cell-2">LOST FRAME</div>
+    <div class="film-cell cell-3">TAKE 01</div>
+    <div class="film-cell cell-4">UNRELEASED</div>
+
+    <!-- Viewfinder Core Content -->
+    <section class="viewfinder-content">
+      
+      <!-- Interactive Clapperboard -->
+      <div class="clapperboard-wrapper">
+        <div class="clapperboard" id="clapper" title="Klik untuk memotong adegan!">
+          <div class="clapper-top"></div>
+          <div class="clapper-bottom">
+            <div class="clapper-bottom-bar"></div>
+            <div class="clapper-content">
+              <div class="clapper-row">
+                <span>PRODUCTION</span>
+                <strong>NADJA PORTFOLIO</strong>
+              </div>
+              <div class="clapper-grid">
+                <div>
+                  <span>SCENE</span>
+                  <strong>404</strong>
+                </div>
+                <div>
+                  <span>TAKE</span>
+                  <strong>OUT OF FRAME</strong>
+                </div>
+              </div>
+              <div class="clapper-row">
+                <span>DATE</span>
+                <strong id="clapperDate">23 JUN 2026</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Descriptive Text Details -->
+      <div class="text-error-wrap">
+        <h1>Oops! Scene Hilang</h1>
+        <div class="error-typewriter-container">
+          <span id="typewriterText"></span>
+          <span class="typewriter-caret"></span>
+        </div>
+        <p class="error-description">
+          Halaman yang Anda cari berada di luar jangkauan frame storyboard kami. 
+          Mungkin adegan ini telah dipotong dalam proses editing.
+        </p>
+      </div>
+
+      <!-- Action Button -->
+      <div class="cta-wrap">
+        <a href="index.html" class="btn-back">
+          Kembali ke Storyboard <span class="arrow">→</span>
+        </a>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Interactive Depth-of-Field Blur Overlay -->
+  <div class="blur-overlay"></div>
+
+  <!-- Interactive Lens Circle cursor -->
+  <div class="lens-cursor" id="lensCursor">
+    <svg width="100%" height="100%" viewBox="0 0 280 280" style="position: absolute; overflow: visible;">
+      <!-- Main circular border dashed -->
+      <circle cx="140" cy="140" r="139" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="6 6" opacity="0.32"/>
+      <!-- Grid crosshairs -->
+      <path d="M140 6 L140 18 M140 262 L140 274 M6 140 L18 140 M262 140 L274 140" stroke="currentColor" stroke-width="1.2" opacity="0.6"/>
+      <!-- Tiny Center targeting reticle -->
+      <path d="M134 140 L146 140 M140 134 L140 146" stroke="currentColor" stroke-width="1.2" opacity="0.75"/>
+      <circle cx="140" cy="140" r="3" fill="currentColor" opacity="0.8"/>
+      <!-- Sub focal brackets inside -->
+      <path d="M125 125 L125 120 L130 120 M155 125 L155 120 L150 120 M125 155 L125 160 L130 160 M155 155 L155 160 L150 160" stroke="currentColor" stroke-width="1" fill="none" opacity="0.4"/>
+    </svg>
+    <div class="lens-meta top-left">AF-C</div>
+    <div class="lens-meta bottom-right" id="lensDistance">DST: 4.04m</div>
+  </div>
+
+  <script>
+    (function() {
+      "use strict";
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* ── 1. UPDATE CLAPPER DATE ── */
+      const clapperDate = document.getElementById('clapperDate');
+      if (clapperDate) {
+        const d = new Date();
+        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        clapperDate.textContent = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+      }
+
+      /* ── 2. DEPTH OF FIELD LENS MOTION ── */
+      function updateLensPos(e) {
+        if (reduceMotion) return;
+        let x, y;
+        if (e.touches && e.touches.length > 0) {
+          x = e.touches[0].clientX;
+          y = e.touches[0].clientY;
+        } else {
+          x = e.clientX;
+          y = e.clientY;
+        }
+        document.documentElement.style.setProperty('--mouse-x', x + 'px');
+        document.documentElement.style.setProperty('--mouse-y', y + 'px');
+      }
+
+      window.addEventListener('mousemove', updateLensPos);
+      window.addEventListener('touchmove', updateLensPos, { passive: true });
+      window.addEventListener('touchstart', updateLensPos, { passive: true });
+
+      // Lens Distance dynamic readout
+      const lensDistance = document.getElementById('lensDistance');
+      if (lensDistance && !reduceMotion) {
+        window.addEventListener('mousemove', () => {
+          if (Math.random() < 0.12) {
+            const varDistance = (4.01 + Math.random() * 0.06).toFixed(2);
+            lensDistance.textContent = `DST: ${varDistance}m`;
+          }
+        });
+      }
+
+      /* ── 3. PARALLAX FILM CELLS ── */
+      const cells = document.querySelectorAll('.film-cell');
+      if (cells.length && !reduceMotion) {
+        window.addEventListener('mousemove', (e) => {
+          const rx = (e.clientX - window.innerWidth / 2) * -0.015;
+          const ry = (e.clientY - window.innerHeight / 2) * -0.015;
+          cells.forEach((cell, i) => {
+            const factor = (i + 1) * 0.4;
+            cell.style.transform = `translate(${rx * factor}px, ${ry * factor}px)`;
+          });
+        });
+      }
+
+      /* ── 4. WEB AUDIO SYNTHESIS ── */
+      // Double camera beep synth
+      function playFocusBeep() {
+        if (reduceMotion) return;
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const playBeep = (time) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1850, time);
+            gain.gain.setValueAtTime(0.04, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.06);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(time);
+            osc.stop(time + 0.06);
+          };
+          playBeep(ctx.currentTime);
+          playBeep(ctx.currentTime + 0.11);
+        } catch (e) {
+          // Fail silently if context blocked
+        }
+      }
+
+      // Wooden clack synth
+      function playClackSound() {
+        if (reduceMotion) return;
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          
+          // Thump low frequency
+          const osc1 = ctx.createOscillator();
+          const gain1 = ctx.createGain();
+          osc1.type = 'triangle';
+          osc1.frequency.setValueAtTime(130, ctx.currentTime);
+          osc1.frequency.exponentialRampToValueAtTime(10, ctx.currentTime + 0.08);
+          gain1.gain.setValueAtTime(0.4, ctx.currentTime);
+          gain1.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+          osc1.connect(gain1);
+          gain1.connect(ctx.destination);
+          osc1.start();
+          osc1.stop(ctx.currentTime + 0.08);
+
+          // Click high frequency transient
+          const osc2 = ctx.createOscillator();
+          const gain2 = ctx.createGain();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(1500, ctx.currentTime);
+          osc2.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.025);
+          gain2.gain.setValueAtTime(0.2, ctx.currentTime);
+          gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.025);
+          osc2.connect(gain2);
+          gain2.connect(ctx.destination);
+          osc2.start();
+          osc2.stop(ctx.currentTime + 0.025);
+        } catch (e) {
+          // Fail silently
+        }
+      }
+
+      /* ── 5. FOCUS LOCK & CLAP INTERACTION ── */
+      const lensCursor = document.getElementById('lensCursor');
+      window.addEventListener('mousedown', () => {
+        if (!reduceMotion && lensCursor) {
+          lensCursor.classList.add('focus-locked');
+          playFocusBeep();
+          setTimeout(() => {
+            lensCursor.classList.remove('focus-locked');
+          }, 300);
+        }
+      });
+
+      const clapper = document.getElementById('clapper');
+      function triggerClack() {
+        if (!clapper || clapper.classList.contains('clack-active')) return;
+        clapper.classList.add('clack-active');
+        playClackSound();
+        setTimeout(() => {
+          clapper.classList.remove('clack-active');
+        }, 500);
+      }
+      if (clapper) {
+        clapper.addEventListener('click', (e) => {
+          e.stopPropagation(); // Avoid triggering standard lens focus double beep
+          triggerClack();
+        });
+        // Auto clack on start with a delay
+        setTimeout(triggerClack, 1000);
+      }
+
+      /* ── 6. VIEWFINDER TIMER HUD ── */
+      const hudTimer = document.getElementById('hudTimer');
+      if (hudTimer && !reduceMotion) {
+        let frameCount = 0;
+        setInterval(() => {
+          frameCount++;
+          const sec = Math.floor(frameCount / 30) % 60;
+          const min = Math.floor(frameCount / 1800) % 60;
+          const hr = Math.floor(frameCount / 108000) % 24;
+          const frames = frameCount % 30;
+          
+          const fStr = frames.toString().padStart(2, '0');
+          const sStr = sec.toString().padStart(2, '0');
+          const mStr = min.toString().padStart(2, '0');
+          const hStr = hr.toString().padStart(2, '0');
+          
+          hudTimer.textContent = `${hStr}:${mStr}:${sStr}:${fStr}`;
+        }, 33.3); // ~30 fps tick
+      }
+
+      /* ── 7. ERROR TYPEWRITER LOOP ── */
+      const typewriterTextEl = document.getElementById('typewriterText');
+      const caretEl = document.querySelector('.typewriter-caret');
+
+      if (typewriterTextEl && caretEl) {
+        const WORDS = [
+          'Adegan tidak ditemukan.',
+          'Halaman berada di luar frame.',
+          'Kamera kehilangan fokus.',
+          'Storyboard terputus.'
+        ];
+
+        if (reduceMotion) {
+          typewriterTextEl.textContent = WORDS[0];
+          caretEl.style.display = 'none';
+        } else {
+          const TYPE_MS_BASE   = 80;
+          const TYPE_JITTER    = 45;
+          const DELETE_MS_BASE = 40;
+          const DELETE_JITTER  = 20;
+          const HOLD_MS        = 1800;
+          const GAP_MS         = 400;
+
+          const jitter = (base, range) => base + Math.random() * range;
+
+          let wordIndex = 0;
+          let charIndex = 0;
+          let deleting  = false;
+
+          function setTyping(active) {
+            caretEl.classList.toggle('is-typing', active);
+          }
+
+          function typeLoop() {
+            const word = WORDS[wordIndex];
+
+            if (!deleting) {
+              setTyping(true);
+              charIndex++;
+              typewriterTextEl.textContent = word.slice(0, charIndex);
+
+              if (charIndex === word.length) {
+                setTyping(false);
+                setTimeout(() => { deleting = true; typeLoop(); }, HOLD_MS);
+                return;
+              }
+              setTimeout(typeLoop, jitter(TYPE_MS_BASE, TYPE_JITTER));
+            } else {
+              setTyping(true);
+              charIndex--;
+              typewriterTextEl.textContent = word.slice(0, charIndex);
+
+              if (charIndex === 0) {
+                setTyping(false);
+                deleting = false;
+                wordIndex = (wordIndex + 1) % WORDS.length;
+                setTimeout(typeLoop, GAP_MS);
+                return;
+              }
+              setTimeout(typeLoop, jitter(DELETE_MS_BASE, DELETE_JITTER));
+            }
+          }
+
+          typewriterTextEl.textContent = '';
+          setTimeout(typeLoop, 500);
+        }
+      }
+
+    })();
+  </script>
+</body>
+</html>
