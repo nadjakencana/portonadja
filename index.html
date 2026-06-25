@@ -246,6 +246,9 @@
       padding-left: clamp(16px, 5vw, 80px);
       padding-right: clamp(16px, 5vw, 80px);
       pointer-events: auto;
+      transform-style: preserve-3d;
+      transform: translateY(var(--scroll-y, 0px)) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) scale(var(--scale, 1));
+      will-change: transform, opacity;
     }
 
     .hl-serif {
@@ -255,6 +258,8 @@
       line-height: 1.0;
       letter-spacing: -0.025em;
       color: var(--ink);
+      transform: translateZ(35px);
+      will-change: transform;
     }
     .hl-sans {
       font-family: var(--f-radio);
@@ -263,6 +268,8 @@
       line-height: 1.05;
       letter-spacing: -0.03em;
       color: var(--ink);
+      transform: translateZ(65px);
+      will-change: transform;
     }
 
     #text-about {
@@ -278,7 +285,8 @@
       padding-right: clamp(16px, 5vw, 80px);
       pointer-events: none;
       opacity: 0;
-      transform: translateY(50px);
+      transform-style: preserve-3d;
+      transform: translateY(var(--scroll-y, 50px)) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) scale(var(--scale, 1));
       will-change: opacity, transform;
       z-index: 6;
     }
@@ -289,6 +297,14 @@
       line-height: 1.05;
       letter-spacing: -0.03em;
       color: var(--ink);
+    }
+    #text-about .hl-about:first-child {
+      transform: translateZ(35px);
+      will-change: transform;
+    }
+    #text-about .hl-about:last-child {
+      transform: translateZ(65px);
+      will-change: transform;
     }
     .hl-italic {
       font-family: var(--f-serif);
@@ -306,6 +322,7 @@
       text-align: center;
       line-height: 0;
       pointer-events: none;
+      perspective: 1000px;
     }
     #hero-photo {
       display: inline-block;
@@ -317,6 +334,8 @@
       user-select: none;
       -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 72%, rgba(0,0,0,0) 100%);
       mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 72%, rgba(0,0,0,0) 100%);
+      transform: translateZ(25px);
+      will-change: transform;
     }
 
     #caption-wrap {
@@ -326,7 +345,9 @@
       width: min(560px, 86vw);
       margin-top: clamp(14px, 2.5vh, 32px);
       text-align: center;
-      pointer-events: none;
+      pointer-events: auto;
+      transform-style: preserve-3d;
+      transform: translateY(var(--scroll-y, 0px)) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) scale(var(--scale, 1));
       will-change: opacity, transform;
     }
     #hero-caption {
@@ -335,6 +356,8 @@
       font-weight: 400;
       color: var(--mute);
       line-height: 1.6;
+      transform: translateZ(40px);
+      will-change: transform;
     }
 
     #about-bio {
@@ -353,6 +376,8 @@
       flex-direction: column;
       gap: 0.6em;
       max-width: 680px;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
     .bio-content .p3-quote {
       font-family: var(--f-serif);
@@ -362,6 +387,8 @@
       line-height: 1.3;
       letter-spacing: -0.01em;
       color: var(--ink);
+      transform: translateZ(40px);
+      will-change: transform;
     }
     .bio-text {
       font-family: var(--f-radio);
@@ -369,6 +396,8 @@
       font-size: clamp(14px, 1.2vw, 18px);
       line-height: 1.7;
       color: var(--mute);
+      transform: translateZ(20px);
+      will-change: transform;
     }
 
     @media (max-width: 768px) {
@@ -397,6 +426,22 @@
       background-position: center;
       padding: clamp(28px, 5vw, 56px) clamp(20px, 4.5vw, 48px) clamp(36px, 5.5vw, 56px);
       box-shadow: 0 24px 60px rgba(14, 14, 14, 0.12);
+    }
+    #milestone-bg-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.38;
+      mix-blend-mode: multiply;
+    }
+    .milestone-title,
+    .milestone-pill,
+    .milestone-grid {
+      position: relative;
+      z-index: 2;
     }
 
     .milestone-title {
@@ -773,8 +818,21 @@
       z-index: 1;
       padding: clamp(64px, 10vh, 120px) clamp(16px, 5vw, 60px);
       text-align: center;
+      overflow: hidden;
+    }
+    .section-bg-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.8;
     }
     .skills-title {
+      position: relative;
+      z-index: 2;
       font-family: var(--f-serif);
       font-style: italic;
       font-weight: 300;
@@ -786,6 +844,8 @@
       cursor: default;
     }
     .skills-cloud {
+      position: relative;
+      z-index: 2;
       display: flex;
       flex-wrap: wrap;
       gap: clamp(8px, 1.2vw, 12px);
@@ -840,19 +900,79 @@
       color: var(--ink);
     }
     .skills-taskbar {
+      position: relative;
+      z-index: 2;
       display: flex;
       align-items: flex-end;
       gap: clamp(8px, 1.4vw, 14px);
       justify-content: center;
-      background: rgba(247, 246, 243, 0.7);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(14, 14, 14, 0.08);
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
       border-radius: 100px;
       padding: clamp(10px, 1.4vw, 14px) clamp(16px, 2.4vw, 28px);
       width: fit-content;
       margin: 0 auto;
-      box-shadow: 0 8px 32px rgba(14, 14, 14, 0.07);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .skills-taskbar:hover {
+      transform: translateY(-2px);
+    }
+    .skills-taskbar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      border-radius: inherit;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px) saturate(160%);
+      -webkit-backdrop-filter: blur(12px) saturate(160%);
+      filter: url(#glass-distortion);
+      isolation: isolate;
+      pointer-events: none;
+      transition: background 0.3s ease;
+      will-change: filter;
+      transform: translate3d(0, 0, 0);
+    }
+    .skills-taskbar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: inherit;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.28) 0%,
+        rgba(255, 255, 255, 0.08) 100%
+      );
+      border: 1.5px solid rgba(255, 255, 255, 0.45);
+      border-bottom-color: rgba(255, 255, 255, 0.2);
+      border-right-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.6), 
+        inset -1px -1px 2px rgba(0, 0, 0, 0.15),
+        0 12px 32px rgba(0, 0, 0, 0.08),
+        0 4px 8px rgba(0, 0, 0, 0.04),
+        0 0 30px rgba(61, 92, 203, 0.06);
+      pointer-events: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      filter: url(#glass-distortion);
+      will-change: filter;
+      transform: translate3d(0, 0, 0);
+    }
+    .skills-taskbar:hover::before {
+      background: rgba(255, 255, 255, 0.22);
+    }
+    .skills-taskbar:hover::after {
+      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 
+        inset 2px 2px 3px rgba(255, 255, 255, 0.7), 
+        inset -1px -1px 3px rgba(0, 0, 0, 0.1),
+        0 16px 40px rgba(0, 0, 0, 0.12),
+        0 6px 12px rgba(0, 0, 0, 0.06),
+        0 0 40px rgba(61, 92, 203, 0.12);
     }
     .taskbar-icon {
       position: relative;
@@ -1153,6 +1273,7 @@
       line-height: 1.4;
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -1549,6 +1670,8 @@
       position: relative;
       display: inline-block;
       pointer-events: auto;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
     .hero-photo-inner::after {
       content: '';
@@ -1567,11 +1690,12 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease, transform 0.3s var(--ease-back);
-      transform: scale(1.15);
+      transform: scale(1.15) translateZ(55px);
+      will-change: transform, opacity;
     }
     .hero-photo-inner:hover::after {
       opacity: 0.85;
-      transform: scale(1);
+      transform: scale(1) translateZ(55px);
     }
 
     /* ── Clapperboard SVG/CSS design ── */
@@ -2292,6 +2416,7 @@
   ═══════════════════════════════════════════════════════ -->
   <section id="milestones">
     <div class="milestone-card">
+      <canvas id="milestone-bg-canvas"></canvas>
 
       <h2 class="milestone-title reveal blur-text">the milestones</h2>
 
@@ -2348,6 +2473,7 @@
        THE JOURNEY
   ═══════════════════════════════════════════════════════ -->
   <section id="journey" aria-label="The Journey">
+    <canvas id="journey-bg-canvas" class="section-bg-canvas"></canvas>
 
     <h2 class="journey-title">
       <span aria-hidden="true">The&nbsp;</span><span id="journeyWord" aria-hidden="true"><span id="journeyWordText">Journey</span><span class="journey-caret"></span></span>
@@ -2578,6 +2704,69 @@
       </div>
     </div>
 
+    <!-- Liquid Glass Distortion SVG Filter -->
+    <svg style="display: none;" aria-hidden="true">
+      <filter id="glass-distortion" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.015 0.04"
+          numOctaves="1"
+          seed="17"
+          result="noise"
+        />
+        <!-- Animating dx and dy to create a slow flowing liquid motion -->
+        <feOffset in="noise" result="offsetNoise">
+          <animate
+            attributeName="dx"
+            from="0"
+            to="1000"
+            dur="60s"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="dy"
+            from="0"
+            to="500"
+            dur="60s"
+            repeatCount="indefinite"
+          />
+        </feOffset>
+        <feComponentTransfer in="offsetNoise" result="mapped">
+          <feFuncR type="gamma" amplitude="1" exponent="4" offset="0.2" />
+          <feFuncG type="gamma" amplitude="1" exponent="4" offset="0.2" />
+        </feComponentTransfer>
+        <feGaussianBlur in="mapped" stdDeviation="5" result="softMap" />
+        <!-- Specular Lighting creates the 3D shiny reflection edges of the fluid -->
+        <feSpecularLighting
+          in="softMap"
+          surfaceScale="6"
+          specularConstant="1.2"
+          specularExponent="80"
+          lightingColor="#ffffff"
+          result="specLight"
+        >
+          <fePointLight x="-100" y="-100" z="200" />
+        </feSpecularLighting>
+        <feComposite
+          in="specLight"
+          in2="SourceGraphic"
+          operator="in"
+          result="specularOverlay"
+        />
+        <!-- Displace the background/SourceGraphic -->
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="softMap"
+          scale="25"
+          xChannelSelector="R"
+          yChannelSelector="G"
+          result="displaced"
+        />
+        <!-- Blend the displacement and the shiny highlights -->
+        <feBlend mode="screen" in="specularOverlay" in2="displaced" />
+      </filter>
+    </svg>
+
   </section>
 
 
@@ -2794,6 +2983,7 @@
        File sertifikat taruh di assets/ (nama sesuai data-img).
   ═══════════════════════════════════════════════════════ -->
   <section id="certifications" aria-label="Certifications">
+    <canvas id="certifications-bg-canvas" class="section-bg-canvas"></canvas>
 
     <h2 class="cert-title reveal blur-text">Certifications</h2>
 
@@ -3150,11 +3340,14 @@
 
       if (!inZone) {
         textHero.style.opacity      = '1';
-        textHero.style.transform    = 'translateY(0)';
+        textHero.style.setProperty('--scroll-y', '0px');
+        textHero.style.pointerEvents = 'auto';
         captionWrap.style.opacity   = '1';
-        captionWrap.style.transform = 'translateY(0)';
+        captionWrap.style.setProperty('--scroll-y', '0px');
+        captionWrap.style.pointerEvents = 'auto';
         textAbout.style.opacity     = '0';
-        textAbout.style.transform   = 'translateY(50px)';
+        textAbout.style.setProperty('--scroll-y', '50px');
+        textAbout.style.pointerEvents = 'none';
         textAbout.setAttribute('aria-hidden', 'true');
         return;
       }
@@ -3163,12 +3356,16 @@
       const t2 = ramp(p, 0.15, 0.75);
 
       textHero.style.opacity      = String(1 - t2);
-      textHero.style.transform    = `translateY(${-40 * t2}px)`;
+      textHero.style.setProperty('--scroll-y', `${-40 * t2}px`);
+      textHero.style.pointerEvents = t2 >= 0.5 ? 'none' : 'auto';
+
       captionWrap.style.opacity   = String(1 - t2);
-      captionWrap.style.transform = `translateY(${-20 * t2}px)`;
+      captionWrap.style.setProperty('--scroll-y', `${-20 * t2}px`);
+      captionWrap.style.pointerEvents = t2 >= 0.5 ? 'none' : 'auto';
 
       textAbout.style.opacity   = String(t2);
-      textAbout.style.transform = `translateY(${50 * (1 - t2)}px)`;
+      textAbout.style.setProperty('--scroll-y', `${50 * (1 - t2)}px`);
+      textAbout.style.pointerEvents = t2 < 0.5 ? 'none' : 'auto';
 
       textHero.setAttribute('aria-hidden',    t2 >= 1 ? 'true' : 'false');
       textAbout.setAttribute('aria-hidden',   t2 <= 0 ? 'true' : 'false');
@@ -3653,6 +3850,327 @@
       mediaItems.forEach(item => ioMedia.observe(item));
     }
 
+    /* ── 19. DYNAMIC AETHER FLOW BACKGROUND ANIMATION FOR JOURNEY & CERTIFICATIONS ── */
+    function setupAetherFlow(canvasId, sectionId) {
+      const canvas = document.getElementById(canvasId);
+      const sectionEl = document.getElementById(sectionId);
+      if (!canvas || !sectionEl || (typeof reduceMotion !== 'undefined' && reduceMotion)) return;
+
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      const mouse = { x: null, y: null, radius: 160 };
+      let animationFrameId = null;
+
+      class Particle {
+        constructor(x, y, dx, dy, size, color) {
+          this.x = x;
+          this.y = y;
+          this.dx = dx;
+          this.dy = dy;
+          this.size = size;
+          this.color = color;
+        }
+
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+        }
+
+        update() {
+          if (this.x > canvas.width || this.x < 0) {
+            this.dx = -this.dx;
+          }
+          if (this.y > canvas.height || this.y < 0) {
+            this.dy = -this.dy;
+          }
+
+          // Mouse collision repulsion
+          if (mouse.x !== null && mouse.y !== null) {
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.hypot(dx, dy);
+            if (distance < mouse.radius) {
+              const forceDirectionX = dx / distance;
+              const forceDirectionY = dy / distance;
+              const force = (mouse.radius - distance) / mouse.radius;
+              this.x -= forceDirectionX * force * 2.5;
+              this.y -= forceDirectionY * force * 2.5;
+            }
+          }
+
+          this.x += this.dx;
+          this.y += this.dy;
+          this.draw();
+        }
+      }
+
+      function initParticles() {
+        particles = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 10000;
+        if (numberOfParticles > 90) numberOfParticles = 90;
+        if (numberOfParticles < 25) numberOfParticles = 25;
+        
+        for (let i = 0; i < numberOfParticles; i++) {
+          let size = (Math.random() * 2) + 1.2;
+          let x = Math.random() * (canvas.width - size * 2) + size;
+          let y = Math.random() * (canvas.height - size * 2) + size;
+          let dx = (Math.random() * 0.4) - 0.2;
+          let dy = (Math.random() * 0.4) - 0.2;
+          // Theme colors: Blue (var(--journey-accent)) and Gold (var(--milestone-card))
+          let color = Math.random() > 0.5 ? 'rgba(61, 92, 203, 0.4)' : 'rgba(199, 174, 63, 0.4)';
+          particles.push(new Particle(x, y, dx, dy, size, color));
+        }
+      }
+
+      const resizeCanvas = () => {
+        const rect = sectionEl.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        initParticles();
+      };
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      function connectParticles() {
+        let opacityValue = 1;
+        const maxDistance = 150;
+        for (let a = 0; a < particles.length; a++) {
+          for (let b = a + 1; b < particles.length; b++) {
+            let dx = particles[a].x - particles[b].x;
+            let dy = particles[a].y - particles[b].y;
+            let distance = dx * dx + dy * dy;
+
+            if (distance < maxDistance * maxDistance) {
+              let actualDist = Math.sqrt(distance);
+              opacityValue = 1 - (actualDist / maxDistance);
+
+              let isMouseNear = false;
+              if (mouse.x !== null && mouse.y !== null) {
+                let dx_mouse = particles[a].x - mouse.x;
+                let dy_mouse = particles[a].y - mouse.y;
+                let dist_mouse = dx_mouse * dx_mouse + dy_mouse * dy_mouse;
+                if (dist_mouse < mouse.radius * mouse.radius) {
+                  isMouseNear = true;
+                }
+              }
+
+              if (isMouseNear) {
+                // Glow line under mouse pointer (using journey blue)
+                ctx.strokeStyle = `rgba(61, 92, 203, ${opacityValue * 0.16})`;
+                ctx.lineWidth = 1.2;
+              } else {
+                // Subtle pencil style connector lines
+                ctx.strokeStyle = `rgba(14, 14, 14, ${opacityValue * 0.05})`;
+                ctx.lineWidth = 0.8;
+              }
+
+              ctx.beginPath();
+              ctx.moveTo(particles[a].x, particles[a].y);
+              ctx.lineTo(particles[b].x, particles[b].y);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      function animateParticles() {
+        animationFrameId = requestAnimationFrame(animateParticles);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].update();
+        }
+        connectParticles();
+      }
+      
+      sectionEl.addEventListener('mousemove', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = event.clientX - rect.left;
+        mouse.y = event.clientY - rect.top;
+      });
+
+      sectionEl.addEventListener('mouseleave', () => {
+        mouse.x = null;
+        mouse.y = null;
+      });
+
+      // IntersectionObserver optimization to stop rendering offscreen
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            if (!animationFrameId) animateParticles();
+          } else {
+            if (animationFrameId) {
+              cancelAnimationFrame(animationFrameId);
+              animationFrameId = null;
+            }
+          }
+        });
+      }, { threshold: 0.01 });
+
+      observer.observe(sectionEl);
+    }
+
+    setupAetherFlow('journey-bg-canvas', 'journey');
+    setupAetherFlow('certifications-bg-canvas', 'certifications');
+
+    /* ── 20. DYNAMIC WEBGL WARP DITHER BACKGROUND FOR MILESTONE CARD ── */
+    try {
+      const milestoneCanvas = document.getElementById('milestone-bg-canvas');
+      const milestoneCardEl = document.querySelector('.milestone-card');
+
+      if (milestoneCanvas && milestoneCardEl && !reduceMotion) {
+        const gl = milestoneCanvas.getContext('webgl') || milestoneCanvas.getContext('experimental-webgl');
+        if (gl) {
+          const vsSource = `
+            attribute vec2 position;
+            varying vec2 v_uv;
+            void main() {
+              v_uv = position * 0.5 + 0.5;
+              gl_Position = vec4(position, 0.0, 1.0);
+            }
+          `;
+
+          const fsSource = `
+            precision mediump float;
+            varying vec2 v_uv;
+            uniform float u_time;
+            uniform vec2 u_resolution;
+
+            float flowPattern(vec2 uv, float time) {
+              vec2 p = uv * 3.5;
+              for(int i = 1; i < 4; i++) {
+                float fi = float(i);
+                p.x += sin(p.y + time * 0.35 + fi) * 0.45 / fi;
+                p.y += cos(p.x + time * 0.35 - fi) * 0.45 / fi;
+              }
+              return sin(p.x + p.y) * 0.5 + 0.5;
+            }
+
+            float getBayer(vec2 p) {
+              vec2 m = mod(p, 4.0);
+              int x = int(m.x);
+              int y = int(m.y);
+              if (y == 0) {
+                if (x == 0) return 0.0;
+                if (x == 1) return 8.0;
+                if (x == 2) return 2.0;
+                return 10.0;
+              } else if (y == 1) {
+                if (x == 0) return 12.0;
+                if (x == 1) return 4.0;
+                if (x == 2) return 14.0;
+                return 6.0;
+              } else if (y == 2) {
+                if (x == 0) return 3.0;
+                if (x == 1) return 11.0;
+                if (x == 2) return 1.0;
+                return 9.0;
+              } else {
+                if (x == 0) return 15.0;
+                if (x == 1) return 7.0;
+                if (x == 2) return 13.0;
+                return 5.0;
+              }
+            }
+
+            void main() {
+              vec2 pixelSize = vec2(3.0);
+              vec2 coord = gl_FragCoord.xy / pixelSize;
+              float pattern = flowPattern(v_uv, u_time);
+              float bayer = getBayer(coord) / 16.0;
+              float threshold = pattern > bayer ? 1.0 : 0.0;
+              
+              vec4 colorFront = vec4(0.925, 0.306, 0.008, 1.0); // #EC4E02
+              vec4 colorBack = vec4(0.0, 0.0, 0.0, 0.0);
+              gl_FragColor = mix(colorBack, colorFront, threshold);
+            }
+          `;
+
+          function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+              gl.deleteShader(shader);
+              return null;
+            }
+            return shader;
+          }
+
+          const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
+          const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+          if (vs && fs) {
+            const program = gl.createProgram();
+            gl.attachShader(program, vs);
+            gl.attachShader(program, fs);
+            gl.linkProgram(program);
+
+            if (gl.getProgramParameter(program, gl.LINK_STATUS)) {
+              gl.useProgram(program);
+
+              const buffer = gl.createBuffer();
+              gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+              gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+                -1, -1,  1, -1, -1,  1,
+                -1,  1,  1, -1,  1,  1,
+              ]), gl.STATIC_DRAW);
+
+              const positionLocation = gl.getAttribLocation(program, 'position');
+              gl.enableVertexAttribArray(positionLocation);
+              gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+              const timeLocation = gl.getUniformLocation(program, 'u_time');
+              const resLocation = gl.getUniformLocation(program, 'u_resolution');
+
+              let lastTime = Date.now();
+              let virtualTime = 0;
+              let targetSpeed = 0.2;
+              let currentSpeed = 0.2;
+
+              milestoneCardEl.addEventListener('mouseenter', () => {
+                targetSpeed = 0.65;
+              });
+              milestoneCardEl.addEventListener('mouseleave', () => {
+                targetSpeed = 0.2;
+              });
+
+              const resize = () => {
+                const rect = milestoneCardEl.getBoundingClientRect();
+                milestoneCanvas.width = rect.width;
+                milestoneCanvas.height = rect.height;
+                gl.viewport(0, 0, milestoneCanvas.width, milestoneCanvas.height);
+              };
+              window.addEventListener('resize', resize);
+              resize();
+
+              function render() {
+                const now = Date.now();
+                const delta = (now - lastTime) / 1000;
+                lastTime = now;
+
+                currentSpeed += (targetSpeed - currentSpeed) * 0.1;
+                virtualTime += delta * currentSpeed * 10;
+
+                gl.uniform1f(timeLocation, virtualTime);
+                gl.uniform2f(resLocation, milestoneCanvas.width, milestoneCanvas.height);
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+                animationFrameId = requestAnimationFrame(render);
+              }
+              requestAnimationFrame(render);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('WebGL initialization failed for milestone background:', e);
+    }
+
   })();
 
     /* ── CERT MODAL (global, dipanggil dari onclick di HTML) ── */
@@ -3685,6 +4203,61 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeCertModal();
     });
+
+    /* ── 20. 3D CARD PARALLAX EFFECT FOR HERO IMAGE & TEXTS ── */
+    function init3DTilt() {
+      if (typeof reduceMotion !== 'undefined' && reduceMotion) return;
+
+      const targets = [
+        { selector: '.hero-photo-inner', maxTiltX: 15, maxTiltY: 15, scale: 1.03, useCSSVars: false },
+        { selector: '#text-hero', maxTiltX: 0, maxTiltY: 12, scale: 1, useCSSVars: true },
+        { selector: '#text-about', maxTiltX: 0, maxTiltY: 12, scale: 1, useCSSVars: true },
+        { selector: '#caption-wrap', maxTiltX: 0, maxTiltY: 10, scale: 1, useCSSVars: true },
+        { selector: '.bio-content', maxTiltX: 0, maxTiltY: 10, scale: 1, useCSSVars: false }
+      ];
+
+      targets.forEach(({ selector, maxTiltX, maxTiltY, scale, useCSSVars }) => {
+        const element = document.querySelector(selector);
+        if (!element) return;
+
+        element.addEventListener('mousemove', e => {
+          const rect = element.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          // Calculate rotation angles relative to center
+          const rotateX = maxTiltX > 0 ? ((y - rect.height / 2) / rect.height) * maxTiltX : 0;
+          const rotateY = ((x - rect.width / 2) / rect.width) * -maxTiltY;
+
+          // Apply smooth responsive tracking transition
+          element.style.transition = 'transform 0.08s ease-out';
+
+          if (useCSSVars) {
+            element.style.setProperty('--rotate-x', `${rotateX}deg`);
+            element.style.setProperty('--rotate-y', `${rotateY}deg`);
+            element.style.setProperty('--scale', `${scale}`);
+          } else {
+            element.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
+          }
+        });
+
+        element.addEventListener('mouseleave', () => {
+          // Spring back with a beautiful expo-out transition
+          element.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+
+          if (useCSSVars) {
+            element.style.setProperty('--rotate-x', `0deg`);
+            element.style.setProperty('--rotate-y', `0deg`);
+            element.style.setProperty('--scale', `1`);
+          } else {
+            element.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+          }
+        });
+      });
+    }
+
+    // Initialize 3D Parallax effect
+    init3DTilt();
 
   </script>
 
