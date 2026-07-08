@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Perspective Card</title>
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #09090b;
+      color: #f4f4f5;
+      font-family: 'Radio Canada Big', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .container {
+      perspective: 1000px;
+      padding: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      background-color: #121214;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ffffff;
+      transform: translateZ(50px);
+      transition: transform 0.3s ease;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: #a1a1aa;
+      margin-top: 10px;
+      line-height: 1.5;
+      transform: translateZ(60px);
+      transition: transform 0.3s ease;
+    }
+
+    .card-img-wrap {
+      margin-top: 24px;
+      width: 100%;
+      height: 200px;
+      border-radius: 8px;
+      overflow: hidden;
+      transform: translateZ(90px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-cover: cover;
+    }
+
+    .card:hover .card-img-wrap {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-footer {
+      margin-top: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transform: translateZ(30px);
+      transition: transform 0.3s ease;
+    }
+
+    .btn-link {
+      color: #a1a1aa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .btn-link:hover {
+      color: #10B981;
+    }
+
+    .btn-action {
+      background-color: #ffffff;
+      color: #000000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.2s;
+    }
+
+    .btn-action:hover {
+      background-color: #e4e4e7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card" id="tiltCard">
+      <h2 style="transform: translateZ(50px);">Make things float in air 🪄</h2>
+      <p style="transform: translateZ(60px);">Hover over this card to unleash the power of CSS perspective.</p>
+      
+      <div class="card-img-wrap" style="transform: translateZ(90px);">
+        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop" alt="thumbnail">
+      </div>
+      
+      <div class="card-footer" style="transform: translateZ(30px);">
+        <a href="#" class="btn-link">Visit →</a>
+        <button class="btn-action">Get Started</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const card = document.getElementById('tiltCard');
+
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left; // x position within the element.
+      const y = e.clientY - rect.top;  // y position within the element.
+
+      const width = rect.width;
+      const height = rect.height;
+
+      // Calculate rotation angles (-15 to 15 degrees)
+      const rotateX = ((y - height / 2) / height) * 15;
+      const rotateY = ((x - width / 2) / width) * -15;
+
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+    });
+  </script>
+</body>
+</html>

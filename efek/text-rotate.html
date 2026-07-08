@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staggered Character Text Rotate</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #09090b;
+      color: #f4f4f5;
+      font-family: 'Radio Canada Big', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .demo-container {
+      text-align: center;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .eyebrow {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #71717a;
+      margin-bottom: 32px;
+      font-weight: 600;
+    }
+
+    .headline {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.2;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* ── Text Rotate Classes ── */
+    .text-rotate-container {
+      display: inline-flex;
+      position: relative;
+      overflow: hidden;
+      vertical-align: bottom;
+      height: 1.2em;
+      line-height: 1.2em;
+      border-bottom: 3px solid #3d5ccb;
+      color: #3d5ccb;
+    }
+
+    .word-container {
+      display: inline-flex;
+      position: relative;
+    }
+
+    .char {
+      display: inline-block;
+      transform: translateY(0);
+      opacity: 1;
+      will-change: transform, opacity;
+    }
+
+    /* Animation states */
+    .char.enter {
+      animation: charEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .char.exit {
+      animation: charExit 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    @keyframes charEnter {
+      0% {
+        transform: translateY(110%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes charExit {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-110%);
+        opacity: 0;
+      }
+    }
+
+    .description {
+      font-size: 1rem;
+      color: #71717a;
+      max-width: 480px;
+      margin: 24px auto 0 auto;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-container">
+    <div class="eyebrow">Staggered Delay Character Animation</div>
+    
+    <h1 class="headline">
+      We believe in 
+      <span class="text-rotate-container" id="rotateContainer">
+        <!-- Rendered dynamically by Javascript -->
+      </span>
+    </h1>
+
+    <p class="description">
+      Perhatikan transisi karakter demi karakter yang memiliki jeda waktu bertingkat (staggered delay) saat berganti kata.
+    </p>
+  </div>
+
+  <script>
+    const container = document.getElementById('rotateContainer');
+    const texts = ["Design.", "Interaction.", "Storytelling.", "Innovation."];
+    let wordIndex = 0;
+    const charDelay = 0.03; // seconds of delay between characters
+
+    function renderWord(word, state = 'enter') {
+      const wordSpan = document.createElement('span');
+      wordSpan.className = 'word-container';
+      
+      // Handle unicode and emoji splitting
+      const chars = Array.from(word);
+      
+      chars.forEach((char, idx) => {
+        const charSpan = document.createElement('span');
+        charSpan.className = `char ${state}`;
+        charSpan.textContent = char;
+        // Apply staggered animation delay
+        const delay = idx * charDelay;
+        charSpan.style.animationDelay = `${delay}s`;
+        
+        wordSpan.appendChild(charSpan);
+      });
+
+      return wordSpan;
+    }
+
+    function initRotate() {
+      // Load initial word
+      let currentWord = texts[wordIndex];
+      let currentEl = renderWord(currentWord, 'enter');
+      container.appendChild(currentEl);
+      
+      setInterval(() => {
+        // Prepare next word index
+        const nextWordIndex = (wordIndex + 1) % texts.length;
+        const nextWord = texts[nextWordIndex];
+
+        // Animate out current word
+        const prevEl = currentEl;
+        const prevChars = prevEl.querySelectorAll('.char');
+        prevChars.forEach((charSpan, idx) => {
+          charSpan.className = 'char exit';
+          // Apply exit stagger (reverse stagger or normal stagger)
+          const delay = (prevChars.length - 1 - idx) * charDelay;
+          charSpan.style.animationDelay = `${delay}s`;
+        });
+
+        // Render and animate in next word
+        const nextEl = renderWord(nextWord, 'enter');
+        nextEl.style.position = 'absolute';
+        nextEl.style.left = '0';
+        nextEl.style.top = '0';
+        container.appendChild(nextEl);
+
+        // Remove old word from DOM after exit animations finish
+        setTimeout(() => {
+          container.removeChild(prevEl);
+          nextEl.style.position = 'relative'; // restore normal flow
+          currentEl = nextEl;
+          wordIndex = nextWordIndex;
+        }, (prevChars.length * charDelay * 1000) + 400); // delay + animation duration
+
+      }, 3000); // rotate word every 3 seconds
+    }
+
+    initRotate();
+  </script>
+</body>
+</html>

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playground Efek Kreatif — Nadja Kencana</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #09090b;
+      --card-bg: rgba(20, 20, 25, 0.6);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f4f4f5;
+      --text-mute: #a1a1aa;
+      --accent: #3d5ccb;
+      --accent-glow: rgba(61, 92, 203, 0.15);
+      --font-sans: 'Radio Canada Big', sans-serif;
+      --font-serif: 'Source Serif 4', serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Background decorative glow */
+    .bg-glow {
+      position: absolute;
+      top: -10%;
+      right: -10%;
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(61, 92, 203, 0.08) 0%, transparent 70%);
+      filter: blur(80px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 320px;
+      border-right: 1px solid var(--border);
+      background: rgba(12, 12, 16, 0.5);
+      backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      z-index: 10;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar-header h1 span {
+      background: linear-gradient(135deg, #fff 30%, var(--text-mute) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .sidebar-header p {
+      font-size: 0.8rem;
+      color: var(--text-mute);
+      margin-top: 4px;
+    }
+
+    .effect-list {
+      list-style: none;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .effect-item {
+      width: 100%;
+    }
+
+    .effect-button {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 14px 16px;
+      border-radius: 12px;
+      color: var(--text-mute);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .effect-button:hover {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+    }
+
+    .effect-button.active {
+      background: rgba(61, 92, 203, 0.1);
+      border-color: rgba(61, 92, 203, 0.3);
+      color: #fff;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .effect-title {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .effect-desc {
+      font-size: 0.75rem;
+      color: var(--text-mute);
+      line-height: 1.3;
+    }
+
+    .effect-button.active .effect-desc {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .sidebar-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-mute);
+      text-align: center;
+    }
+
+    .sidebar-footer a {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .sidebar-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Main Preview Window */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      position: relative;
+    }
+
+    .preview-header {
+      height: 64px;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(9, 9, 11, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 5;
+    }
+
+    .preview-title-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-title {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .preview-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-mute);
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: #4d6cdb;
+      border-color: #4d6cdb;
+    }
+
+    .viewport {
+      flex: 1;
+      width: 100%;
+      background: #000;
+      position: relative;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+      display: block;
+    }
+
+    /* Modal for Code / Detail Info */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      width: min(800px, 90vw);
+      height: min(600px, 80vh);
+      background: #121214;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-overlay.open .modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-mute);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    .modal-body {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      font-family: var(--font-sans);
+    }
+
+    .info-section {
+      margin-bottom: 24px;
+    }
+
+    .info-section h4 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-mute);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .info-section p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #d4d4d8;
+    }
+
+    .code-block {
+      background: #18181b;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #e4e4e7;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      max-height: 300px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 250px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .effect-list {
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 12px;
+      }
+      .effect-item {
+        width: auto;
+        flex-shrink: 0;
+      }
+      .effect-button {
+        width: 200px;
+        height: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h1>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent" style="color: var(--accent);"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+        <span>Visual Effects</span>
+      </h1>
+      <p>Koleksi Efek Animasi & WebGL</p>
+    </div>
+    
+    <ul class="effect-list" id="effectList">
+      <!-- Generated dynamically by script -->
+    </ul>
+    
+    <div class="sidebar-footer">
+      <p>Kembali ke <a href="../index.html">Portfolio</a></p>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="preview-header">
+      <div class="preview-title-wrap">
+        <h2 class="preview-title" id="activeTitle">Loading...</h2>
+        <span class="preview-subtitle" id="activeSubtitle">Loading description...</span>
+      </div>
+      <div class="preview-actions">
+        <button class="btn" id="btnInfo">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Info Detail
+        </button>
+        <a class="btn btn-primary" id="btnOpenTab" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          Buka Tab Baru
+        </a>
+      </div>
+    </div>
+    
+    <div class="viewport">
+      <iframe id="previewFrame" src="about:blank"></iframe>
+    </div>
+  </main>
+
+  <!-- Info Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Detail Efek</h3>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="info-section">
+          <h4>Deskripsi Efek</h4>
+          <p id="modalDesc">Deskripsi lengkap dari efek akan dimuat di sini.</p>
+        </div>
+        <div class="info-section">
+          <h4>Teknologi & Fitur Utama</h4>
+          <p id="modalTech">Detail teknologi yang digunakan.</p>
+        </div>
+        <div class="info-section">
+          <h4>File Sumber React Asli</h4>
+          <pre class="code-block" id="modalSourceFile">Loading...</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const effectsData = [
+      {
+        id: "3d-card",
+        title: "3D Perspective Card",
+        subtitle: "Efek kartu 3D melayang interaktif",
+        desc: "Efek kartu interaktif dengan rotasi 3 dimensi yang mengikuti posisi kursor (3D tilt effect). Menggunakan properti CSS perspective, transform-style: preserve-3d, dan translateZ untuk memberikan efek kedalaman yang dramatis saat di-hover.",
+        tech: "HTML5, Vanilla CSS (properti perspective & translateZ), Javascript (mousemove tracking).",
+        file: "3d-card.html",
+        source: "3d-card"
+      },
+      {
+        id: "aether-flow",
+        title: "Aether Flow Particle",
+        subtitle: "Sistem partikel fluida interaktif",
+        desc: "Efek latar belakang interaktif berupa jaringan partikel mengalir (fluid-like particle network) menggunakan HTML5 Canvas. Partikel akan saling terhubung dengan garis halus dan akan menghindar ketika didekati oleh kursor mouse.",
+        tech: "HTML5 Canvas, 2D Canvas Context API, Math/Physics Vector, Mouse Interaction.",
+        file: "aether-flow.html",
+        source: "aether flow"
+      },
+      {
+        id: "container-scroll",
+        title: "3D Container Scroll",
+        subtitle: "Efek rotasi 3D terikat gulir (scroll-linked)",
+        desc: "Transformasi 3D interaktif pada kontainer yang terikat langsung dengan posisi scroll halaman (scroll-linked animation). Saat pengguna menggulir halaman ke bawah, kartu akan berotasi kembali lurus, mengecil secara proporsional, dan teks header akan memudar secara dinamis.",
+        tech: "Vanilla Javascript (scroll-event listener), CSS 3D Perspective, Translate & Scale Transforms.",
+        file: "container-scroll.html",
+        source: "container scroll animation"
+      },
+      {
+        id: "text-cycle",
+        title: "Inline Text Cycle",
+        subtitle: "Transisi teks berganti baris dinamis",
+        desc: "Animasi penggantian teks sebaris (inline) dengan rotasi kata, di mana kata bergeser ke atas/bawah secara elastis sementara kata-kata di sekelilingnya secara dinamis meluas atau menyusut menyesuaikan lebar kata yang sedang aktif.",
+        tech: "CSS transitions, Dynamic width spring curves, DOM Rect calculation.",
+        file: "text-cycle.html",
+        source: "animated text cycle"
+      },
+      {
+        id: "dithering",
+        title: "Warp Dithering Shader",
+        subtitle: "Shader WebGL Dither berombak",
+        desc: "Shader WebGL interaktif yang mensimulasikan gelombang cairan pixelated menggunakan algoritma Dithering 4x4 Bayer Matrix. Menciptakan gradasi warna ala seni retro pixelated dengan performa 60FPS menggunakan GPU.",
+        tech: "WebGL API, GLSL Fragment & Vertex Shaders, Noise functions, Bayer Dithering Matrix.",
+        file: "dithering.html",
+        source: "BACKGROUND MILESTONE"
+      },
+      {
+        id: "hero-minimalism",
+        title: "Minimal Hero Line & Starfield",
+        subtitle: "Latar belakang bintang mengalir & garis aksen",
+        desc: "Halaman hero ultra-minimalis dengan efek latar belakang bintang mengalir (starfield particles) menggunakan HTML5 Canvas berkinerja tinggi, dipadukan dengan garis aksen geometris yang beranimasi saat halaman pertama kali dimuat.",
+        tech: "HTML5 Canvas 2D API, CSS Custom Keyframe Animations (draw/fade lines), Google Hubot Sans font.",
+        file: "hero-minimalism.html",
+        source: "hero minimalism"
+      },
+      {
+        id: "liquid-glass",
+        title: "Liquid Glass SVG Filter",
+        subtitle: "Efek distorsi kaca cair refraktif",
+        desc: "Tampilan dermaga ikon (dock) dan tombol kaca murni (glassmorphism) yang terdistorsi secara fisik menggunakan filter SVG feDisplacementMap dan feTurbulence. Memberikan efek refraksi air/kaca cair di atas latar belakang.",
+        tech: "SVG Filters (feTurbulence, feDisplacementMap, feSpecularLighting), CSS backdrop-filter blur.",
+        file: "liquid-glass.html",
+        source: "liquid glass"
+      },
+      {
+        id: "retro-grid",
+        title: "3D Retro Grid Horizon",
+        subtitle: "Efek grid neon 3D retro-futuristik",
+        desc: "Efek grid neon 3D retro-futuristik (synthwave/outrun style) dengan efek perspektif miring yang bergerak maju tanpa batas. Menggunakan kombinasi gradasi linear CSS berulang yang bertransformasi rotasi X 3D dan tertutup oleh efek kabut horizon.",
+        tech: "CSS linear-gradient patterns, CSS keyframe animations (movement loop), CSS perspective & rotateX.",
+        file: "retro-grid.html",
+        source: "retro grid"
+      },
+      {
+        id: "special-text",
+        title: "Interactive Scramble Text",
+        subtitle: "Efek teks enkripsi/dekripsi matriks interaktif",
+        desc: "Efek teks matriks interaktif yang menampilkan proses dekripsi karakter acak menjadi teks tujuan secara bertahap. Melibatkan dua fase pengerjaan visual: perambatan karakter acak dari kiri ke kanan, diikuti oleh pengungkapan karakter asli satu per satu.",
+        tech: "Vanilla Javascript string manipulations, random character sets generation, custom intervals scheduler.",
+        file: "special-text.html",
+        source: "special text"
+      },
+      {
+        id: "text-rotate",
+        title: "Staggered Text Rotate",
+        subtitle: "Efek rotasi huruf bertingkat",
+        desc: "Rotasi kata-ke-kata dengan memisahkan karakter secara individual dan menerbangkannya dengan penundaan bertingkat (staggered delay). Menghasilkan visualisasi transisi yang dinamis dan berkelas.",
+        tech: "Vanilla Javascript String Splitting, CSS Keyframes, CSS Animation Delay Staggering.",
+        file: "text-rotate.html",
+        source: "text-rotate"
+      }
+    ];
+
+    const effectListEl = document.getElementById("effectList");
+    const previewFrame = document.getElementById("previewFrame");
+    const activeTitle = document.getElementById("activeTitle");
+    const activeSubtitle = document.getElementById("activeSubtitle");
+    const btnOpenTab = document.getElementById("btnOpenTab");
+    
+    // Modal
+    const btnInfo = document.getElementById("btnInfo");
+    const modalOverlay = document.getElementById("modalOverlay");
+    const modalClose = document.getElementById("modalClose");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDesc = document.getElementById("modalDesc");
+    const modalTech = document.getElementById("modalTech");
+    const modalSourceFile = document.getElementById("modalSourceFile");
+
+    let activeEffect = null;
+
+    // Render list
+    effectsData.forEach((effect, index) => {
+      const li = document.createElement("li");
+      li.className = "effect-item";
+      
+      const button = document.createElement("button");
+      button.className = "effect-button";
+      if (index === 0) button.classList.add("active");
+      
+      button.innerHTML = `
+        <span class="effect-title">${effect.title}</span>
+        <span class="effect-desc">${effect.subtitle}</span>
+      `;
+      
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".effect-button").forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+        loadEffect(effect);
+      });
+      
+      li.appendChild(button);
+      effectListEl.appendChild(li);
+    });
+
+    function loadEffect(effect) {
+      activeEffect = effect;
+      activeTitle.textContent = effect.title;
+      activeSubtitle.textContent = effect.subtitle;
+      previewFrame.src = effect.file;
+      btnOpenTab.href = effect.file;
+    }
+
+    // Modal Events
+    btnInfo.addEventListener("click", () => {
+      if (!activeEffect) return;
+      modalTitle.textContent = `Detail Efek: ${activeEffect.title}`;
+      modalDesc.textContent = activeEffect.desc;
+      modalTech.textContent = activeEffect.tech;
+      modalSourceFile.textContent = `// File sumber React asli di folder proyek:\n// portofolio-nadja-new - Copy/${activeEffect.source}`;
+      modalOverlay.classList.add("open");
+    });
+
+    modalClose.addEventListener("click", () => {
+      modalOverlay.classList.remove("open");
+    });
+
+    modalOverlay.addEventListener("click", (e) => {
+      if (e.target === modalOverlay) {
+        modalOverlay.classList.remove("open");
+      }
+    });
+
+    // Load initial
+    loadEffect(effectsData[0]);
+  </script>
+</body>
+</html>

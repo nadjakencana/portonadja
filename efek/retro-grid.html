@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retro Grid 3D Perspective</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #030014;
+      --grid-color: rgba(61, 92, 203, 0.15);
+      --grid-glow: rgba(61, 92, 203, 0.05);
+      --text: #f4f4f5;
+      --text-mute: #71717a;
+      --accent: #3d5ccb;
+      --font-sans: 'Radio Canada Big', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Radial glow in center */
+    .glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(61, 92, 203, 0.12) 0%, transparent 70%);
+      filter: blur(50px);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ── RETRO GRID WRAPPER ── */
+    .grid-container {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      opacity: 0.7;
+      perspective: 200px;
+      z-index: 0;
+    }
+
+    .grid-rotated {
+      position: absolute;
+      inset: 0;
+      transform: rotateX(65deg);
+    }
+
+    .grid-animate {
+      animation: grid-movement 12s linear infinite;
+      background-repeat: repeat;
+      background-size: 60px 60px;
+      height: 300vh;
+      inset: 0px;
+      margin-left: -50%;
+      transform-origin: 100% 0 0;
+      width: 200vw;
+      background-image: 
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+    }
+
+    @keyframes grid-movement {
+      0% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(60px);
+      }
+    }
+
+    /* Fade-out masking at the horizon */
+    .grid-fade {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, var(--bg) 10%, transparent 80%);
+      z-index: 2;
+    }
+
+    /* Content overlay */
+    .content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 24px;
+      max-width: 600px;
+    }
+
+    .retro-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(61, 92, 203, 0.1);
+      border: 1px solid rgba(61, 92, 203, 0.3);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: #708dfd;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      box-shadow: 0 0 15px rgba(61, 92, 203, 0.2);
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      background: linear-gradient(180deg, #ffffff 40%, rgba(255,255,255,0.4) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+    }
+
+    p {
+      color: var(--text-mute);
+      font-size: clamp(0.95rem, 2vw, 1.15rem);
+      line-height: 1.6;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow"></div>
+  
+  <!-- Retro Grid Structure -->
+  <div class="grid-container">
+    <div class="grid-rotated">
+      <div class="grid-animate"></div>
+    </div>
+    <div class="grid-fade"></div>
+  </div>
+
+  <!-- Foreground Content -->
+  <div class="content">
+    <div class="retro-badge">grid-perspective.fx</div>
+    <h1>Retro Grid</h1>
+    <p>Efek grid neon 3D retro-futuristik yang bergerak tanpa batas dengan sumbu perspektif miring.</p>
+  </div>
+
+</body>
+</html>

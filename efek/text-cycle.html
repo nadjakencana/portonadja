@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Inline Text Cycle</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #09090b;
+      --ink: #f4f4f5;
+      --mute: #71717a;
+      --journey-accent: #3d5ccb;
+      --f-radio: 'Radio Canada Big', sans-serif;
+      --f-serif: 'Source Serif 4', serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: var(--f-radio);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .demo-container {
+      max-width: 900px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .eyebrow {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--mute);
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    /* ── TEXT WHEEL (with dynamic width) ── */
+    .contact-headline {
+      font-family: var(--f-radio);
+      font-weight: 500;
+      font-size: clamp(32px, 6vw, 76px);
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      margin-bottom: 40px;
+    }
+
+    .word-wrap {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
+      padding-bottom: 0.04em;
+      margin-bottom: -0.04em;
+    }
+
+    .word-inner {
+      display: inline-block;
+    }
+
+    .text-wheel-wrap {
+      display: inline-block;
+      overflow: hidden;
+      height: 1.1em;
+      vertical-align: bottom;
+      margin-bottom: -0.15em;
+      position: relative;
+      /* Smooth width transition when active word changes */
+      transition: width 0.45s cubic-bezier(0.34, 1.2, 0.64, 1);
+      border-bottom: 2px dashed rgba(255, 255, 255, 0.15);
+    }
+
+    .text-wheel-inner {
+      display: flex;
+      flex-direction: column;
+      transform: translateY(0);
+      /* Smooth vertical scroll transition */
+      transition: transform 0.45s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+
+    .text-wheel-inner.no-transition {
+      transition: none !important;
+    }
+
+    .wheel-item {
+      display: block;
+      height: 1.15em;
+      line-height: 1.1em;
+      white-space: nowrap;
+    }
+
+    .wheel-item.font-sans {
+      font-family: var(--f-radio);
+      font-weight: 600;
+      font-style: normal;
+      color: var(--ink);
+    }
+
+    .wheel-item.font-serif-italic {
+      font-family: var(--f-serif);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--journey-accent);
+    }
+
+    .wheel-item.font-mono {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 500;
+      font-style: normal;
+      color: var(--mute);
+      letter-spacing: -0.02em;
+    }
+
+    .wheel-item.font-serif-italic-gold {
+      font-family: var(--f-serif);
+      font-weight: 400;
+      font-style: italic;
+      color: #A9901C;
+    }
+
+    .description {
+      max-width: 500px;
+      margin: 0 auto;
+      font-size: 0.95rem;
+      color: var(--mute);
+      line-height: 1.5;
+    }
+
+    .description strong {
+      color: var(--ink);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-container">
+    <div class="eyebrow">Inline Layout Spring Width</div>
+    
+    <h2 class="contact-headline">
+      let's 
+      <span class="word-wrap"><span class="word-inner text-wheel-wrap" id="wheel-create">
+        <span class="text-wheel-inner">
+          <span class="wheel-item font-sans">create</span>
+          <span class="wheel-item font-serif-italic">design</span>
+          <span class="wheel-item font-mono">develop</span>
+          <span class="wheel-item font-serif-italic-gold">inspire</span>
+          <span class="wheel-item font-sans">create</span>
+        </span>
+      </span></span> 
+      something 
+      <span class="word-wrap"><span class="word-inner text-wheel-wrap" id="wheel-iconic">
+        <span class="text-wheel-inner">
+          <span class="wheel-item font-serif-italic">iconic</span>
+          <span class="wheel-item font-sans">premium</span>
+          <span class="wheel-item font-mono">minimal</span>
+          <span class="wheel-item font-serif-italic-gold">impactful</span>
+          <span class="wheel-item font-serif-italic">iconic</span>
+        </span>
+      </span></span>.
+    </h2>
+
+    <p class="description">
+      Perhatikan bagaimana kata-kata di sebelah roda teks otomatis bergeser merapat atau merenggang secara <strong>elastis</strong> mengikuti perubahan ukuran lebar kata yang sedang aktif.
+    </p>
+  </div>
+
+  <script>
+    function initTextWheel() {
+      const wheels = document.querySelectorAll('.text-wheel-wrap');
+      if (!wheels.length) return;
+
+      const hasReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      wheels.forEach((wheel, wheelIdx) => {
+        const inner = wheel.querySelector('.text-wheel-inner');
+        if (!inner) return;
+
+        const items = Array.from(inner.querySelectorAll('.wheel-item'));
+        if (!items.length) return;
+
+        let currentIndex = 0;
+
+        function updateWheel(index, instantTransform = false) {
+          // Calculate active item for width (index wraps from 0 to 3, as 4 is a duplicate of 0)
+          const targetIndexForWidth = index % (items.length - 1);
+          const activeItem = items[targetIndexForWidth];
+          
+          if (activeItem) {
+            const rect = activeItem.getBoundingClientRect();
+            wheel.style.width = `${rect.width}px`;
+          }
+
+          if (instantTransform) {
+            inner.classList.add('no-transition');
+          }
+          
+          // Translate vertically based on index and total items
+          const percentage = -index * (100 / items.length);
+          inner.style.transform = `translateY(${percentage}%)`;
+
+          if (instantTransform) {
+            inner.offsetHeight; // Force repaint
+            inner.classList.remove('no-transition');
+          }
+        }
+
+        // Set initial state
+        updateWheel(0);
+        setTimeout(() => updateWheel(0), 150);
+
+        // Re-measure when web fonts are loaded
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => {
+            updateWheel(currentIndex);
+          });
+        }
+
+        // Handle resize events
+        window.addEventListener('resize', () => {
+          updateWheel(currentIndex);
+        });
+
+        if (hasReduceMotion) return; // Disable scrolling if reduced motion is requested
+
+        const intervalTime = 3000; // 3 seconds per transition
+        const delayOffset = wheelIdx * 1000; // Stagger wheels slightly
+
+        setTimeout(() => {
+          setInterval(() => {
+            currentIndex++;
+            updateWheel(currentIndex);
+
+            // If we've reached the duplicate 5th item (idx 4)
+            if (currentIndex === items.length - 1) {
+              setTimeout(() => {
+                currentIndex = 0;
+                updateWheel(currentIndex, true); // Instant jump back to start
+              }, 450); // Matches the 0.45s CSS transition duration
+            }
+          }, intervalTime);
+        }, delayOffset);
+      });
+    }
+
+    initTextWheel();
+  </script>
+</body>
+</html>

@@ -2065,7 +2065,7 @@
       transform: scale(0.9);
     }
 
-    /* ── TEXT WHEEL ── */
+    /* ── TEXT WHEEL (with dynamic width) ── */
     .text-wheel-wrap {
       display: inline-block;
       overflow: hidden;
@@ -2073,18 +2073,21 @@
       vertical-align: bottom;
       margin-bottom: -0.15em;
       position: relative;
+      /* Smooth width transition when active word changes */
+      transition: 
+        width 0.45s cubic-bezier(0.34, 1.2, 0.64, 1),
+        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), 
+        opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .text-wheel-inner {
       display: flex;
       flex-direction: column;
       transform: translateY(0);
+      /* Smooth vertical scroll transition, matching original cubic-bezier ease */
+      transition: transform 0.45s cubic-bezier(0.76, 0, 0.24, 1);
     }
-    .text-wheel-inner.animate-create {
-      animation: rollTextWheel 12s infinite cubic-bezier(0.76, 0, 0.24, 1);
-    }
-    .text-wheel-inner.animate-ic {
-      animation: rollTextWheel 12s infinite cubic-bezier(0.76, 0, 0.24, 1);
-      animation-delay: 0.25s;
+    .text-wheel-inner.no-transition {
+      transition: none !important;
     }
     .wheel-item {
       display: block;
@@ -2116,14 +2119,6 @@
       font-weight: 400;
       font-style: italic;
       color: #A9901C;
-    }
-    @keyframes rollTextWheel {
-      0%, 18%   { transform: translateY(0); }
-      22%, 40%  { transform: translateY(-20%); }
-      44%, 62%  { transform: translateY(-40%); }
-      66%, 84%  { transform: translateY(-60%); }
-      88%, 97%  { transform: translateY(-80%); }
-      100%      { transform: translateY(0); }
     }
 
     /* ── AUTOFOCUS reveal FLASH ── */
@@ -2798,6 +2793,53 @@
             <div class="phone-frame">
               <div class="phone-screen">
                 <blockquote class="instagram-media"
+                  data-instgrm-permalink="https://www.instagram.com/p/DacjjjEPNSL/"
+                  data-instgrm-version="14"></blockquote>
+              </div>
+            </div>
+            <div class="reel-info">
+              <h4>Mesra-mesraannya Kecil-kecilan Dulu</h4>
+              <p title="One day, we'll all get busy with our own lives. Mungkin itu alasan kenapa aku ingin merekam hari ini. Bukan tentang perginya ke mana. Tapi tentang menyimpan satu hari yang mungkin nanti akan kami rindukan.&#10;&#10;———&#10;Terima kasih, Mas @salpriadi dan Mas @acotenri. Lewat lagu dan music video Mesra-mesraannya Kecil-kecilan Dulu, aku diingatkan untuk lebih sering mengumpulkan 'koleksi suasana asyik'.">Cinematic short film about spending a day with my younger brother before life gets busy.</p>
+            </div>
+          </div>
+
+          <div class="reel-item">
+            <div class="phone-frame">
+              <div class="phone-screen">
+                <blockquote class="instagram-media"
+                  data-instgrm-permalink="https://www.instagram.com/p/DaN6drVvzrY/"
+                  data-instgrm-version="14"></blockquote>
+              </div>
+            </div>
+            <div class="reel-info"><h4>Aura Boost Series</h4><p>Yummy Choice Coffee Gold</p></div>
+          </div>
+
+          <div class="reel-item">
+            <div class="phone-frame">
+              <div class="phone-screen">
+                <blockquote class="instagram-media"
+                  data-instgrm-permalink="https://www.instagram.com/p/DZArO0uPd0N/"
+                  data-instgrm-version="14"></blockquote>
+              </div>
+            </div>
+            <div class="reel-info"><h4>Point Coffee Birthday 10th</h4><p>Visualisasi sinematik perayaan ulang tahun ke-10 Point Coffee dengan transisi dinamis.</p></div>
+          </div>
+
+          <div class="reel-item">
+            <div class="phone-frame">
+              <div class="phone-screen">
+                <blockquote class="instagram-media"
+                  data-instgrm-permalink="https://www.instagram.com/p/DY7Up4dvFi-/"
+                  data-instgrm-version="14"></blockquote>
+              </div>
+            </div>
+            <div class="reel-info"><h4>Pantai Ujung Negoro (Cinematic)</h4><p>Mengabadikan Pantai Ujung Negoro dengan polesan sinematik.</p></div>
+          </div>
+
+          <div class="reel-item">
+            <div class="phone-frame">
+              <div class="phone-screen">
+                <blockquote class="instagram-media"
                   data-instgrm-permalink="https://www.instagram.com/reel/DKMr1hcSm62/"
                   data-instgrm-version="14"></blockquote>
               </div>
@@ -3145,7 +3187,7 @@
     <h2 class="contact-headline reveal">
       <span class="word-wrap"><span class="word-inner">let's</span></span>
       <span class="word-wrap"><span class="word-inner text-wheel-wrap">
-        <span class="text-wheel-inner animate-create">
+        <span class="text-wheel-inner">
           <span class="wheel-item font-sans">create</span>
           <span class="wheel-item font-serif-italic">create</span>
           <span class="wheel-item font-mono">create</span>
@@ -3155,7 +3197,7 @@
       </span></span><br>
       <span class="word-wrap"><span class="word-inner">something</span></span>
       <span class="word-wrap"><span class="word-inner text-wheel-wrap">
-        <span class="text-wheel-inner animate-ic">
+        <span class="text-wheel-inner">
           <span class="wheel-item font-serif-italic">iconic</span>
           <span class="wheel-item font-sans">iconic</span>
           <span class="wheel-item font-mono">iconic</span>
@@ -3575,24 +3617,7 @@
       });
     });
 
-    /* ── 11. INTERACTIVE CONTACT GLOW & MAGNETIC HOVER ── */
-    const contactSec = document.getElementById('contact');
-    const contactGlow = document.querySelector('.contact-glow');
-    if (contactSec && contactGlow) {
-      contactSec.addEventListener('mousemove', e => {
-        const rect = contactSec.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        contactGlow.style.left = `${x}px`;
-        contactGlow.style.top = `${y}px`;
-        contactGlow.style.transform = 'translate(-50%, -50%) scale(1.15)';
-      }, { passive: true });
-      contactSec.addEventListener('mouseleave', () => {
-        contactGlow.style.left = '50%';
-        contactGlow.style.top = '50%';
-        contactGlow.style.transform = 'translate(-50%, -50%) scale(1)';
-      });
-    }
+    /* ── 11. MAGNETIC HOVER FOR SOCIAL LINKS ── */
 
     const socialLinks = document.querySelectorAll('.social-link');
     socialLinks.forEach(link => {
@@ -4258,6 +4283,90 @@
 
     // Initialize 3D Parallax effect
     init3DTilt();
+    
+    /* ── 21. DYNAMIC TEXT WHEEL WIDTH CONTROLLER ── */
+    function initTextWheel() {
+      const wheels = document.querySelectorAll('.text-wheel-wrap');
+      if (!wheels.length) return;
+
+      const hasReduceMotion = typeof reduceMotion !== 'undefined' 
+        ? reduceMotion 
+        : window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      wheels.forEach((wheel, wheelIdx) => {
+        const inner = wheel.querySelector('.text-wheel-inner');
+        if (!inner) return;
+
+        const items = Array.from(inner.querySelectorAll('.wheel-item'));
+        if (!items.length) return;
+
+        let currentIndex = 0;
+
+        // Function to update the container's width and translate transform
+        function updateWheel(index, instantTransform = false) {
+          // Calculate active item for width (index wraps from 0 to 3, as 4 is a duplicate of 0)
+          const targetIndexForWidth = index % (items.length - 1);
+          const activeItem = items[targetIndexForWidth];
+          
+          if (activeItem) {
+            const rect = activeItem.getBoundingClientRect();
+            wheel.style.width = `${rect.width}px`;
+          }
+
+          if (instantTransform) {
+            inner.classList.add('no-transition');
+          }
+          
+          // Translate vertically based on index and total items
+          const percentage = -index * (100 / items.length);
+          inner.style.transform = `translateY(${percentage}%)`;
+
+          if (instantTransform) {
+            inner.offsetHeight; // Force repaint
+            inner.classList.remove('no-transition');
+          }
+        }
+
+        // Set initial state
+        updateWheel(0);
+        setTimeout(() => updateWheel(0), 150);
+
+        // Re-measure when web fonts are loaded
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => {
+            updateWheel(currentIndex);
+          });
+        }
+
+        // Handle resize events
+        window.addEventListener('resize', () => {
+          updateWheel(currentIndex);
+        });
+
+        if (hasReduceMotion) return; // Disable scrolling if reduced motion is requested
+
+        const intervalTime = 3000; // 3 seconds per transition
+        const delayOffset = wheelIdx * 300; // Stagger wheels slightly
+
+        setTimeout(() => {
+          setInterval(() => {
+            currentIndex++;
+            updateWheel(currentIndex);
+
+            // If we've reached the duplicate 5th item (idx 4)
+            if (currentIndex === items.length - 1) {
+              setTimeout(() => {
+                currentIndex = 0;
+                updateWheel(currentIndex, true); // Instant jump back to start
+              }, 450); // Matches the 0.45s CSS transition duration
+            }
+          }, intervalTime);
+        }, delayOffset);
+      });
+    }
+
+    // Initialize Text Wheel Width Sync
+    initTextWheel();
 
   </script>
 

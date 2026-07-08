@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warp Dithering Shader</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      background-color: #09090b;
+      color: #f4f4f5;
+      font-family: 'Radio Canada Big', sans-serif;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .section-wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      position: relative;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 1200px;
+      height: 90%;
+      max-height: 650px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 48px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background-color: #0c0c0e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+    }
+
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    .content {
+      position: relative;
+      z-index: 10;
+      padding: 24px;
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      background: rgba(236, 78, 2, 0.06);
+      border: 1px solid rgba(236, 78, 2, 0.15);
+      margin-bottom: 32px;
+      backdrop-filter: blur(8px);
+    }
+
+    .ping-dot-wrap {
+      position: relative;
+      display: flex;
+      width: 8px;
+      height: 8px;
+    }
+
+    .ping-dot {
+      animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+      position: absolute;
+      display: inline-flex;
+      height: 100%;
+      width: 100%;
+      border-radius: 9999px;
+      background-color: #EC4E02;
+      opacity: 0.75;
+    }
+
+    .dot {
+      position: relative;
+      display: inline-flex;
+      border-radius: 9999px;
+      height: 8px;
+      width: 8px;
+      background-color: #EC4E02;
+    }
+
+    .badge span {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #EC4E02;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-family: 'Source Serif 4', serif;
+      font-size: clamp(2rem, 5vw, 4.5rem);
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      color: #ffffff;
+    }
+
+    h2 span {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    p.desc {
+      font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+      color: #a1a1aa;
+      line-height: 1.6;
+      margin-bottom: 40px;
+      max-width: 580px;
+    }
+
+    .btn {
+      padding: 14px 36px;
+      background-color: #EC4E02;
+      color: #ffffff;
+      border: none;
+      border-radius: 100px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(236, 78, 2, 0.2);
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+    }
+
+    .btn:hover {
+      background-color: #ff5e13;
+      transform: scale(1.05);
+      box-shadow: 0 6px 25px rgba(236, 78, 2, 0.35), 0 0 0 4px rgba(236, 78, 2, 0.15);
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    @keyframes ping {
+      75%, 100% {
+        transform: scale(2.5);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="section-wrap">
+    <div class="card" id="hoverCard">
+      <canvas id="glCanvas"></canvas>
+      
+      <div class="content">
+        <div class="badge">
+          <div class="ping-dot-wrap">
+            <span class="ping-dot"></span>
+            <span class="dot"></span>
+          </div>
+          <span>AI-Powered Writing</span>
+        </div>
+        
+        <h2>Your words, <br><span>delivered perfectly.</span></h2>
+        
+        <p class="desc">Join 2,847 founders using the only AI that understands the nuance of your voice. Clean, precise, and uniquely yours.</p>
+        
+        <button class="btn">
+          Start Typing
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const card = document.getElementById('hoverCard');
+    const canvas = document.getElementById('glCanvas');
+    const gl = canvas.getContext('webgl');
+
+    if (!gl) {
+      console.error("WebGL not supported");
+    }
+
+    // Vertex Shader
+    const vsSource = `
+      attribute vec2 position;
+      void main() {
+        gl_Position = vec4(position, 0.0, 1.0);
+      }
+    `;
+
+    // Fragment Shader with 4x4 Bayer Matrix Dithering
+    const fsSource = `
+      precision mediump float;
+      uniform vec2 u_resolution;
+      uniform float u_time;
+      uniform float u_speed;
+
+      float getBayer(vec2 p) {
+        int x = int(mod(p.x, 4.0));
+        int y = int(mod(p.y, 4.0));
+        int index = x + y * 4;
+        
+        if (index == 0) return 0.0625;
+        if (index == 1) return 0.5625;
+        if (index == 2) return 0.1875;
+        if (index == 3) return 0.6875;
+        if (index == 4) return 0.8125;
+        if (index == 5) return 0.3125;
+        if (index == 6) return 0.9375;
+        if (index == 7) return 0.4375;
+        if (index == 8) return 0.25;
+        if (index == 9) return 0.75;
+        if (index == 10) return 0.125;
+        if (index == 11) return 0.625;
+        if (index == 12) return 0.5;
+        if (index == 13) return 1.0;
+        if (index == 14) return 0.375;
+        if (index == 15) return 0.875;
+        return 0.0;
+      }
+
+      void main() {
+        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+        float t = u_time * u_speed;
+        
+        // Fluid flow displacement
+        vec2 warp = uv + 0.15 * vec2(
+          sin(uv.x * 6.0 + t * 0.8) + cos(uv.y * 5.0 - t * 0.5),
+          cos(uv.x * 5.0 - t * 0.6) + sin(uv.y * 6.0 + t * 0.8)
+        );
+        
+        // Generate wave field value
+        float val = sin(warp.x * 4.0 + t * 0.4) * cos(warp.y * 3.5 - t * 0.3) * 0.5 + 0.5;
+        
+        // Vignette-style falloff to fit center warp look
+        float d = distance(uv, vec2(0.5));
+        val *= smoothstep(0.85, 0.1, d);
+
+        float threshold = getBayer(gl_FragCoord.xy);
+        
+        // Dither logic color mapping
+        vec3 colorFront = vec3(0.925, 0.306, 0.008); // #EC4E02 Orange
+        vec3 colorBack = vec3(0.047, 0.047, 0.055);  // #0c0c0e Dark card bg
+        
+        vec3 finalColor = val > threshold ? colorFront : colorBack;
+        gl_FragColor = vec4(finalColor, 1.0);
+      }
+    `;
+
+    // Helper functions to compile shaders
+    function createShader(gl, type, source) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error(gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error(gl.getProgramInfoLog(program));
+    }
+
+    const positionAttributeLocation = gl.getAttribLocation(program, "position");
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+    // Cover clip space with two triangles
+    const positions = [
+      -1, -1,
+       1, -1,
+      -1,  1,
+      -1,  1,
+       1, -1,
+       1,  1,
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+    // Uniforms
+    const resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution");
+    const timeUniformLocation = gl.getUniformLocation(program, "u_time");
+    const speedUniformLocation = gl.getUniformLocation(program, "u_speed");
+
+    let currentSpeed = 0.2;
+    let targetSpeed = 0.2;
+
+    // Hover animation triggers
+    card.addEventListener('mouseenter', () => targetSpeed = 0.6);
+    card.addEventListener('mouseleave', () => targetSpeed = 0.2);
+
+    function resizeCanvas() {
+      const rect = card.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function render(time) {
+      time *= 0.001;  // Convert to seconds
+
+      // Interpolate speed for smooth transition
+      currentSpeed += (targetSpeed - currentSpeed) * 0.1;
+
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      gl.useProgram(program);
+      gl.enableVertexAttribArray(positionAttributeLocation);
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+      gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
+      gl.uniform1f(timeUniformLocation, time);
+      gl.uniform1f(speedUniformLocation, currentSpeed);
+
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+      requestAnimationFrame(render);
+    }
+
+    requestAnimationFrame(render);
+  </script>
+</body>
+</html>

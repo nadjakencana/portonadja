@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Container Scroll 3D Effect</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #09090b;
+      --card-bg: #18181b;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f4f4f5;
+      --text-mute: #a1a1aa;
+      --accent: #3d5ccb;
+      --font-sans: 'Radio Canada Big', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 180vh; /* Allow enough scrolling room */
+      overflow-x: hidden;
+      padding-bottom: 20vh;
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(24, 24, 27, 0.8);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: var(--text-mute);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      pointer-events: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      animation: float 2s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* Outer Wrapper */
+    .scroll-wrapper {
+      padding: 100px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      perspective: 1000px;
+    }
+
+    /* Title Block */
+    .title-block {
+      text-align: center;
+      margin-bottom: 60px;
+      will-change: transform, opacity;
+      /* Smooth transitions for manual scroll bindings if JS is slow */
+      transition: transform 0.1s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    .title-block h1 {
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      background: linear-gradient(185deg, #ffffff 40%, rgba(255,255,255,0.4) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+    }
+
+    .title-block p {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-mute);
+    }
+
+    /* Card Frame */
+    .card-frame {
+      width: 100%;
+      border-radius: 24px;
+      border: 4px solid #3f3f46;
+      background: #27272a;
+      box-shadow: 0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transform: rotateX(20deg) scale(1.05);
+      will-change: transform;
+      transition: transform 0.1s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    /* Card Inner Content (Mock Dashboard UI) */
+    .card-content {
+      background: #09090b;
+      height: 500px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .mock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    .mock-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mock-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #3f3f46;
+    }
+    .mock-dot.red { background: #ef4444; }
+    .mock-dot.yellow { background: #f59e0b; }
+    .mock-dot.green { background: #10b981; }
+
+    .mock-title {
+      font-size: 0.85rem;
+      font-family: monospace;
+      color: var(--text-mute);
+    }
+
+    .mock-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+    }
+
+    .mock-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .mock-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      width: 100%;
+    }
+
+    .mock-bar.half { width: 50%; }
+    .mock-bar.quarter { width: 75%; }
+    
+    .mock-graph {
+      flex: 1;
+      background: rgba(61, 92, 203, 0.05);
+      border: 1px dashed rgba(61, 92, 203, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: flex-end;
+      padding: 12px;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .graph-pillar {
+      width: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      opacity: 0.6;
+      transition: height 1s ease;
+    }
+
+    .mock-stat {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .mock-grid {
+        grid-template-columns: 1fr;
+      }
+      .mock-card:nth-child(n+2) {
+        display: none;
+      }
+      .card-content {
+        height: 380px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll Assist Indicator -->
+  <div class="scroll-indicator">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+    <span>Gulir ke bawah</span>
+  </div>
+
+  <div class="scroll-wrapper">
+    <!-- Header component that shifts upward -->
+    <div class="title-block" id="titleBlock">
+      <h1>Container Scroll Animation</h1>
+      <p>Scroll halaman untuk melihat kartu miring 3D berotasi dan sejajar secara interaktif.</p>
+    </div>
+
+    <!-- 3D Card component -->
+    <div class="card-frame" id="scrollCard">
+      <div class="card-content">
+        <!-- Window Chrome -->
+        <div class="mock-header">
+          <div class="mock-dots">
+            <div class="mock-dot red"></div>
+            <div class="mock-dot yellow"></div>
+            <div class="mock-dot green"></div>
+          </div>
+          <div class="mock-title">nadja-workspace-v2.exe</div>
+          <div style="width: 42px;"></div>
+        </div>
+        
+        <!-- Grid Widgets -->
+        <div class="mock-grid">
+          <div class="mock-card">
+            <div class="mock-bar half"></div>
+            <div class="mock-stat">$42,904</div>
+            <div class="mock-graph">
+              <div class="graph-pillar" style="height: 40%"></div>
+              <div class="graph-pillar" style="height: 60%"></div>
+              <div class="graph-pillar" style="height: 45%"></div>
+              <div class="graph-pillar" style="height: 80%"></div>
+              <div class="graph-pillar" style="height: 55%"></div>
+            </div>
+          </div>
+          
+          <div class="mock-card">
+            <div class="mock-bar quarter"></div>
+            <div class="mock-stat">+1,402%</div>
+            <div class="mock-graph">
+              <div class="graph-pillar" style="height: 30%" style="background:#10b981;"></div>
+              <div class="graph-pillar" style="height: 50%" style="background:#10b981;"></div>
+              <div class="graph-pillar" style="height: 70%" style="background:#10b981;"></div>
+              <div class="graph-pillar" style="height: 60%" style="background:#10b981;"></div>
+              <div class="graph-pillar" style="height: 90%" style="background:#10b981;"></div>
+            </div>
+          </div>
+          
+          <div class="mock-card">
+            <div class="mock-bar"></div>
+            <div class="mock-stat">99.8%</div>
+            <div class="mock-graph">
+              <div class="graph-pillar" style="height: 80%"></div>
+              <div class="graph-pillar" style="height: 80%"></div>
+              <div class="graph-pillar" style="height: 85%"></div>
+              <div class="graph-pillar" style="height: 90%"></div>
+              <div class="graph-pillar" style="height: 95%"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const scrollCard = document.getElementById("scrollCard");
+    const titleBlock = document.getElementById("titleBlock");
+
+    function updateScrollTransform() {
+      // Calculate scroll progress within scrollable height
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      
+      let progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+      progress = Math.min(Math.max(progress, 0), 1); // Clamp between 0 and 1
+
+      // Rotate: 20deg to 0deg
+      const rotateX = 20 - (progress * 20);
+      
+      // Scale: 1.05 to 1.0
+      const scale = 1.05 - (progress * 0.05);
+      
+      // Translate Y (header): 0 to -100px
+      const translateY = -progress * 100;
+      
+      // Apply transforms
+      scrollCard.style.transform = `rotateX(${rotateX}deg) scale(${scale})`;
+      titleBlock.style.transform = `translateY(${translateY}px)`;
+      titleBlock.style.opacity = `${1 - progress * 0.5}`;
+    }
+
+    window.addEventListener("scroll", updateScrollTransform);
+    window.addEventListener("resize", updateScrollTransform);
+    
+    // Initial call
+    updateScrollTransform();
+  </script>
+</body>
+</html>

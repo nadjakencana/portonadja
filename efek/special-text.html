@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Special Scramble Text Effect</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Radio+Canada+Big:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #09090b;
+      --card-bg: rgba(20, 20, 25, 0.4);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f4f4f5;
+      --text-mute: #a1a1aa;
+      --accent: #3d5ccb;
+      --accent-glow: rgba(61, 92, 203, 0.25);
+      --font-sans: 'Radio Canada Big', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Background glow */
+    .bg-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(61, 92, 203, 0.06) 0%, transparent 70%);
+      filter: blur(80px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 680px;
+      width: 100%;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .label {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    /* ── SCRAMBLE DISPLAY ── */
+    .scramble-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 32px;
+      margin-bottom: 32px;
+      min-height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .scramble-text {
+      font-family: var(--font-mono);
+      font-size: clamp(1.5rem, 4.5vw, 3rem);
+      font-weight: 600;
+      color: #fff;
+      white-space: pre;
+      letter-spacing: -0.02em;
+      text-shadow: 0 0 10px rgba(255,255,255,0.1);
+    }
+
+    /* Interactive Input & Presets */
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .btn-preset {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text-mute);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      transition: all 0.2s ease;
+    }
+
+    .btn-preset:hover {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .input-wrap {
+      display: flex;
+      width: 100%;
+      max-width: 450px;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .custom-input {
+      flex: 1;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .custom-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .btn-trigger {
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      padding: 0 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      transition: background-color 0.2s;
+    }
+
+    .btn-trigger:hover {
+      background: #4d6cdb;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow"></div>
+
+  <div class="container">
+    <div class="label">Interactive Matrix Scrambler</div>
+    
+    <div class="scramble-box">
+      <span class="scramble-text" id="displayEl">&nbsp;</span>
+    </div>
+
+    <div class="controls">
+      <div class="presets">
+        <button class="btn-preset" data-text="HELLO WORLD">HELLO WORLD</button>
+        <button class="btn-preset" data-text="DECRYPTING DATA">DECRYPTING DATA</button>
+        <button class="btn-preset" data-text="CREATIVE DEVELOPER">CREATIVE DEVELOPER</button>
+        <button class="btn-preset" data-text="NADJA KENCANA">NADJA KENCANA</button>
+      </div>
+
+      <div class="input-wrap">
+        <input type="text" class="custom-input" id="customInput" placeholder="Ketik kata kustom..." maxlength="30">
+        <button class="btn-trigger" id="btnRun">Scramble</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const RANDOM_CHARS = "_!X$0-+*#";
+    const displayEl = document.getElementById("displayEl");
+    const customInput = document.getElementById("customInput");
+    const btnRun = document.getElementById("btnRun");
+    const presets = document.querySelectorAll(".btn-preset");
+
+    let intervalId = null;
+
+    function getRandomChar(prevChar) {
+      let char;
+      do {
+        char = RANDOM_CHARS[Math.floor(Math.random() * RANDOM_CHARS.length)];
+      } while (char === prevChar);
+      return char;
+    }
+
+    function scrambleText(text) {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+
+      // Initial state
+      let displayText = " ".repeat(text.length);
+      displayEl.textContent = displayText;
+
+      let currentPhase = "phase1";
+      let animationStep = 0;
+      const speed = 25; // ms per step
+
+      intervalId = setInterval(() => {
+        if (currentPhase === "phase1") {
+          const maxSteps = text.length * 2;
+          const currentLength = Math.min(animationStep + 1, text.length);
+
+          const chars = [];
+          for (let i = 0; i < currentLength; i++) {
+            const prevChar = i > 0 ? chars[i - 1] : undefined;
+            chars.push(getRandomChar(prevChar));
+          }
+
+          for (let i = currentLength; i < text.length; i++) {
+            chars.push("\u00A0");
+          }
+
+          displayText = chars.join("");
+          displayEl.textContent = displayText;
+
+          if (animationStep < maxSteps - 1) {
+            animationStep++;
+          } else {
+            currentPhase = "phase2";
+            animationStep = 0;
+          }
+        } else {
+          // Phase 2
+          const revealedCount = Math.floor(animationStep / 2);
+          const chars = [];
+
+          for (let i = 0; i < revealedCount && i < text.length; i++) {
+            chars.push(text[i]);
+          }
+
+          if (revealedCount < text.length) {
+            if (animationStep % 2 === 0) {
+              chars.push("_");
+            } else {
+              chars.push(getRandomChar());
+            }
+          }
+
+          for (let i = chars.length; i < text.length; i++) {
+            chars.push(getRandomChar());
+          }
+
+          displayText = chars.join("");
+          displayEl.textContent = displayText;
+
+          if (animationStep < text.length * 2 - 1) {
+            animationStep++;
+          } else {
+            // Finished
+            displayEl.textContent = text;
+            clearInterval(intervalId);
+            intervalId = null;
+          }
+        }
+      }, speed);
+    }
+
+    // Trigger on load
+    scrambleText("NADJA KENCANA");
+
+    // Trigger on click scramble
+    btnRun.addEventListener("click", () => {
+      const text = customInput.value.trim().toUpperCase() || "NADJA KENCANA";
+      scrambleText(text);
+    });
+
+    // Trigger on enter key
+    customInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const text = customInput.value.trim().toUpperCase() || "NADJA KENCANA";
+        scrambleText(text);
+      }
+    });
+
+    // Preset buttons
+    presets.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const text = btn.getAttribute("data-text");
+        customInput.value = text;
+        scrambleText(text);
+      });
+    });
+  </script>
+</body>
+</html>
