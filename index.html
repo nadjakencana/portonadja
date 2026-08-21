@@ -36,6 +36,30 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400;0,500;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet" />
 
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          colors: {
+            bg: '#F7F6F3',
+            ink: '#0E0E0E',
+            mute: '#6B6B6B',
+            sky: '#BDD8EF',
+          },
+          fontFamily: {
+            radio: ['"Radio Canada Big"', 'sans-serif'],
+            serif: ['"Source Serif 4"', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -2290,6 +2314,37 @@
       object-fit: contain;
       background: rgba(14, 14, 14, 0.04);
     }
+
+    /* ── TESTIMONIALS SECTION ── */
+    #testimonials {
+      position: relative;
+      z-index: 1;
+      padding: clamp(64px, 10vh, 120px) clamp(16px, 5vw, 60px);
+      text-align: center;
+    }
+    .testimonial-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: clamp(16px, 2.4vw, 24px);
+      padding: clamp(20px, 3vw, 32px);
+      background: rgba(247, 246, 243, 0.7);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
+      border: 1px solid rgba(14, 14, 14, 0.08);
+      border-radius: clamp(16px, 2.5vw, 22px);
+      box-shadow: 0 4px 20px rgba(14, 14, 14, 0.05);
+      text-align: left;
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.28s ease,
+                  border-color 0.25s ease;
+    }
+    .testimonial-card:hover {
+      transform: translateY(-4px) scale(1.015);
+      box-shadow: 0 16px 40px rgba(14, 14, 14, 0.10);
+      border-color: rgba(199, 174, 63, 0.35);
+    }
   </style>
 </head>
 <body>
@@ -3115,6 +3170,48 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════════
+       TESTIMONIALS / WHAT THEY SAY
+  ═══════════════════════════════════════════════════════ -->
+  <section id="testimonials" aria-label="What They Say">
+    <canvas id="testimonials-bg-canvas" class="section-bg-canvas"></canvas>
+
+    <h2 class="cert-title reveal blur-text">what they say</h2>
+
+    <div class="max-w-[560px] mx-auto relative z-10 text-left">
+      <!-- Card 1: Aco Tenri -->
+      <div class="testimonial-card reveal" style="transition-delay: 0.05s;">
+        <div class="w-full flex flex-col gap-6">
+          <!-- Profile Header -->
+          <div class="flex items-center gap-4">
+            <img src="assets/photos/testimonials/aco_tenriyagelli.jpg" alt="Aco Tenri" class="w-14 h-14 rounded-full object-cover border border-[#0E0E0E]/10" />
+            <div>
+              <div class="flex items-center gap-1.5 mb-0.5">
+                <h3 class="font-radio font-medium text-[16px] md:text-[18px] text-[#0E0E0E] leading-tight blur-text">Aco Tenri</h3>
+                <svg class="w-[15px] h-[15px] text-[#0095f6] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-label="Verified Profile">
+                  <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.667.14-.54.215-1.1.215-1.683 0-3.39-2.76-6.15-6.15-6.15-.58 0-1.14.075-1.68.215C12.02 2.5 10.65 1.625 9.07 1.625c-3.39 0-6.15 2.76-6.15 6.15 0 .58.075 1.14.215 1.68C1.875 10.15 1 11.52 1 13.1c0 3.39 2.76 6.15 6.15 6.15.58 0 1.14-.075 1.68-.215 1.1 1.1 2.15 1.485 3.7 1.485 3.39 0 6.15-2.76 6.15-6.15 0-.58-.075-1.14-.215-1.68 1.273-.717 2.148-2.087 2.148-3.667zm-12.5 4l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z" />
+                </svg>
+              </div>
+              <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Film Director, Screenwriter, Actor & Visual Storyteller</p>
+            </div>
+          </div>
+          
+          <!-- Testimonial Text -->
+          <blockquote class="font-serif text-[18px] md:text-[21px] text-[#0E0E0E] italic leading-relaxed font-light blur-text">
+            "Nadjaaa bagus sekali, bikin terus yaaa! Ditunggu yang baru lagi ✨"
+          </blockquote>
+        </div>
+
+        <!-- Instagram Link -->
+        <a href="https://www.instagram.com/reel/DacjjjEPNSL/?comment_id=17936839581302910" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-[#0E0E0E]/5 hover:bg-[#0E0E0E]/10 transition-colors group" aria-label="Lihat komentar asli di Instagram">
+          <svg class="w-4 h-4 text-[#0E0E0E]/80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+          </svg>
+          <span class="font-radio text-[12px] text-[#0E0E0E]/80 font-medium">View Comment</span>
+        </a>
+      </div>
+    </div>
+  </section>
 
   <!-- ═══════════════════════════════════════════════════════
        CONTACT / LET'S TALK
@@ -3226,7 +3323,7 @@
       <a href="https://instagram.com/nadjakencana" target="_blank" rel="noopener"
          class="social-link social-instagram" aria-label="Follow di Instagram">
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
         </svg>
         <span>Instagram</span>
       </a>
@@ -4041,6 +4138,7 @@
 
     setupAetherFlow('journey-bg-canvas', 'journey');
     setupAetherFlow('certifications-bg-canvas', 'certifications');
+    setupAetherFlow('testimonials-bg-canvas', 'testimonials');
 
     /* ── 20. DYNAMIC WEBGL WARP DITHER BACKGROUND FOR MILESTONE CARD ── */
     try {
