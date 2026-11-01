@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nadja's Bucket List</title>
+
+  <!-- SEO / Private Meta -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Personal Bucket List, Gear Priority & Cinema Watchlist Nadja Kencana." />
+
+  <!-- Web Icon / Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/preview.jpg" />
+  <link rel="apple-touch-icon" href="assets/preview.jpg" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          colors: {
+            bg: '#F7F6F3',
+            ink: '#0E0E0E',
+            mute: '#6B6B6B',
+            sky: '#BDD8EF',
+            gold: '#C7AE3F',
+            journey: '#3D5CCB',
+          },
+          fontFamily: {
+            radio: ['"Radio Canada Big"', 'sans-serif'],
+            serif: ['"Source Serif 4"', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- SortableJS CDN for smooth Drag & Drop -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #F7F6F3;
+      --ink: #0E0E0E;
+      --mute: #6B6B6B;
+      --sky: #BDD8EF;
+      --gold: #C7AE3F;
+      --journey: #3D5CCB;
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Radio Canada Big', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient blueprint grid & soft lighting */
+    .bg-ambient-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: 
+        radial-gradient(circle at 12% 15%, rgba(189, 216, 239, 0.35) 0%, transparent 45%),
+        radial-gradient(circle at 88% 85%, rgba(199, 174, 63, 0.16) 0%, transparent 45%),
+        radial-gradient(circle at 50% 45%, rgba(61, 92, 203, 0.07) 0%, transparent 55%),
+        linear-gradient(rgba(14, 14, 14, 0.02) 1.5px, transparent 1.5px),
+        linear-gradient(90deg, rgba(14, 14, 14, 0.02) 1.5px, transparent 1.5px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+    }
+
+    /* Top Minimal Bar */
+    .top-minimal-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(247, 246, 243, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(14, 14, 14, 0.07);
+    }
+
+    /* ── STABLE THUMBNAIL BOXES (Ensures 100% stable image dimensions) ── */
+    .thumb-box {
+      width: 58px;
+      height: 58px;
+      min-width: 58px;
+      min-height: 58px;
+      max-width: 58px;
+      max-height: 58px;
+      border-radius: 14px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: rgba(14, 14, 14, 0.05);
+      border: 1px solid rgba(14, 14, 14, 0.09);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    @media (min-width: 640px) {
+      .thumb-box {
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+        min-height: 64px;
+        max-width: 64px;
+        max-height: 64px;
+        border-radius: 16px;
+      }
+    }
+
+    .thumb-img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      display: block !important;
+      aspect-ratio: 1 / 1 !important;
+    }
+
+    .thumb-icon-box {
+      width: 58px;
+      height: 58px;
+      min-width: 58px;
+      min-height: 58px;
+      max-width: 58px;
+      max-height: 58px;
+      border-radius: 14px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(61, 92, 203, 0.14) 0%, rgba(199, 174, 63, 0.12) 100%);
+      border: 1px solid rgba(61, 92, 203, 0.22);
+      font-size: 22px;
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6);
+    }
+
+    @media (min-width: 640px) {
+      .thumb-icon-box {
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+        min-height: 64px;
+        max-width: 64px;
+        max-height: 64px;
+        border-radius: 16px;
+        font-size: 26px;
+      }
+    }
+
+    /* Pinned #0 Cinema Card */
+    .cinema-pinned-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(247, 246, 243, 0.96) 100%);
+      border: 1.5px solid rgba(61, 92, 203, 0.28);
+      border-radius: 24px;
+      box-shadow: 0 12px 36px rgba(61, 92, 203, 0.07), 0 4px 12px rgba(14, 14, 14, 0.04);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .cinema-pinned-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #3D5CCB, #C7AE3F, #3D5CCB);
+      z-index: 2;
+    }
+
+    /* Cinema Accordion Transition */
+    .cinema-accordion-body {
+      display: grid;
+      grid-template-rows: 1fr;
+      transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .cinema-pinned-card.is-collapsed .cinema-accordion-body {
+      grid-template-rows: 0fr;
+    }
+
+    .cinema-accordion-inner {
+      overflow: hidden;
+      transition: opacity 0.25s ease;
+      opacity: 1;
+    }
+
+    .cinema-pinned-card.is-collapsed .cinema-accordion-inner {
+      opacity: 0;
+    }
+
+    .cinema-chevron {
+      transition: transform 0.35s var(--ease-back);
+    }
+
+    .cinema-pinned-card.is-collapsed .cinema-chevron {
+      transform: rotate(-90deg);
+    }
+
+    /* Movie Item Row */
+    .movie-item-row {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(14, 14, 14, 0.06);
+      border-radius: 16px;
+      transition: all 0.2s var(--ease-back);
+    }
+
+    .movie-item-row:hover {
+      background: rgba(255, 255, 255, 0.98);
+      border-color: rgba(61, 92, 203, 0.22);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(14, 14, 14, 0.04);
+    }
+
+    .movie-item-row.is-watched {
+      opacity: 0.52;
+      background: rgba(247, 246, 243, 0.4);
+      border-color: rgba(14, 14, 14, 0.04);
+    }
+
+    .movie-item-row.is-watched .movie-title {
+      text-decoration: line-through;
+      color: var(--mute);
+    }
+
+    /* Custom Checkbox */
+    .custom-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border: 1.8px solid rgba(14, 14, 14, 0.25);
+      border-radius: 7px;
+      outline: none;
+      cursor: pointer;
+      background-color: transparent;
+      display: inline-grid;
+      place-content: center;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .custom-checkbox:hover {
+      border-color: var(--journey);
+      background: rgba(61, 92, 203, 0.06);
+    }
+
+    .custom-checkbox:checked {
+      background-color: var(--journey);
+      border-color: var(--journey);
+    }
+
+    .custom-checkbox::before {
+      content: "";
+      width: 10px;
+      height: 6px;
+      border-left: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      transform: rotate(-45deg) translate(1px, -1px) scale(0);
+      transition: transform 0.15s var(--ease-back);
+    }
+
+    .custom-checkbox:checked::before {
+      transform: rotate(-45deg) translate(1px, -1px) scale(1);
+    }
+
+    /* Wishlist Card Styling */
+    .wishlist-card {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1.5px solid rgba(14, 14, 14, 0.07);
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(14, 14, 14, 0.04);
+      transition: transform 0.25s var(--ease-back),
+                  box-shadow 0.25s ease,
+                  border-color 0.25s ease,
+                  background-color 0.25s ease;
+      touch-action: pan-y;
+      user-select: none;
+    }
+
+    .wishlist-card:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.98);
+      border-color: rgba(61, 92, 203, 0.25);
+      box-shadow: 0 14px 36px rgba(14, 14, 14, 0.08);
+    }
+
+    /* SortableJS drag states */
+    .sortable-ghost {
+      opacity: 0.35 !important;
+      border: 2px dashed var(--journey) !important;
+      background: rgba(189, 216, 239, 0.25) !important;
+      transform: scale(0.98);
+    }
+
+    .sortable-chosen {
+      cursor: grabbing !important;
+      border-color: var(--journey) !important;
+    }
+
+    .sortable-drag {
+      cursor: grabbing !important;
+      opacity: 1 !important;
+      transform: scale(1.03) rotate(0.8deg) !important;
+      box-shadow: 0 24px 60px rgba(14, 14, 14, 0.18), 0 0 0 2px var(--journey) !important;
+      background: rgba(255, 255, 255, 0.98) !important;
+      z-index: 9999 !important;
+    }
+
+    /* Drag handle button */
+    .drag-handle {
+      cursor: grab;
+      touch-action: none;
+      transition: transform 0.2s var(--ease-back), color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .wishlist-card:hover .drag-handle {
+      color: var(--journey);
+    }
+
+    /* Badge Urgencies */
+    .badge-urgency-high {
+      background: rgba(239, 68, 68, 0.12);
+      color: #DC2626;
+      border: 1px solid rgba(239, 68, 68, 0.28);
+    }
+
+    .badge-urgency-medium {
+      background: rgba(245, 158, 11, 0.14);
+      color: #D97706;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-urgency-low {
+      background: rgba(107, 114, 128, 0.12);
+      color: #4B5563;
+      border: 1px solid rgba(107, 114, 128, 0.25);
+    }
+
+    /* Priority number pill */
+    .priority-pill {
+      font-family: 'Radio Canada Big', sans-serif;
+      font-weight: 700;
+      font-size: 12.5px;
+      letter-spacing: -0.02em;
+    }
+
+    /* Modal styling */
+    #itemModal, #movieModal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(14, 14, 14, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 16px;
+    }
+
+    #itemModal.active, #movieModal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--bg);
+      border: 1px solid rgba(14, 14, 14, 0.08);
+      border-radius: 24px;
+      box-shadow: 0 32px 80px rgba(14, 14, 14, 0.22);
+      transform: translateY(18px) scale(0.97);
+      transition: transform 0.3s var(--ease-back);
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    #itemModal.active .modal-box, #movieModal.active .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    /* Toast Notification */
+    #toastNotification {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(40px) scale(0.95);
+      background: var(--ink);
+      color: var(--bg);
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-size: 13.5px;
+      font-weight: 500;
+      box-shadow: 0 12px 36px rgba(14, 14, 14, 0.28);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.3s var(--ease-back), opacity 0.3s ease;
+    }
+
+    #toastNotification.show {
+      transform: translateX(-50%) translateY(0) scale(1);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Grid Background -->
+  <div class="bg-ambient-grid"></div>
+
+  <!-- Top Minimal Bar -->
+  <header class="top-minimal-bar">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <img src="assets/nadjacreative_logo.svg" alt="Nadja Logo" class="h-6 w-auto" onerror="this.style.display='none'" />
+        <span class="font-radio font-bold text-ink text-sm sm:text-base tracking-tight">Nadja's Bucket List</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="btnResetAll" type="button" class="px-3 py-1 text-xs font-medium text-mute hover:text-ink hover:bg-ink/5 rounded-xl transition-colors" title="Reset default data">
+          Reset Default
+        </button>
+        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Auto-save enabled"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="relative z-10 max-w-3xl mx-auto px-3.5 sm:px-6 py-6 sm:py-9">
+
+    <!-- Page Header Title -->
+    <div class="text-center mb-6 sm:mb-8">
+      <h1 class="font-serif italic font-normal text-3xl sm:text-4xl text-ink tracking-tight mb-1">
+        Nadja's Bucket List
+      </h1>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         #0 PINNED: BIOSKOP / CINEMA WATCHING LIST (DROPDOWN)
+    ═══════════════════════════════════════════════════════ -->
+    <section class="cinema-pinned-card mb-6 sm:mb-8" id="cinemaCard" aria-label="Bioskop Watching List">
+      <!-- Section Header (Clickable Accordion Toggle) -->
+      <div 
+        id="cinemaAccordionHeader" 
+        class="p-3.5 sm:p-5 flex items-center justify-between gap-2.5 sm:gap-3 cursor-pointer select-none hover:bg-white/40 transition-colors"
+        role="button"
+        tabindex="0"
+        aria-expanded="true"
+      >
+        <div class="flex items-center gap-2.5 sm:gap-3 flex-1 min-w-0">
+          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-journey text-white flex items-center justify-center text-xs sm:text-sm font-bold shadow-sm flex-shrink-0">
+            #0
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <h2 class="font-radio font-bold text-[15px] sm:text-lg text-ink leading-tight truncate">
+                🍿 Bioskop Watching List
+              </h2>
+              <span class="px-2 py-0.5 rounded-md bg-journey/10 text-journey font-semibold text-[10px] sm:text-[10.5px] uppercase tracking-wider">
+                Pinned
+              </span>
+            </div>
+            <p class="text-mute text-[11px] sm:text-xs mt-0.5 truncate">Daftar film bioskop wajib tonton mendatang</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0" onclick="event.stopPropagation()">
+          <span id="movieWatchedCount" class="text-[11px] sm:text-xs text-mute font-medium bg-white px-2 sm:px-2.5 py-1 rounded-lg border border-ink/8 shadow-2xs">
+            0 / 6 Ditonton
+          </span>
+          <button id="btnOpenAddMovie" type="button" class="px-2.5 sm:px-3 py-1 bg-journey text-white text-[11px] sm:text-xs font-medium rounded-lg hover:bg-journey/90 transition-colors flex items-center gap-1 shadow-sm">
+            <span>+ Film</span>
+          </button>
+          <div 
+            class="w-7 h-7 rounded-lg hover:bg-ink/5 flex items-center justify-center text-mute cursor-pointer"
+            onclick="document.getElementById('cinemaAccordionHeader').click()"
+            title="Buka / Tutup Daftar"
+          >
+            <svg class="cinema-chevron w-4 h-4 text-ink/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion Collapsible Body -->
+      <div class="cinema-accordion-body">
+        <div class="cinema-accordion-inner px-3.5 sm:px-5 pb-3.5 sm:pb-5">
+          <div class="border-t border-ink/6 pt-3 flex flex-col gap-2 sm:gap-2.5" id="movieListContainer">
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         #1 to #N: BUCKET LIST & GEAR (SORTABLE DRAG & DROP)
+    ═══════════════════════════════════════════════════════ -->
+    <section aria-label="Bucket List Items">
+      <!-- Controls & Count Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-2.5 mb-3.5 sm:mb-4 p-3 sm:p-3.5 rounded-2xl bg-white/75 backdrop-blur-md border border-ink/5 shadow-sm">
+        <div class="flex items-center gap-2 text-xs sm:text-sm text-mute">
+          <span class="font-semibold text-ink flex items-center gap-1.5">
+            <span id="totalItemsCount" class="px-2 py-0.5 rounded-md bg-ink/5 font-bold text-ink">0</span>
+            <span>Target &amp; Wishlist</span>
+          </span>
+          <span class="text-ink/20">•</span>
+          <span class="flex items-center gap-1 text-red-600 font-medium">
+            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+            <span id="highCount">0</span> High
+          </span>
+          <span class="text-ink/20">•</span>
+          <span class="flex items-center gap-1 text-amber-600 font-medium">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            <span id="medCount">0</span> Med
+          </span>
+        </div>
+
+        <button id="btnOpenAddModal" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-ink text-bg text-xs sm:text-sm font-medium rounded-xl hover:bg-journey transition-all shadow-sm active:scale-95">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Tambah Target</span>
+        </button>
+      </div>
+
+      <!-- Drag & Drop Wishlist Container -->
+      <div id="wishlistContainer" class="flex flex-col gap-2.5 sm:gap-3 min-h-[200px]" aria-label="Bucket list items">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="hidden text-center py-12 px-4 bg-white/40 rounded-3xl border border-dashed border-ink/15 my-4">
+        <div class="w-12 h-12 mx-auto mb-2.5 rounded-full bg-ink/5 flex items-center justify-center text-xl">
+          📦
+        </div>
+        <h3 class="font-radio font-semibold text-base text-ink mb-1">Belum ada target di Bucket List</h3>
+        <p class="text-mute text-xs mb-3.5">Tambahkan barang impian atau target tujuanmu!</p>
+        <button onclick="openItemModal()" class="px-4 py-1.5 bg-ink text-bg text-xs font-medium rounded-xl hover:bg-journey transition-colors">
+          + Tambah Target
+        </button>
+      </div>
+
+      <!-- Drag hint -->
+      <div class="mt-6 text-center">
+        <p class="text-[11px] sm:text-[11.5px] text-mute/80 flex items-center justify-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-mute/60" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="8.5" cy="6" r="1.5"/>
+            <circle cx="15.5" cy="6" r="1.5"/>
+            <circle cx="8.5" cy="12" r="1.5"/>
+            <circle cx="15.5" cy="12" r="1.5"/>
+            <circle cx="8.5" cy="18" r="1.5"/>
+            <circle cx="15.5" cy="18" r="1.5"/>
+          </svg>
+          <span>Tahan &amp; geser ikon handle di kanan kartu untuk atur urutan prioritas</span>
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL: ADD / EDIT TARGET & ITEM
+  ═══════════════════════════════════════════════════════ -->
+  <div id="itemModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box p-5 sm:p-6">
+      <div class="flex items-center justify-between mb-4 border-b border-ink/8 pb-3">
+        <h2 id="modalTitle" class="font-radio font-semibold text-lg text-ink">Tambah Target Baru</h2>
+        <button id="btnCloseModal" type="button" class="w-8 h-8 rounded-full bg-ink/5 hover:bg-ink/10 flex items-center justify-center text-mute hover:text-ink transition-colors" aria-label="Tutup modal">
+          ✕
+        </button>
+      </div>
+
+      <form id="itemForm" class="flex flex-col gap-3.5">
+        <input type="hidden" id="itemId" value="" />
+
+        <!-- Nama Barang / Target -->
+        <div>
+          <label for="inputName" class="block text-xs font-semibold text-ink uppercase tracking-wider mb-1">
+            Nama Target / Barang <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="inputName"
+            required
+            placeholder="Contoh: Jakarta Film Week 2026 / Sony A7C II"
+            class="w-full px-3.5 py-2 rounded-xl border border-ink/15 bg-white text-ink text-sm focus:outline-none focus:border-journey focus:ring-2 focus:ring-journey/20 transition-all"
+          />
+        </div>
+
+        <!-- Category & Price -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="inputCategory" class="block text-xs font-semibold text-ink uppercase tracking-wider mb-1">
+              Kategori / Tipe
+            </label>
+            <input
+              type="text"
+              id="inputCategory"
+              placeholder="Contoh: Festival & Travel / Camera"
+              class="w-full px-3.5 py-2 rounded-xl border border-ink/15 bg-white text-ink text-sm focus:outline-none focus:border-journey focus:ring-2 focus:ring-journey/20 transition-all"
+            />
+          </div>
+
+          <div>
+            <label for="inputPrice" class="block text-xs font-semibold text-ink uppercase tracking-wider mb-1">
+              Estimasi Budget / Harga
+            </label>
+            <input
+              type="text"
+              id="inputPrice"
+              placeholder="Contoh: Rp 1.500.000 (Tabungan)"
+              class="w-full px-3.5 py-2 rounded-xl border border-ink/15 bg-white text-ink text-sm focus:outline-none focus:border-journey focus:ring-2 focus:ring-journey/20 transition-all"
+            />
+          </div>
+        </div>
+
+        <!-- Urgency & Target Date -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="selectUrgency" class="block text-xs font-semibold text-ink uppercase tracking-wider mb-1">
+              Urgensi
+            </label>
+            <select
+              id="selectUrgency"
+              class="w-full px-3.5 py-2 rounded-xl border border-ink/15 bg-white text-ink text-sm focus:outline-none focus:border-journey focus:ring-2 focus:ring-journey/20 transition-all cursor-pointer"
+            >
+              <option value="High">🔥 High (Prioritas)</option>
+              <option value="Medium" selected>⚡ Medium (Sedang)</option>
+              <option value="Low">🌱 Low (Santai)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="inputDate" class="block text-xs font-semibold text-ink uppercase tracking-wider mb-1">
+              Target Waktu / Tanggal
+            </label>
+            <input
+              type="text"
+              id="inputDate"
+              placeholder="Contoh: Oktober 2026 / Q4 2026"
+              class="w-full px-3.5 py-2 rounded-xl border border-ink/15 bg-white text-ink text-sm focus:outline-none focus:border-journey focus:ring-2 focus:ring-journey/20 transition-all"
+            />
+          </div>
+        </div>
+
+        <!-- Thumbnail Path / URL -->
+        <div>
+          <label for="inputImage" class="block text-xs font-semibold text-ink uppercase tracking-wider mb-1">
+            Path / URL Foto <span class="text-mute font-normal text-[11px]">(Opsional - kosongkan untuk target/tujuan)</span>
+          </label>
+          <input
+            type="text"
+            id="inputImage"
+            placeholder="assets/sony-a7cii.jpg (kosongkan jika tanpa foto)"
+            class="w-full px-3.5 py-2 rounded-xl border border-ink/15 bg-white text-ink text-sm focus:outline-none focus:border-journey focus:ring-2 focus:ring-journey/20 transition-all"
+          />
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label for="inputNotes" class="block text-xs font-semibold text-ink uppercase tracking-wider mb-1">
+            Catatan / Rencana
+          </label>
+          <textarea
+            id="inputNotes"
+            rows="2"
+            placeholder="Contoh: Tabungan akomodasi, transport & tiket event..."
+            class="w-full px-3.5 py-2 rounded-xl border border-ink/15 bg-white text-ink text-sm focus:outline-none focus:border-journey focus:ring-2 focus:ring-journey/20 transition-all resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="flex items-center justify-end gap-2 mt-2 pt-3 border-t border-ink/8">
+          <button
+            type="button"
+            id="btnCancelModal"
+            class="px-4 py-2 rounded-xl text-xs font-medium text-mute hover:text-ink hover:bg-ink/5 transition-colors"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 rounded-xl text-xs font-medium bg-ink text-bg hover:bg-journey transition-all shadow-sm"
+          >
+            Simpan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL: ADD / EDIT MOVIE
+  ═══════════════════════════════════════════════════════ -->
+  <div id="movieModal" role="dialog" aria-modal="true" aria-labelledby="movieModalTitle">
+    <div class="modal-box p-5 sm:p-6">
+      <div class="flex items-center justify-between mb-4 border-b border-ink/8 pb-3">
+        <h2 id="movieModalTitle" class="font-radio font-semibold text-lg text-ink">Tambah Film Bioskop</h2>
+        <button id="btnCloseMovieModal" type="button" class="w-8 h-8 rounded-full bg-ink/5 hover:bg-ink/10 flex items-center justify-center text-mute hover:text-ink transition-colors" aria-label="Tutup modal">
+          ✕
+        </button>
+      </div>
+
+      <form id="movieForm" class="flex flex-col gap-3.5">
+        <input type="hidden" id="movieId" value="" />
+
+        <div>
+          <label for="inputMovieTitle" class="block text-xs font-semibold text-ink uppercase tracking-wider mb-1">
+            Judul Film <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="inputMovieTitle"
+            required
+            placeholder="Contoh: Operasi Pesta Copet"
+            class="w-full px-3.5 py-2 rounded-xl border border-ink/15 bg-white text-ink text-sm focus:outline-none focus:border-journey focus:ring-2 focus:ring-journey/20 transition-all"
+          />
+        </div>
+
+        <div>
+          <label for="inputMovieDirector" class="block text-xs font-semibold text-ink uppercase tracking-wider mb-1">
+            Director / Sutradara <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="inputMovieDirector"
+            required
+            placeholder="Contoh: Edy Khemod"
+            class="w-full px-3.5 py-2 rounded-xl border border-ink/15 bg-white text-ink text-sm focus:outline-none focus:border-journey focus:ring-2 focus:ring-journey/20 transition-all"
+          />
+        </div>
+
+        <div>
+          <label for="inputMovieDate" class="block text-xs font-semibold text-ink uppercase tracking-wider mb-1">
+            Tanggal Tayang
+          </label>
+          <input
+            type="text"
+            id="inputMovieDate"
+            placeholder="Contoh: Mulai 27 Agustus 2026"
+            class="w-full px-3.5 py-2 rounded-xl border border-ink/15 bg-white text-ink text-sm focus:outline-none focus:border-journey focus:ring-2 focus:ring-journey/20 transition-all"
+          />
+        </div>
+
+        <div>
+          <label for="inputMovieTag" class="block text-xs font-semibold text-ink uppercase tracking-wider mb-1">
+            Info Tambahan (Produksi / Pemeran)
+          </label>
+          <input
+            type="text"
+            id="inputMovieTag"
+            placeholder="Contoh: Imajinari • Iqbaal Ramadhan"
+            class="w-full px-3.5 py-2 rounded-xl border border-ink/15 bg-white text-ink text-sm focus:outline-none focus:border-journey focus:ring-2 focus:ring-journey/20 transition-all"
+          />
+        </div>
+
+        <div class="flex items-center justify-end gap-2 mt-2 pt-3 border-t border-ink/8">
+          <button
+            type="button"
+            id="btnCancelMovieModal"
+            class="px-4 py-2 rounded-xl text-xs font-medium text-mute hover:text-ink hover:bg-ink/5 transition-colors"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 rounded-xl text-xs font-medium bg-journey text-white hover:bg-journey/90 transition-all shadow-sm"
+          >
+            Simpan Film
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Feedback -->
+  <div id="toastNotification">
+    <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toastMessage">Tersimpan otomatis!</span>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    (() => {
+      'use strict';
+
+      const STORAGE_KEY_WISHLIST = 'nadja_bucket_list_v4';
+      const STORAGE_KEY_MOVIES = 'nadja_cinema_watchlist_v4';
+      const STORAGE_KEY_CINEMA_STATE = 'nadja_cinema_collapsed_v4';
+
+      // 1. Initial Movies Dataset (Pinned #0)
+      const DEFAULT_MOVIES = [
+        {
+          id: 'movie-1',
+          title: 'Operasi Pesta Copet',
+          director: 'Edy Khemod',
+          date: 'Mulai 27 Agustus 2026',
+          tag: 'Imajinari • Iqbaal Ramadhan, Kristo Immanuel',
+          watched: false
+        },
+        {
+          id: 'movie-2',
+          title: 'Agensi Rumah Tangga',
+          director: 'Naya Anindita',
+          date: 'Mulai 10 September 2026',
+          tag: 'Starvision • Enzy Storia, Afgansyah Reza',
+          watched: false
+        },
+        {
+          id: 'movie-3',
+          title: 'Gak Ada Matinya',
+          director: 'Etienne Caesar',
+          date: 'Mulai September 2026',
+          tag: 'MD Pictures • Oki Rengga, Mikha Tambayong',
+          watched: false
+        },
+        {
+          id: 'movie-4',
+          title: 'Memburu Pemangsa',
+          director: 'Umay Shahab',
+          date: 'Mulai 24 September 2026',
+          tag: 'Laura Basuki, Prilly Latuconsina, Taskya Namya',
+          watched: false
+        },
+        {
+          id: 'movie-5',
+          title: 'Filosofi Teras',
+          director: 'Affandi Abdul Rachman',
+          date: 'Coming Soon 2026 (TBA)',
+          tag: 'Karya Henry Manampiring • Sherina Munaf',
+          watched: false
+        },
+        {
+          id: 'movie-6',
+          title: 'Avengers: Doomsday',
+          director: 'Anthony & Joe Russo',
+          date: 'Desember 2026',
+          tag: 'Marvel Studios • Robert Downey Jr.',
+          watched: false
+        }
+      ];
+
+      // 2. Initial Bucket List Items (Gear, Festival Goals & Merchandise)
+      const DEFAULT_WISHLIST = [
+        {
+          id: 'item-1',
+          name: 'Sony Alpha 7C II (A7C II)',
+          category: 'Camera & Hybrid Video',
+          urgency: 'High',
+          date: 'Q4 2026',
+          price: 'Rp 31.999.000',
+          image: 'assets/sony-a7cii.jpg',
+          notes: 'Full-frame compact hybrid camera untuk videografi dan foto portofolio.',
+          acquired: false
+        },
+        {
+          id: 'item-2',
+          name: 'Jakarta Film Week 2026 (JFW 2026)',
+          category: 'Festival & Travel Fund',
+          urgency: 'High',
+          date: 'Oktober 2026',
+          price: 'Tabungan Transport & Makan',
+          image: '',
+          notes: 'Tabungan akomodasi, tiket & operasional makan untuk hadir di Jakarta Film Week.',
+          acquired: false
+        },
+        {
+          id: 'item-3',
+          name: 'JAFF 2026 (Jogja-NETPAC Asian Film Festival)',
+          category: 'Festival & Travel Fund',
+          urgency: 'High',
+          date: 'Nov - Des 2026',
+          price: 'Tabungan Transport & Akomodasi',
+          image: '',
+          notes: 'Tabungan festival pass, transport & akomodasi Jogja-NETPAC Asian Film Festival di Yogyakarta.',
+          acquired: false
+        },
+        {
+          id: 'item-4',
+          name: 'Sony E PZ 18-105mm F4 G OSS',
+          category: 'Cinema Power Zoom Lens',
+          urgency: 'High',
+          date: 'Q3 2026',
+          price: 'Rp 7.499.000',
+          image: 'assets/E PZ 18-105mm F4 G OSS.jpg',
+          notes: 'Power zoom lens serbaguna dengan Constant F4 aperture & Optical SteadyShot.',
+          acquired: false
+        },
+        {
+          id: 'item-5',
+          name: 'Director Cap — Aco Tenriyagelli',
+          category: 'Apparel & Filmmaker Merch',
+          urgency: 'High',
+          date: 'TBA',
+          price: 'Rp 250.000',
+          image: 'assets/director cap - aco tenriyagelli.jpeg',
+          notes: "Topi official 'Director' Aco Tenriyagelli untuk daily outfit & shooting di lapangan.",
+          acquired: false
+        },
+        {
+          id: 'item-6',
+          name: 'Sony E 11mm f/1.8 Ultra-Wide Lens',
+          category: 'Wide Prime Lens',
+          urgency: 'Medium',
+          date: 'Q4 2026',
+          price: 'Rp 7.800.000',
+          image: 'assets/sony e 11 mm.jpg',
+          notes: 'Lensa ultra-wide aperture lebar untuk cinematic vlogging & dynamic low-angle framing.',
+          acquired: false
+        },
+        {
+          id: 'item-7',
+          name: 'DJI Mini 5 Pro Drone',
+          category: 'Aerial Cinematography',
+          urgency: 'Medium',
+          date: '2026 / TBA',
+          price: 'Rp 16.500.000',
+          image: 'assets/dji mini 5 pro.webp',
+          notes: 'Drone compact lightweight untuk visual aerial landscape dan establishing shots.',
+          acquired: false
+        },
+        {
+          id: 'item-8',
+          name: 'Menyala Vest-ku (Imajinari x Agak Laen Vest)',
+          category: 'Official Merch & Apparel',
+          urgency: 'Medium',
+          date: 'TBA',
+          price: 'Rp 350.000',
+          image: 'assets/menyala vest ku imajinari vest.jpg',
+          notes: 'Official Vest Imajinari / Agak Laen "Menyala Vest-ku".',
+          acquired: false
+        },
+        {
+          id: 'item-9',
+          name: 'T-Shirt "Tunggu Aku Sukses Nanti" (List Profesi)',
+          category: 'Official Apparel & Merch',
+          urgency: 'Medium',
+          date: 'TBA',
+          price: 'Rp 220.000',
+          image: 'assets/tunggu aku sukses nanti tshirt list profesi.jpg',
+          notes: 'Kaos official "Tunggu Aku Sukses Nanti" List Profesi.',
+          acquired: false
+        },
+        {
+          id: 'item-10',
+          name: 'Buku: Seorang Anak yang Bersembunyi di Balik Topeng Superhero',
+          category: 'Books & Literature',
+          urgency: 'Medium',
+          date: 'September 2026',
+          price: 'Rp 115.000',
+          image: 'assets/buku-seorang anak yang bersembunyi di balik topeng superhero.jpg',
+          notes: 'Buku karya dr. Andreas Kurniawan, Sp.KJ tentang inner child & refleksi diri.',
+          acquired: false
+        },
+        {
+          id: 'item-11',
+          name: 'Sal Priadi Official Merchandise T-Shirt',
+          category: 'Official Band Merch',
+          urgency: 'Low',
+          date: 'TBA',
+          price: 'Rp 275.000',
+          image: 'assets/PalSriadi-Tshirt.webp',
+          notes: 'T-shirt official Sal Priadi (Mesra-mesraannya Kecil-kecilan Dulu era).',
+          acquired: false
+        },
+        {
+          id: 'item-12',
+          name: 'Hindia "Let Down" T-Shirt',
+          category: 'Official Band Merch',
+          urgency: 'Low',
+          date: 'TBA',
+          price: 'Rp 250.000',
+          image: 'assets/hindia-letdown-tshir.jpg',
+          notes: 'Official apparel Hindia / Baskara Putra (Lagipula Hidup Akan Berakhir).',
+          acquired: false
+        },
+        {
+          id: 'item-13',
+          name: 'Lomba Sihir "Yes" T-Shirt',
+          category: 'Official Band Merch',
+          urgency: 'Low',
+          date: 'TBA',
+          price: 'Rp 250.000',
+          image: 'assets/tshirt-lombasihiryes.jpg',
+          notes: 'Official merchandise T-Shirt Lomba Sihir.',
+          acquired: false
+        }
+      ];
+
+      // In-Memory State
+      let wishlistItems = [];
+      let movieItems = [];
+
+      // DOM Elements
+      const container = document.getElementById('wishlistContainer');
+      const cinemaCard = document.getElementById('cinemaCard');
+      const cinemaAccordionHeader = document.getElementById('cinemaAccordionHeader');
+      const movieListContainer = document.getElementById('movieListContainer');
+      const movieWatchedCountEl = document.getElementById('movieWatchedCount');
+      const emptyState = document.getElementById('emptyState');
+      const totalCountEl = document.getElementById('totalItemsCount');
+      const highCountEl = document.getElementById('highCount');
+      const medCountEl = document.getElementById('medCount');
+      const toastEl = document.getElementById('toastNotification');
+      const toastMsgEl = document.getElementById('toastMessage');
+
+      // Modals
+      const itemModal = document.getElementById('itemModal');
+      const itemForm = document.getElementById('itemForm');
+      const movieModal = document.getElementById('movieModal');
+      const movieForm = document.getElementById('movieForm');
+
+      // Toast Feedback
+      let toastTimer = null;
+      function showToast(message = 'Tersimpan otomatis!') {
+        if (!toastEl) return;
+        toastMsgEl.textContent = message;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastEl.classList.remove('show');
+        }, 2200);
+      }
+
+      // Load Data
+      function loadAllData() {
+        // Load Wishlist
+        try {
+          const savedWishlist = localStorage.getItem(STORAGE_KEY_WISHLIST);
+          if (savedWishlist) {
+            wishlistItems = JSON.parse(savedWishlist);
+          } else {
+            wishlistItems = [...DEFAULT_WISHLIST];
+            saveWishlist(false);
+          }
+        } catch (e) {
+          wishlistItems = [...DEFAULT_WISHLIST];
+        }
+
+        // Load Movies
+        try {
+          const savedMovies = localStorage.getItem(STORAGE_KEY_MOVIES);
+          if (savedMovies) {
+            movieItems = JSON.parse(savedMovies);
+          } else {
+            movieItems = [...DEFAULT_MOVIES];
+            saveMovies(false);
+          }
+        } catch (e) {
+          movieItems = [...DEFAULT_MOVIES];
+        }
+
+        // Load Cinema Accordion state
+        const isCollapsed = localStorage.getItem(STORAGE_KEY_CINEMA_STATE) === 'true';
+        if (cinemaCard) {
+          cinemaCard.classList.toggle('is-collapsed', isCollapsed);
+          cinemaAccordionHeader.setAttribute('aria-expanded', (!isCollapsed).toString());
+        }
+
+        renderMovies();
+        renderWishlist();
+      }
+
+      // Save Wishlist
+      function saveWishlist(notify = true) {
+        try {
+          localStorage.setItem(STORAGE_KEY_WISHLIST, JSON.stringify(wishlistItems));
+          if (notify) showToast('Urutan prioritas tersimpan!');
+        } catch (e) {}
+        updateWishlistStats();
+      }
+
+      // Save Movies
+      function saveMovies(notify = true) {
+        try {
+          localStorage.setItem(STORAGE_KEY_MOVIES, JSON.stringify(movieItems));
+          if (notify) showToast('Daftar bioskop tersimpan!');
+        } catch (e) {}
+        updateMovieStats();
+      }
+
+      // Update Movie Stats
+      function updateMovieStats() {
+        const watched = movieItems.filter(m => m.watched).length;
+        const total = movieItems.length;
+        if (movieWatchedCountEl) {
+          movieWatchedCountEl.textContent = `${watched} / ${total} Ditonton`;
+        }
+      }
+
+      // Render Cinema Watching List
+      function renderMovies() {
+        movieListContainer.innerHTML = '';
+
+        movieItems.forEach((movie) => {
+          const row = document.createElement('div');
+          row.className = `movie-item-row p-3 sm:p-3.5 flex items-center justify-between gap-2.5 sm:gap-3 ${movie.watched ? 'is-watched' : ''}`;
+          row.dataset.id = movie.id;
+
+          row.innerHTML = `
+            <!-- Left Box: Title & Director -->
+            <div class="flex-1 min-w-0 pr-1.5 sm:pr-2">
+              <h3 class="movie-title font-radio font-bold text-[13.5px] sm:text-[15.5px] text-ink leading-snug truncate">
+                ${movie.title}
+              </h3>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-mute mt-0.5">
+                <span class="font-medium text-ink/80 text-[11.5px] sm:text-xs">Director: <strong class="font-semibold text-journey">${movie.director}</strong></span>
+                ${movie.tag ? `<span class="text-ink/20 hidden sm:inline">•</span><span class="truncate text-[11px] text-mute/80 hidden sm:inline">${movie.tag}</span>` : ''}
+              </div>
+            </div>
+
+            <!-- Right Box: Release Date & Checklist -->
+            <div class="flex items-center gap-2 sm:gap-3.5 flex-shrink-0">
+              <!-- Date Tag -->
+              <div class="text-right">
+                <span class="inline-flex items-center gap-1 text-[10.5px] sm:text-xs font-semibold px-2 sm:px-2.5 py-1 rounded-lg bg-journey/10 text-journey">
+                  <svg class="w-3 h-3 text-journey/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  <span>${movie.date || 'TBA'}</span>
+                </span>
+              </div>
+
+              <!-- Interactive Checkbox & Delete -->
+              <div class="flex items-center gap-1">
+                <input
+                  type="checkbox"
+                  class="custom-checkbox"
+                  ${movie.watched ? 'checked' : ''}
+                  onchange="window.toggleMovieWatched('${movie.id}', this.checked)"
+                  title="Tandai sudah ditonton"
+                  aria-label="Tandai sudah ditonton"
+                />
+                
+                <button
+                  type="button"
+                  onclick="window.deleteMovie('${movie.id}')"
+                  class="w-6 h-6 rounded-md text-mute/40 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors text-xs"
+                  title="Hapus film"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          `;
+
+          movieListContainer.appendChild(row);
+        });
+
+        updateMovieStats();
+      }
+
+      // Global Action: Toggle Movie Watched
+      window.toggleMovieWatched = function(id, isWatched) {
+        const item = movieItems.find(m => m.id === id);
+        if (item) {
+          item.watched = isWatched;
+          renderMovies();
+          saveMovies(true);
+        }
+      };
+
+      // Global Action: Delete Movie
+      window.deleteMovie = function(id) {
+        const item = movieItems.find(m => m.id === id);
+        if (!item) return;
+        if (confirm(`Hapus "${item.title}" dari daftar tontonan?`)) {
+          movieItems = movieItems.filter(m => m.id !== id);
+          renderMovies();
+          saveMovies(true);
+        }
+      };
+
+      // Cinema Accordion Click Toggle
+      if (cinemaAccordionHeader && cinemaCard) {
+        cinemaAccordionHeader.addEventListener('click', () => {
+          const isCollapsed = cinemaCard.classList.toggle('is-collapsed');
+          cinemaAccordionHeader.setAttribute('aria-expanded', (!isCollapsed).toString());
+          try {
+            localStorage.setItem(STORAGE_KEY_CINEMA_STATE, isCollapsed.toString());
+          } catch (e) {}
+        });
+
+        cinemaAccordionHeader.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            cinemaAccordionHeader.click();
+          }
+        });
+      }
+
+      // Update Wishlist Stats
+      function updateWishlistStats() {
+        const total = wishlistItems.length;
+        const high = wishlistItems.filter(i => i.urgency === 'High' && !i.acquired).length;
+        const med = wishlistItems.filter(i => i.urgency === 'Medium' && !i.acquired).length;
+
+        if (totalCountEl) totalCountEl.textContent = total;
+        if (highCountEl) highCountEl.textContent = high;
+        if (medCountEl) medCountEl.textContent = med;
+
+        if (total === 0) {
+          container.classList.add('hidden');
+          emptyState.classList.remove('hidden');
+        } else {
+          container.classList.remove('hidden');
+          emptyState.classList.add('hidden');
+        }
+      }
+
+      // Helper for Urgency Badge
+      function getUrgencyBadge(urgency) {
+        if (urgency === 'High') {
+          return '<span class="badge-urgency-high px-2 py-0.5 rounded-full text-[10px] sm:text-[10.5px] font-semibold tracking-wide"> High</span>';
+        } else if (urgency === 'Medium') {
+          return '<span class="badge-urgency-medium px-2 py-0.5 rounded-full text-[10px] sm:text-[10.5px] font-semibold tracking-wide"> Medium</span>';
+        } else {
+          return '<span class="badge-urgency-low px-2 py-0.5 rounded-full text-[10px] sm:text-[10.5px] font-semibold tracking-wide"> Low</span>';
+        }
+      }
+
+      // Helper for Guaranteed Stable Thumbnail Box
+      function getThumbnailHTML(item) {
+        if (item.image && item.image.trim() !== '') {
+          return `
+            <div class="thumb-box">
+              <img
+                src="${item.image}"
+                alt="${item.name}"
+                class="thumb-img"
+                loading="lazy"
+                onerror="this.parentElement.outerHTML='<div class=\\'thumb-icon-box\\'>🎯</div>'"
+              />
+            </div>
+          `;
+        }
+
+        const isFestival = item.name.toLowerCase().includes('film') || item.name.toLowerCase().includes('festival') || item.name.toLowerCase().includes('jfw') || item.name.toLowerCase().includes('jaff');
+        const iconChar = isFestival ? '🎟️' : '🎯';
+        
+        return `
+          <div class="thumb-icon-box">
+            ${iconChar}
+          </div>
+        `;
+      }
+
+      // Render Wishlist Cards
+      function renderWishlist() {
+        container.innerHTML = '';
+
+        wishlistItems.forEach((item, index) => {
+          const card = document.createElement('article');
+          card.className = `wishlist-card p-3 sm:p-4 flex items-center justify-between gap-2.5 sm:gap-3.5 ${item.acquired ? 'opacity-60' : ''}`;
+          card.dataset.id = item.id;
+
+          card.innerHTML = `
+            <!-- Left Side: Priority Rank & Thumbnail (Fixed & Stable) -->
+            <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+              <!-- Priority Rank Number -->
+              <div class="flex flex-col items-center justify-center w-6.5 h-6.5 sm:w-8 sm:h-8 rounded-full bg-ink/5 border border-ink/10 text-ink/80 priority-pill flex-shrink-0">
+                #${index + 1}
+              </div>
+
+              <!-- Item Thumbnail / Goal Icon -->
+              ${getThumbnailHTML(item)}
+            </div>
+
+            <!-- Middle Area: Info, Badges, Date, Price -->
+            <div class="flex-1 min-w-0 pr-1">
+              <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                ${getUrgencyBadge(item.urgency)}
+                ${item.category ? `<span class="px-2 py-0.5 rounded-md bg-ink/5 text-mute text-[10px] sm:text-[10.5px] font-medium truncate max-w-[140px] sm:max-w-none">${item.category}</span>` : ''}
+              </div>
+
+              <h3 class="font-radio font-bold text-[14px] sm:text-[16px] text-ink leading-snug truncate">
+                ${item.name}
+              </h3>
+
+              <div class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[11.5px] sm:text-xs text-mute mt-0.5">
+                ${item.date ? `
+                  <span class="inline-flex items-center gap-1">
+                    <svg class="w-3 h-3 text-mute/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span>${item.date}</span>
+                  </span>
+                ` : ''}
+
+                ${item.price ? `
+                  <span class="inline-flex items-center gap-1 font-semibold text-ink/85">
+                    <span class="text-gold">🏷️</span>
+                    <span class="truncate">${item.price}</span>
+                  </span>
+                ` : ''}
+              </div>
+
+              ${item.notes ? `<p class="text-[11px] sm:text-xs text-mute/80 italic mt-0.5 line-clamp-1">${item.notes}</p>` : ''}
+            </div>
+
+            <!-- Right Side: Edit, Delete & Drag Handle -->
+            <div class="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+              <button
+                type="button"
+                onclick="window.editWishlistItem('${item.id}')"
+                class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl text-mute hover:text-ink hover:bg-ink/5 flex items-center justify-center transition-colors"
+                title="Edit target"
+              >
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                onclick="window.deleteWishlistItem('${item.id}')"
+                class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl text-mute hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition-colors"
+                title="Hapus target"
+              >
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+
+              <!-- Drag Handle Grip -->
+              <div
+                class="drag-handle w-7.5 h-8.5 sm:w-8 sm:h-9 rounded-xl flex items-center justify-center text-mute/50 hover:text-journey hover:bg-journey/10 transition-colors cursor-grab active:cursor-grabbing ml-0.5"
+                title="Tahan & geser untuk atur prioritas"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="8.5" cy="6" r="1.7"/>
+                  <circle cx="15.5" cy="6" r="1.7"/>
+                  <circle cx="8.5" cy="12" r="1.7"/>
+                  <circle cx="15.5" cy="12" r="1.7"/>
+                  <circle cx="8.5" cy="18" r="1.7"/>
+                  <circle cx="15.5" cy="18" r="1.7"/>
+                </svg>
+              </div>
+            </div>
+          `;
+
+          container.appendChild(card);
+        });
+
+        updateWishlistStats();
+      }
+
+      // Initialize SortableJS
+      function initSortable() {
+        if (!container || typeof Sortable === 'undefined') return;
+
+        Sortable.create(container, {
+          handle: '.drag-handle',
+          animation: 250,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+          ghostClass: 'sortable-ghost',
+          chosenClass: 'sortable-chosen',
+          dragClass: 'sortable-drag',
+          forceFallback: false,
+          onEnd: function () {
+            const newOrderIds = Array.from(container.children).map(child => child.dataset.id);
+            wishlistItems.sort((a, b) => newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id));
+
+            Array.from(container.children).forEach((card, idx) => {
+              const pill = card.querySelector('.priority-pill');
+              if (pill) pill.textContent = `#${idx + 1}`;
+            });
+
+            saveWishlist(true);
+          }
+        });
+      }
+
+      // Modal Controls for Gear / Target Item
+      window.openItemModal = function (isEdit = false) {
+        document.getElementById('modalTitle').textContent = isEdit ? 'Edit Target' : 'Tambah Target Baru';
+        itemModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => document.getElementById('inputName').focus(), 100);
+      };
+
+      function closeItemModal() {
+        itemModal.classList.remove('active');
+        document.body.style.overflow = '';
+        itemForm.reset();
+        document.getElementById('itemId').value = '';
+      }
+
+      // Modal Controls for Movie
+      window.openMovieModal = function () {
+        movieModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => document.getElementById('inputMovieTitle').focus(), 100);
+      };
+
+      function closeMovieModal() {
+        movieModal.classList.remove('active');
+        document.body.style.overflow = '';
+        movieForm.reset();
+        document.getElementById('movieId').value = '';
+      }
+
+      // Global Action: Delete Gear / Target Item
+      window.deleteWishlistItem = function (id) {
+        const item = wishlistItems.find(i => i.id === id);
+        if (!item) return;
+
+        if (confirm(`Hapus "${item.name}" dari Bucket List?`)) {
+          wishlistItems = wishlistItems.filter(i => i.id !== id);
+          renderWishlist();
+          saveWishlist(true);
+        }
+      };
+
+      // Global Action: Edit Gear / Target Item
+      window.editWishlistItem = function (id) {
+        const item = wishlistItems.find(i => i.id === id);
+        if (!item) return;
+
+        document.getElementById('itemId').value = item.id;
+        document.getElementById('inputName').value = item.name || '';
+        document.getElementById('inputCategory').value = item.category || '';
+        document.getElementById('inputPrice').value = item.price || '';
+        document.getElementById('selectUrgency').value = item.urgency || 'Medium';
+        document.getElementById('inputDate').value = item.date || '';
+        document.getElementById('inputImage').value = item.image || '';
+        document.getElementById('inputNotes').value = item.notes || '';
+
+        openItemModal(true);
+      };
+
+      // Form Submits
+      itemForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const id = document.getElementById('itemId').value.trim();
+        const name = document.getElementById('inputName').value.trim();
+        const category = document.getElementById('inputCategory').value.trim();
+        const price = document.getElementById('inputPrice').value.trim();
+        const urgency = document.getElementById('selectUrgency').value;
+        const date = document.getElementById('inputDate').value.trim();
+        const image = document.getElementById('inputImage').value.trim();
+        const notes = document.getElementById('inputNotes').value.trim();
+
+        if (!name) return;
+
+        if (id) {
+          const index = wishlistItems.findIndex(i => i.id === id);
+          if (index !== -1) {
+            wishlistItems[index] = {
+              ...wishlistItems[index],
+              name, category, price, urgency, date, image, notes
+            };
+          }
+        } else {
+          wishlistItems.unshift({
+            id: 'item-' + Date.now(),
+            name, category, price, urgency, date: date || 'TBA', image, notes, acquired: false
+          });
+        }
+
+        renderWishlist();
+        saveWishlist(true);
+        closeItemModal();
+      });
+
+      movieForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const title = document.getElementById('inputMovieTitle').value.trim();
+        const director = document.getElementById('inputMovieDirector').value.trim();
+        const date = document.getElementById('inputMovieDate').value.trim();
+        const tag = document.getElementById('inputMovieTag').value.trim();
+
+        if (!title || !director) return;
+
+        movieItems.push({
+          id: 'movie-' + Date.now(),
+          title,
+          director,
+          date: date || 'TBA',
+          tag,
+          watched: false
+        });
+
+        renderMovies();
+        saveMovies(true);
+        closeMovieModal();
+      });
+
+      // Event Listeners
+      document.getElementById('btnOpenAddModal').addEventListener('click', () => openItemModal(false));
+      document.getElementById('btnCloseModal').addEventListener('click', closeItemModal);
+      document.getElementById('btnCancelModal').addEventListener('click', closeItemModal);
+
+      document.getElementById('btnOpenAddMovie').addEventListener('click', openMovieModal);
+      document.getElementById('btnCloseMovieModal').addEventListener('click', closeMovieModal);
+      document.getElementById('btnCancelMovieModal').addEventListener('click', closeMovieModal);
+
+      itemModal.addEventListener('click', e => { if (e.target === itemModal) closeItemModal(); });
+      movieModal.addEventListener('click', e => { if (e.target === movieModal) closeMovieModal(); });
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          closeItemModal();
+          closeMovieModal();
+        }
+      });
+
+      // Reset All Data
+      document.getElementById('btnResetAll').addEventListener('click', () => {
+        if (confirm('Kembalikan seluruh daftar Bucket List dan Film ke default awal?')) {
+          wishlistItems = [...DEFAULT_WISHLIST];
+          movieItems = [...DEFAULT_MOVIES];
+          renderMovies();
+          renderWishlist();
+          saveMovies(false);
+          saveWishlist(true);
+        }
+      });
+
+      // Init on Load
+      loadAllData();
+      initSortable();
+
+    })();
+  </script>
+
+</body>
+</html>
