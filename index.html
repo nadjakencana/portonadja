@@ -444,7 +444,7 @@
       border-radius: clamp(24px, 4vw, 40px);
       overflow: hidden;
       background-color: var(--milestone-card);
-      background-image: url('assets/kuning_milestones.png');
+      background-image: url('assets/kuning_milestones.webp');
       background-repeat: repeat;
       background-size: 1226px 712px;
       background-position: center;
@@ -1574,14 +1574,14 @@
       flex: 0 0 25%;
       width: 25%;
     }
-    .gjls-tile img {
+    .gjls-tile img, .gjls-tile video {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
       transition: transform 0.35s ease;
     }
-    .gjls-tile:hover img {
+    .gjls-tile:hover img, .gjls-tile:hover video {
       transform: scale(1.03);
     }
     .gjls-tile.tile-standalone {
@@ -2226,50 +2226,6 @@
       .film-cell, .floating-clapper { animation: none !important; }
     }
 
-    /* ── SHUTTER INTRO LOADING ── */
-    #shutter-loader {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo);
-    }
-    #shutter-loader .loader-reticle {
-      width: 140px;
-      height: 140px;
-      border: 1px dashed rgba(14, 14, 14, 0.2);
-      border-radius: 50%;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.6s var(--ease-back), border-color 0.4s ease;
-    }
-    #shutter-loader .loader-reticle::before {
-      content: '';
-      width: 60px;
-      height: 60px;
-      border: 2px solid var(--ink);
-      border-radius: 50%;
-      transition: transform 0.4s var(--ease-back), border-color 0.4s ease;
-    }
-    #shutter-loader.loaded {
-      opacity: 0;
-      transform: scale(1.05);
-      pointer-events: none;
-    }
-    #shutter-loader.loaded .loader-reticle {
-      transform: scale(0.85);
-      border-color: #10B981;
-    }
-    #shutter-loader.loaded .loader-reticle::before {
-      border-color: #10B981;
-      transform: scale(0.9);
-    }
-
     /* ── TEXT WHEEL (with dynamic width) ── */
     .text-wheel-wrap {
       display: inline-block;
@@ -2526,14 +2482,41 @@
       box-shadow: 0 16px 40px rgba(14, 14, 14, 0.10);
       border-color: rgba(199, 174, 63, 0.35);
     }
+    .testimonial-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(14, 14, 14, 0.05);
+      color: #0E0E0E;
+      font-size: 12px;
+      font-family: var(--f-radio);
+      font-weight: 500;
+      text-decoration: none;
+      width: fit-content;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .testimonial-link:hover {
+      background: rgba(14, 14, 14, 0.1);
+      transform: translateY(-1px);
+    }
+    .testimonial-link svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      opacity: 0.8;
+      transition: transform 0.2s ease;
+    }
+    .testimonial-link:hover svg {
+      transform: scale(1.1);
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Cinematic Shutter Loader -->
-  <div id="shutter-loader">
-    <div class="loader-reticle"></div>
-  </div>
 
 
   <nav id="navbar" role="navigation" aria-label="Main navigation">
@@ -2638,7 +2621,7 @@
 
         <article class="milestone-media reveal">
           <img
-            src="assets/serahterimapoint9.jpg"
+            src="assets/serahterimapoint9.webp"
             alt="Tim Nadja menerima hadiah dari Point Coffee bersama staf toko"
             loading="lazy"
           />
@@ -2772,7 +2755,7 @@
 
     <div class="skills-taskbar reveal" style="transition-delay:0.16s" role="list" aria-label="Software tools">
       <div class="taskbar-icon" role="listitem">
-        <img src="assets/logo-aplikasi/DaVinci_Resolve_Studio.png" alt="DaVinci Resolve"
+        <img src="assets/logo-aplikasi/DaVinci_Resolve_Studio.webp" alt="DaVinci Resolve"
              onerror="this.src='https://placehold.co/48x48/1a1a2e/FFFFFF?text=DR'" />
         <div class="taskbar-tooltip">DaVinci Resolve</div>
       </div>
@@ -2886,8 +2869,6 @@
        paste di dalam slider yang sesuai, ganti src + teks.
   ═══════════════════════════════════════════════════════ -->
   <section id="vault" aria-label="The Vault">
-    <div class="film-cell vault-cell-1">TAKE 01</div>
-    <div class="film-cell vault-cell-2">SAFETY FILM</div>
 
     <h2 class="vault-title reveal letter-split-title">portfolio</h2>
 
@@ -3137,7 +3118,7 @@
                  role="button"
                  tabindex="0"
                  aria-label="Lihat album grabstill GJLS">
-              <img src="assets/GJLS/gjlsslide1.jpg" alt="GJLS Slide 1 Cover" loading="lazy" />
+              <img src="assets/GJLS/gjlsslide1.webp" alt="GJLS Slide 1 Cover" loading="lazy" />
               <div class="collage-badge">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                 <span>7 Slide • Carousel</span>
@@ -3211,7 +3192,7 @@
 
           <div class="photo-item">
             <div class="photo-frame">
-              <img src="assets/futsalpsiums24.jpg" alt="Logo Tim Futsal Psikologi UMS 2024"
+              <img src="assets/futsalpsiums24.webp" alt="Logo Tim Futsal Psikologi UMS 2024"
                    onerror="this.src='https://placehold.co/600x750/0E0E0E/F7F6F3?text=Design'" loading="lazy" />
             </div>
             <div class="photo-info"><h4>Logo Design</h4><p>Logo Tim Futsal Psikologi UMS 2024</p></div>
@@ -3219,7 +3200,7 @@
 
           <div class="photo-item">
             <div class="photo-frame">
-              <img src="assets/psdmbempolines.jpg" alt="Logo PSDM BEM Polines"
+              <img src="assets/psdmbempolines.webp" alt="Logo PSDM BEM Polines"
                    onerror="this.src='https://placehold.co/600x750/0E0E0E/F7F6F3?text=Design'" loading="lazy" />
             </div>
             <div class="photo-info"><h4>Logo Design</h4><p>Logo PSDM BEM Polines Kabinet Lentera Asa</p></div>
@@ -3250,7 +3231,6 @@
 
 
   <!-- Instagram embed script — load after page renders -->
-  <script async src="//www.instagram.com/embed.js"></script>
 
 
   <!-- ═══════════════════════════════════════════════════════
@@ -3270,7 +3250,7 @@
            onclick="openCertModal('mtcna')"
            data-cert="mtcna"
            data-title="MTCNA — MikroTik Certified Network Associate"
-           data-img="assets/sertifikat/mtcna.jpg"
+           data-img="assets/sertifikat/mtcna.webp"
            role="button" tabindex="0" aria-label="Lihat sertifikat MTCNA">
         <div class="cert-badge">🌐</div>
         <div class="cert-info">
@@ -3284,7 +3264,7 @@
            onclick="openCertModal('mtcre')"
            data-cert="mtcre"
            data-title="MTCRE — MikroTik Certified Routing Engineer"
-           data-img="assets/sertifikat/mtcre.jpg"
+           data-img="assets/sertifikat/mtcre.webp"
            role="button" tabindex="0" aria-label="Lihat sertifikat MTCRE">
         <div class="cert-badge">🔀</div>
         <div class="cert-info">
@@ -3298,7 +3278,7 @@
            onclick="openCertModal('dbdesign')"
            data-cert="dbdesign"
            data-title="Database Design — Oracle"
-           data-img="assets/sertifikat/database_design.jpg"
+           data-img="assets/sertifikat/database_design.webp"
            role="button" tabindex="0" aria-label="Lihat sertifikat Database Design Oracle">
         <div class="cert-badge">🗄️</div>
         <div class="cert-info">
@@ -3312,7 +3292,7 @@
            onclick="openCertModal('dbsql')"
            data-cert="dbsql"
            data-title="Database SQL — Oracle"
-           data-img="assets/sertifikat/database_sql.jpg"
+           data-img="assets/sertifikat/database_sql.webp"
            role="button" tabindex="0" aria-label="Lihat sertifikat Database SQL Oracle">
         <div class="cert-badge">📊</div>
         <div class="cert-info">
@@ -3326,7 +3306,7 @@
            onclick="openCertModal('cuan')"
            data-cert="cuan"
            data-title="Cuan dari Konten — ILUSYX CREATIVE"
-           data-img="assets/sertifikat/cuan_dari_konten.jpg"
+           data-img="assets/sertifikat/cuan_dari_konten.webp"
            role="button" tabindex="0" aria-label="Lihat sertifikat Cuan dari Konten">
         <div class="cert-badge">💡</div>
         <div class="cert-info">
@@ -3389,7 +3369,7 @@
                   <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.667.14-.54.215-1.1.215-1.683 0-3.39-2.76-6.15-6.15-6.15-.58 0-1.14.075-1.68.215C12.02 2.5 10.65 1.625 9.07 1.625c-3.39 0-6.15 2.76-6.15 6.15 0 .58.075 1.14.215 1.68C1.875 10.15 1 11.52 1 13.1c0 3.39 2.76 6.15 6.15 6.15.58 0 1.14-.075 1.68-.215 1.1 1.1 2.15 1.485 3.7 1.485 3.39 0 6.15-2.76 6.15-6.15 0-.58-.075-1.14-.215-1.68 1.273-.717 2.148-2.087 2.148-3.667zm-12.5 4l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z" />
                 </svg>
               </div>
-              <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Film Director, Screenwriter, Actor & Visual Storyteller</p>
+              <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Film Director, Screenwriter &amp; Visual Storyteller</p>
             </div>
           </div>
           
@@ -3400,7 +3380,7 @@
         </div>
 
         <!-- Instagram Link -->
-        <a href="https://www.instagram.com/reel/DacjjjEPNSL/?comment_id=17936839581302910" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-[#0E0E0E]/5 hover:bg-[#0E0E0E]/10 transition-colors group" aria-label="Lihat komentar asli di Instagram">
+        <a href="https://www.instagram.com/reel/DacjjjEPNSL/?comment_id=17936839581302910" target="_blank" rel="noopener noreferrer" class="testimonial-link" aria-label="Lihat komentar asli di Instagram">
           <svg class="w-4 h-4 text-[#0E0E0E]/80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
           </svg>
@@ -3409,7 +3389,7 @@
       </div>
 
       <!-- Card 2: Iyas Lawrence -->
-      <div class="testimonial-card reveal" style="transition-delay: 0.15s;">
+      <div class="testimonial-card reveal" style="transition-delay: 0.12s;">
         <div class="w-full flex flex-col gap-6">
           <!-- Profile Header -->
           <div class="flex items-center gap-4">
@@ -3421,7 +3401,7 @@
                   <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.667.14-.54.215-1.1.215-1.683 0-3.39-2.76-6.15-6.15-6.15-.58 0-1.14.075-1.68.215C12.02 2.5 10.65 1.625 9.07 1.625c-3.39 0-6.15 2.76-6.15 6.15 0 .58.075 1.14.215 1.68C1.875 10.15 1 11.52 1 13.1c0 3.39 2.76 6.15 6.15 6.15.58 0 1.14-.075 1.68-.215 1.1 1.1 2.15 1.485 3.7 1.485 3.39 0 6.15-2.76 6.15-6.15 0-.58-.075-1.14-.215-1.68 1.273-.717 2.148-2.087 2.148-3.667zm-12.5 4l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z" />
                 </svg>
               </div>
-              <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Founder & Host of Makna Talks, Podcaster & Creative Director</p>
+              <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Founder &amp; Host of Makna Talks, Podcaster, Actor &amp; Creative Director</p>
             </div>
           </div>
           
@@ -3432,7 +3412,7 @@
         </div>
 
         <!-- Instagram Link -->
-        <a href="https://www.instagram.com/iyaslawrence/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-[#0E0E0E]/5 hover:bg-[#0E0E0E]/10 transition-colors group" aria-label="Lihat profil Iyas Lawrence di Instagram">
+        <a href="https://www.instagram.com/iyaslawrence/" target="_blank" rel="noopener noreferrer" class="testimonial-link" aria-label="Lihat profil Iyas Lawrence di Instagram">
           <svg class="w-4 h-4 text-[#0E0E0E]/80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
           </svg>
@@ -3440,71 +3420,9 @@
         </a>
       </div>
 
-      <!-- Card 3: Paquita Genuschka -->
-      <div class="testimonial-card reveal" style="transition-delay: 0.25s;">
+      <!-- Card 3: Rigen Rakelna -->
+      <div class="testimonial-card reveal" style="transition-delay: 0.19s;">
         <div class="w-full flex flex-col gap-6">
-          <!-- Profile Header -->
-          <div class="flex items-center gap-4">
-            <img src="assets/photos/testimonials/paquita_genuschka.jpg" alt="Paquita Genuschka" class="w-14 h-14 rounded-full object-cover border border-[#0E0E0E]/10" />
-            <div>
-              <div class="flex items-center gap-1.5 mb-0.5">
-                <h3 class="font-radio font-medium text-[16px] md:text-[18px] text-[#0E0E0E] leading-tight blur-text">Paquita Genuschka</h3>
-              </div>
-              <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Radio Announcer, Podcaster &amp; Content Creator</p>
-            </div>
-          </div>
-          
-          <!-- Testimonial Text -->
-          <blockquote class="font-serif text-[18px] md:text-[21px] text-[#0E0E0E] italic leading-relaxed font-light blur-text">
-            "Konten kamu bagus bgt!!!"
-          </blockquote>
-        </div>
-
-        <!-- Instagram Link -->
-        <a href="https://www.instagram.com/pgenuschka/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-[#0E0E0E]/5 hover:bg-[#0E0E0E]/10 transition-colors group" aria-label="Lihat profil Paquita Genuschka di Instagram">
-          <svg class="w-4 h-4 text-[#0E0E0E]/80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-          </svg>
-          <span class="font-radio text-[12px] text-[#0E0E0E]/80 font-medium">View Profile</span>
-        </a>
-      </div>
-
-      <!-- Card 4: Kresna Julio -->
-      <div class="testimonial-card reveal" style="transition-delay: 0.35s;">
-        <div class="w-full flex flex-col gap-6">
-          <!-- Profile Header -->
-          <div class="flex items-center gap-4">
-            <img src="assets/photos/testimonials/kresna_julio.jpg" alt="Kresna Julio" class="w-14 h-14 rounded-full object-cover border border-[#0E0E0E]/10" />
-            <div>
-              <div class="flex items-center gap-1.5 mb-0.5">
-                <h3 class="font-radio font-medium text-[16px] md:text-[18px] text-[#0E0E0E] leading-tight blur-text">Kresna Julio</h3>
-                <svg class="w-[15px] h-[15px] text-[#0095f6] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-label="Verified Profile">
-                  <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.667.14-.54.215-1.1.215-1.683 0-3.39-2.76-6.15-6.15-6.15-.58 0-1.14.075-1.68.215C12.02 2.5 10.65 1.625 9.07 1.625c-3.39 0-6.15 2.76-6.15 6.15 0 .58.075 1.14.215 1.68C1.875 10.15 1 11.52 1 13.1c0 3.39 2.76 6.15 6.15 6.15.58 0 1.14-.075 1.68-.215 1.1 1.1 2.15 1.485 3.7 1.485 3.39 0 6.15-2.76 6.15-6.15 0-.58-.075-1.14-.215-1.68 1.273-.717 2.148-2.087 2.148-3.667zm-12.5 4l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z" />
-                </svg>
-              </div>
-              <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Radio Announcer, Podcaster &amp; Content Creator</p>
-            </div>
-          </div>
-          
-          <!-- Testimonial Text -->
-          <blockquote class="font-serif text-[18px] md:text-[21px] text-[#0E0E0E] italic leading-relaxed font-light blur-text">
-            "Baguss banget kontennya!!!"
-          </blockquote>
-        </div>
-
-        <!-- Instagram Link -->
-        <a href="https://www.instagram.com/kresnajulio/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-[#0E0E0E]/5 hover:bg-[#0E0E0E]/10 transition-colors group" aria-label="Lihat profil Kresna Julio di Instagram">
-          <svg class="w-4 h-4 text-[#0E0E0E]/80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-          </svg>
-          <span class="font-radio text-[12px] text-[#0E0E0E]/80 font-medium">View Profile</span>
-        </a>
-      </div>
-
-      <!-- Card 5: Rigen Rakelna -->
-      <div class="testimonial-card reveal" style="transition-delay: 0.45s;">
-        <div class="w-full flex flex-col gap-6">
-          <!-- Profile Header -->
           <div class="flex items-center gap-4">
             <img src="assets/photos/testimonials/rigen_rakelna.jpg" alt="Rigen Rakelna" class="w-14 h-14 rounded-full object-cover border border-[#0E0E0E]/10" />
             <div>
@@ -3517,26 +3435,21 @@
               <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Stand-up Comedian, Actor &amp; Content Creator</p>
             </div>
           </div>
-          
-          <!-- Testimonial Text -->
           <blockquote class="font-serif text-[18px] md:text-[21px] text-[#0E0E0E] italic leading-relaxed font-light blur-text">
             "Kereen deh!"
           </blockquote>
         </div>
-
-        <!-- Instagram Link -->
-        <a href="https://www.instagram.com/rigensih/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-[#0E0E0E]/5 hover:bg-[#0E0E0E]/10 transition-colors group" aria-label="Lihat profil Rigen Rakelna di Instagram">
-          <svg class="w-4 h-4 text-[#0E0E0E]/80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+        <a href="https://www.instagram.com/rigensih/" target="_blank" rel="noopener noreferrer" class="testimonial-link" aria-label="Lihat profil Rigen Rakelna di Instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
           </svg>
-          <span class="font-radio text-[12px] text-[#0E0E0E]/80 font-medium">View Profile</span>
+          <span>View Profile</span>
         </a>
       </div>
 
-      <!-- Card 6: Ananta Rispo -->
-      <div class="testimonial-card reveal" style="transition-delay: 0.55s;">
+      <!-- Card 4: Ananta Rispo -->
+      <div class="testimonial-card reveal" style="transition-delay: 0.26s;">
         <div class="w-full flex flex-col gap-6">
-          <!-- Profile Header -->
           <div class="flex items-center gap-4">
             <img src="assets/photos/testimonials/ananta_rispo.jpg" alt="Ananta Rispo" class="w-14 h-14 rounded-full object-cover border border-[#0E0E0E]/10" />
             <div>
@@ -3549,19 +3462,66 @@
               <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Stand-up Comedian, Actor &amp; Content Creator</p>
             </div>
           </div>
-          
-          <!-- Testimonial Text -->
           <blockquote class="font-serif text-[18px] md:text-[21px] text-[#0E0E0E] italic leading-relaxed font-light blur-text">
             "Salah satu contoh orang yang serius sama passion-nya. ...soalnya bagus videonya"
           </blockquote>
         </div>
-
-        <!-- Instagram Link -->
-        <a href="https://www.instagram.com/anantarispo/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-[#0E0E0E]/5 hover:bg-[#0E0E0E]/10 transition-colors group" aria-label="Lihat profil Ananta Rispo di Instagram">
-          <svg class="w-4 h-4 text-[#0E0E0E]/80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6…
+        <a href="https://www.instagram.com/anantarispo/" target="_blank" rel="noopener noreferrer" class="testimonial-link" aria-label="Lihat profil Ananta Rispo di Instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
           </svg>
-          <span class="font-radio text-[12px] text-[#0E0E0E]/80 font-medium">View Profile</span>
+          <span>View Profile</span>
+        </a>
+      </div>
+
+      <!-- Card 5: Kresna Julio -->
+      <div class="testimonial-card reveal" style="transition-delay: 0.33s;">
+        <div class="w-full flex flex-col gap-6">
+          <div class="flex items-center gap-4">
+            <img src="assets/photos/testimonials/kresna_julio.jpg" alt="Kresna Julio" class="w-14 h-14 rounded-full object-cover border border-[#0E0E0E]/10" />
+            <div>
+              <div class="flex items-center gap-1.5 mb-0.5">
+                <h3 class="font-radio font-medium text-[16px] md:text-[18px] text-[#0E0E0E] leading-tight blur-text">Kresna Julio</h3>
+                <svg class="w-[15px] h-[15px] text-[#0095f6] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-label="Verified Profile">
+                  <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.667.14-.54.215-1.1.215-1.683 0-3.39-2.76-6.15-6.15-6.15-.58 0-1.14.075-1.68.215C12.02 2.5 10.65 1.625 9.07 1.625c-3.39 0-6.15 2.76-6.15 6.15 0 .58.075 1.14.215 1.68C1.875 10.15 1 11.52 1 13.1c0 3.39 2.76 6.15 6.15 6.15.58 0 1.14-.075 1.68-.215 1.1 1.1 2.15 1.485 3.7 1.485 3.39 0 6.15-2.76 6.15-6.15 0-.58-.075-1.14-.215-1.68 1.273-.717 2.148-2.087 2.148-3.667zm-12.5 4l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z" />
+                </svg>
+              </div>
+              <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Radio Announcer, Podcaster, Actor &amp; Content Creator</p>
+            </div>
+          </div>
+          <blockquote class="font-serif text-[18px] md:text-[21px] text-[#0E0E0E] italic leading-relaxed font-light blur-text">
+            "Baguss banget kontennya!!!"
+          </blockquote>
+        </div>
+        <a href="https://www.instagram.com/kresnajulio/" target="_blank" rel="noopener noreferrer" class="testimonial-link" aria-label="Lihat profil Kresna Julio di Instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+          </svg>
+          <span>View Profile</span>
+        </a>
+      </div>
+
+      <!-- Card 6: Paquita Genuschka -->
+      <div class="testimonial-card reveal" style="transition-delay: 0.40s;">
+        <div class="w-full flex flex-col gap-6">
+          <div class="flex items-center gap-4">
+            <img src="assets/photos/testimonials/paquita_genuschka.jpg" alt="Paquita Genuschka" class="w-14 h-14 rounded-full object-cover border border-[#0E0E0E]/10" />
+            <div>
+              <div class="flex items-center gap-1.5 mb-0.5">
+                <h3 class="font-radio font-medium text-[16px] md:text-[18px] text-[#0E0E0E] leading-tight blur-text">Paquita Genuschka</h3>
+              </div>
+              <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Radio Announcer, Podcaster &amp; Content Creator</p>
+            </div>
+          </div>
+          <blockquote class="font-serif text-[18px] md:text-[21px] text-[#0E0E0E] italic leading-relaxed font-light blur-text">
+            "Konten kamu bagus bgt!!!"
+          </blockquote>
+        </div>
+        <a href="https://www.instagram.com/pgenuschka/" target="_blank" rel="noopener noreferrer" class="testimonial-link" aria-label="Lihat profil Paquita Genuschka di Instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+          </svg>
+          <span>View Profile</span>
         </a>
       </div>
     </div>
@@ -3757,28 +3717,80 @@
     document.querySelectorAll('.blur-text').forEach(wrapWords);
 
     /* ── 2. CURSOR RADIUS BLUR ── */
+    /* ── 2. CURSOR RADIUS BLUR (Zero Layout-Thrashing Optimized) ── */
     const RADIUS = 110, MAX_BLUR = 4;
     const hwEls = Array.from(document.querySelectorAll('.hw'));
     let mx = -9999, my = -9999, blurRaf = null;
+    let wordPositions = [];
+
+    function cacheWordPositions() {
+      const scrollX = window.scrollX;
+      const scrollY = window.scrollY;
+      wordPositions = hwEls.map(w => {
+        const r = w.getBoundingClientRect();
+        return {
+          el: w,
+          cx: r.left + scrollX + r.width / 2,
+          cy: r.top + scrollY + r.height / 2,
+          isBlurred: false
+        };
+      });
+    }
 
     function updateBlur() {
       blurRaf = null;
-      hwEls.forEach(w => {
-        const r = w.getBoundingClientRect();
-        const d = Math.hypot(mx - (r.left + r.width/2), my - (r.top + r.height/2));
-        w.style.filter = d < RADIUS ? `blur(${((1 - d/RADIUS)*MAX_BLUR).toFixed(2)}px)` : '';
-      });
+      const pageX = mx + window.scrollX;
+      const pageY = my + window.scrollY;
+      for (let i = 0; i < wordPositions.length; i++) {
+        const item = wordPositions[i];
+        const dx = Math.abs(pageX - item.cx);
+        if (dx > RADIUS) {
+          if (item.isBlurred) {
+            item.el.style.filter = '';
+            item.isBlurred = false;
+          }
+          continue;
+        }
+        const dy = Math.abs(pageY - item.cy);
+        if (dy > RADIUS) {
+          if (item.isBlurred) {
+            item.el.style.filter = '';
+            item.isBlurred = false;
+          }
+          continue;
+        }
+        const d = Math.hypot(dx, dy);
+        if (d < RADIUS) {
+          item.el.style.filter = `blur(${((1 - d / RADIUS) * MAX_BLUR).toFixed(2)}px)`;
+          item.isBlurred = true;
+        } else if (item.isBlurred) {
+          item.el.style.filter = '';
+          item.isBlurred = false;
+        }
+      }
     }
+
     window.addEventListener('mousemove', e => {
       mx = e.clientX; my = e.clientY;
       if (!blurRaf) blurRaf = requestAnimationFrame(updateBlur);
     }, { passive: true });
     window.addEventListener('mouseleave', () => {
       mx = -9999; my = -9999;
-      hwEls.forEach(w => { w.style.filter = ''; });
+      wordPositions.forEach(item => {
+        if (item.isBlurred) {
+          item.el.style.filter = '';
+          item.isBlurred = false;
+        }
+      });
     });
-    window.addEventListener('scroll',  () => { if (!blurRaf) blurRaf = requestAnimationFrame(updateBlur); }, { passive: true });
-    window.addEventListener('resize',  () => { if (!blurRaf) blurRaf = requestAnimationFrame(updateBlur); }, { passive: true });
+    window.addEventListener('scroll', () => {
+      if (!blurRaf) blurRaf = requestAnimationFrame(updateBlur);
+    }, { passive: true });
+    window.addEventListener('resize', () => {
+      cacheWordPositions();
+      if (!blurRaf) blurRaf = requestAnimationFrame(updateBlur);
+    }, { passive: true });
+    setTimeout(cacheWordPositions, 100);
 
     /* ── 3. NAVBAR GLASS ── */
     const navbar = document.getElementById('navbar');
@@ -4071,6 +4083,25 @@
       });
     });
 
+    /* ── 10B. LAZY LOAD INSTAGRAM EMBEDS ON DEMAND ── */
+    const vaultSec = document.getElementById('vault');
+    if (vaultSec) {
+      const ioVault = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          if (!window.instgrm) {
+            const s = document.createElement('script');
+            s.src = '//www.instagram.com/embed.js';
+            s.async = true;
+            document.body.appendChild(s);
+          } else if (window.instgrm.Embeds) {
+            window.instgrm.Embeds.process();
+          }
+          ioVault.disconnect();
+        }
+      }, { rootMargin: '350px' });
+      ioVault.observe(vaultSec);
+    }
+
     /* ── 11. MAGNETIC HOVER FOR SOCIAL LINKS ── */
 
     const socialLinks = document.querySelectorAll('.social-link');
@@ -4171,32 +4202,22 @@
       });
     });
 
-    /* ── 16. SHUTTER INTRO DISMISSAL ── */
-    const shutterLoader = document.getElementById('shutter-loader');
-    const dismissLoader = () => {
-      setTimeout(() => {
-        playFocusBeep();
-        if (shutterLoader) {
-          shutterLoader.classList.add('loaded');
-        }
-      }, 700);
-    };
 
-    if (document.readyState === 'loading') {
-      window.addEventListener('DOMContentLoaded', dismissLoader);
-    } else {
-      dismissLoader();
-    }
-
-    /* ── 17. FLOATING FILM CELLS PARALLAX ── */
+    /* ── 17. FLOATING FILM CELLS PARALLAX (Viewport Optimized) ── */
     const filmCells = document.querySelectorAll('.film-cell, .floating-clapper');
     let mCellX = 0, mCellY = 0;
+    let filmCellsVisible = false;
+    let filmCellsRaf = null;
     window.addEventListener('mousemove', e => {
       mCellX = (e.clientX - window.innerWidth / 2) * 0.015;
       mCellY = (e.clientY - window.innerHeight / 2) * 0.015;
-    });
+    }, { passive: true });
 
     function animateFilmCells() {
+      if (!filmCellsVisible) {
+        filmCellsRaf = null;
+        return;
+      }
       const scrollY = window.scrollY;
       filmCells.forEach((cell, idx) => {
         const factor = (idx + 1) * 0.35;
@@ -4205,10 +4226,16 @@
         const my = (mCellY * factor) + scrollOffset;
         cell.style.transform = `translate(${mx}px, ${my}px) rotate(${(idx % 2 === 0 ? 3 : -4) + scrollOffset * 0.04}deg)`;
       });
-      requestAnimationFrame(animateFilmCells);
+      filmCellsRaf = requestAnimationFrame(animateFilmCells);
     }
     if (filmCells.length && !reduceMotion) {
-      requestAnimationFrame(animateFilmCells);
+      const ioCells = new IntersectionObserver(entries => {
+        filmCellsVisible = entries.some(e => e.isIntersecting);
+        if (filmCellsVisible && !filmCellsRaf) {
+          filmCellsRaf = requestAnimationFrame(animateFilmCells);
+        }
+      }, { threshold: 0.05 });
+      filmCells.forEach(cell => ioCells.observe(cell));
     }
 
     /* ── 18. AUTOFOCUS ENTRY FLASH OBSERVER ── */
@@ -4524,8 +4551,14 @@
               };
               window.addEventListener('resize', resize);
               resize();
+              let isMilestoneInView = false;
+              let milestoneAnimId = null;
 
               function render() {
+                if (!isMilestoneInView) {
+                  milestoneAnimId = null;
+                  return;
+                }
                 const now = Date.now();
                 const delta = (now - lastTime) / 1000;
                 lastTime = now;
@@ -4537,9 +4570,19 @@
                 gl.uniform2f(resLocation, milestoneCanvas.width, milestoneCanvas.height);
                 gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-                animationFrameId = requestAnimationFrame(render);
+                milestoneAnimId = requestAnimationFrame(render);
               }
-              requestAnimationFrame(render);
+
+              const ioMilestone = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                  isMilestoneInView = entry.isIntersecting;
+                  if (isMilestoneInView && !milestoneAnimId) {
+                    lastTime = Date.now();
+                    milestoneAnimId = requestAnimationFrame(render);
+                  }
+                });
+              }, { threshold: 0.05 });
+              ioMilestone.observe(milestoneCardEl);
             }
           }
         }
@@ -4601,16 +4644,16 @@
         sub: '7 Slides Carousel',
         // Baris 1: Slide 1 (Cover), lalu Slide 2, 3, 4 menyambung rapat
         row1: [
-          { src: 'assets/GJLS/gjlsslide1.jpg', alt: 'GJLS Slide 1 (Cover)', standalone: true },
-          { src: 'assets/GJLS/gjlsslide2.jpg', alt: 'GJLS Slide 2 (Panorama Part 1)' },
-          { src: 'assets/GJLS/slide 3.gif', alt: 'GJLS Slide 3 GIF (Panorama Part 2)' },
-          { src: 'assets/GJLS/gjlsslide4.jpg', alt: 'GJLS Slide 4 (Panorama Part 3)' }
+          { src: 'assets/GJLS/gjlsslide1.webp', alt: 'GJLS Slide 1 (Cover)', standalone: true },
+          { src: 'assets/GJLS/gjlsslide2.webp', alt: 'GJLS Slide 2 (Panorama Part 1)' },
+          { src: 'assets/GJLS/slide_3.mp4', alt: 'GJLS Slide 3 (Panorama Part 2)', isVideo: true },
+          { src: 'assets/GJLS/gjlsslide4.webp', alt: 'GJLS Slide 4 (Panorama Part 3)' }
         ],
         // Baris 2: Slide 5, lalu Slide 6 dan 7 menyambung rapat
         row2: [
-          { src: 'assets/GJLS/slide 5.gif', alt: 'GJLS Slide 5 (Motion Grabstill GIF)', standalone: true },
-          { src: 'assets/GJLS/gjlsslide6.png', alt: 'GJLS Slide 6 (Panorama Part 1)' },
-          { src: 'assets/GJLS/gjlsslide7.png', alt: 'GJLS Slide 7 (Panorama Part 2)' }
+          { src: 'assets/GJLS/slide_5.mp4', alt: 'GJLS Slide 5 (Motion Grabstill)', standalone: true, isVideo: true },
+          { src: 'assets/GJLS/gjlsslide6.webp', alt: 'GJLS Slide 6 (Panorama Part 1)' },
+          { src: 'assets/GJLS/gjlsslide7.webp', alt: 'GJLS Slide 7 (Panorama Part 2)' }
         ]
       },
       'fidela': {
@@ -4649,7 +4692,9 @@
         album.row1.forEach(p => {
           const tile = document.createElement('div');
           tile.className = 'gjls-tile' + (p.standalone ? ' tile-standalone' : '');
-          tile.innerHTML = `<img src="${p.src}" alt="${p.alt}" loading="lazy" />`;
+          tile.innerHTML = p.isVideo
+            ? `<video src="${p.src}" autoplay loop muted playsinline></video>`
+            : `<img src="${p.src}" alt="${p.alt}" loading="lazy" />`;
           tile.onclick = () => window.open(p.src, '_blank');
           r1.appendChild(tile);
         });
@@ -4661,7 +4706,9 @@
         album.row2.forEach(p => {
           const tile = document.createElement('div');
           tile.className = 'gjls-tile' + (p.standalone ? ' tile-standalone' : '');
-          tile.innerHTML = `<img src="${p.src}" alt="${p.alt}" loading="lazy" />`;
+          tile.innerHTML = p.isVideo
+            ? `<video src="${p.src}" autoplay loop muted playsinline></video>`
+            : `<img src="${p.src}" alt="${p.alt}" loading="lazy" />`;
           tile.onclick = () => window.open(p.src, '_blank');
           r2.appendChild(tile);
         });
