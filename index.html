@@ -836,6 +836,62 @@
       line-height: 1.35;
     }
 
+    /* Narrative summary card untuk Journey */
+    .journey-narrative-card {
+      position: relative;
+      padding: clamp(20px, 2.5vw, 26px);
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(12px) saturate(160%);
+      -webkit-backdrop-filter: blur(12px) saturate(160%);
+      border: 1px solid rgba(14, 14, 14, 0.08);
+      border-radius: clamp(16px, 2vw, 20px);
+      box-shadow: 0 4px 24px rgba(14, 14, 14, 0.04);
+      margin-bottom: 24px;
+      transition: transform 0.28s ease, border-color 0.25s ease, box-shadow 0.28s ease;
+    }
+    .journey-narrative-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(61, 92, 203, 0.28);
+      box-shadow: 0 12px 32px rgba(14, 14, 14, 0.07);
+    }
+    .journey-narrative-p {
+      font-family: var(--f-radio);
+      font-size: clamp(13.5px, 1.25vw, 15px);
+      line-height: 1.7;
+      color: #2D2D2D;
+      margin-bottom: 16px;
+      font-weight: 400;
+    }
+    .journey-narrative-p:last-child {
+      margin-bottom: 0;
+    }
+    .journey-narrative-roles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed rgba(14, 14, 14, 0.12);
+    }
+    .journey-role-chip {
+      font-family: var(--f-radio);
+      font-size: clamp(11px, 1vw, 12px);
+      font-weight: 500;
+      color: var(--ink);
+      background: rgba(14, 14, 14, 0.05);
+      border: 1px solid rgba(14, 14, 14, 0.08);
+      padding: 3px 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .journey-role-chip span {
+      font-size: 10px;
+      color: var(--journey-accent);
+      font-weight: 600;
+    }
+
     /* ═══ THE SKILLS ═══ */
     #skills {
       position: relative;
@@ -1230,6 +1286,43 @@
       line-height: 1.4;
     }
 
+    .reel-tag {
+      display: inline-block;
+      font-family: var(--f-radio);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-bottom: 5px;
+    }
+    .reel-tag.client {
+      background: rgba(16, 185, 129, 0.12);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .reel-tag.winner {
+      background: rgba(199, 174, 63, 0.14);
+      color: #92750e;
+      border: 1px solid rgba(199, 174, 63, 0.28);
+    }
+    .reel-tag.cinevlog {
+      background: rgba(61, 92, 203, 0.12);
+      color: #2b49b3;
+      border: 1px solid rgba(61, 92, 203, 0.22);
+    }
+    .reel-tag.brand {
+      background: rgba(14, 14, 14, 0.06);
+      color: var(--ink);
+      border: 1px solid rgba(14, 14, 14, 0.1);
+    }
+    .reel-tag.google {
+      background: rgba(66, 133, 244, 0.12);
+      color: #1a73e8;
+      border: 1px solid rgba(66, 133, 244, 0.25);
+    }
+
     /* ── Photo/Design slider ── */
     .photo-slider-wrap {
       overflow: hidden;
@@ -1261,7 +1354,7 @@
     .photo-frame {
       border-radius: 18px;
       overflow: hidden;
-      aspect-ratio: 3 / 4;
+      aspect-ratio: 4 / 5;
       background: rgba(14,14,14,0.06);
       box-shadow: 0 10px 32px rgba(14,14,14,0.09);
       transition: transform 0.3s var(--ease-back), box-shadow 0.3s ease;
@@ -1300,6 +1393,248 @@
       line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+    }
+
+    /* ── Photo Collage & Album Badge Styling ── */
+    .photo-frame.collage-frame {
+      display: grid;
+      gap: 3px;
+      background: rgba(14, 14, 14, 0.08);
+      padding: 3px;
+      cursor: pointer;
+      position: relative;
+    }
+    .photo-frame.collage-3 {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+    .photo-frame.collage-3 .collage-main {
+      grid-row: span 2;
+      height: 100%;
+    }
+    .photo-frame.collage-3 img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .photo-frame.collage-4 {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+    .photo-frame.collage-4 img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .collage-badge {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(14, 14, 14, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #FFFFFF;
+      font-family: var(--f-radio);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 2;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      pointer-events: none;
+    }
+    .collage-badge svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* ── Photo Gallery Lightbox Modal ── */
+    #photoGalleryModal {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: rgba(14, 14, 14, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(16px, 4vw, 40px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    #photoGalleryModal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .gallery-modal-box {
+      background: #0E0E0E;
+      border-radius: clamp(16px, 2.5vw, 24px);
+      padding: clamp(16px, 2vw, 24px);
+      max-width: min(1200px, 96vw);
+      width: 100%;
+      box-shadow: 0 32px 90px rgba(0, 0, 0, 0.85);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      max-height: 94vh;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    #photoGalleryModal.active .gallery-modal-box {
+      transform: translateY(0) scale(1);
+    }
+    .gallery-modal-header {
+      margin-bottom: 14px;
+      padding-right: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .gallery-modal-title {
+      font-family: var(--f-radio);
+      font-weight: 600;
+      font-size: clamp(15px, 1.6vw, 19px);
+      color: #FFFFFF;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+    .gallery-modal-sub {
+      font-family: var(--f-radio);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .gallery-modal-body {
+      overflow-y: auto;
+      padding-right: 4px;
+      max-height: calc(92vh - 80px);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .gallery-modal-body::-webkit-scrollbar {
+      width: 6px;
+    }
+    .gallery-modal-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+    .gallery-modal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .gallery-modal-grid .gallery-grid-item {
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.05);
+      aspect-ratio: 3 / 4;
+      cursor: pointer;
+      position: relative;
+    }
+    .gallery-modal-grid .gallery-grid-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+    .gallery-modal-grid .gallery-grid-item:hover img {
+      transform: scale(1.03);
+    }
+
+    /* Baris Carousel Panorama Bersambung Presisi (Row 1 & Row 2) */
+    .gjls-carousel-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      width: 100%;
+    }
+    .gjls-tile {
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      line-height: 0;
+      aspect-ratio: 4 / 5;
+      background: #000;
+      flex: 0 0 25%;
+      width: 25%;
+    }
+    .gjls-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+    .gjls-tile:hover img {
+      transform: scale(1.03);
+    }
+    .gjls-tile.tile-standalone {
+      border-right: 2px solid #0E0E0E;
+    }
+    /* Pada baris 2 yang berisi 3 slide, slot ke-4 diisi ruang kosong gelap yang elegan agar skala sama persis dengan baris 1 */
+    .gjls-carousel-row.row-3 .gjls-tile-empty {
+      flex: 0 0 25%;
+      width: 25%;
+      aspect-ratio: 4 / 5;
+      background: rgba(255, 255, 255, 0.02);
+      border-left: 1px dashed rgba(255, 255, 255, 0.08);
+    }
+    /* Di layar mobile/tablet, carousel baris bisa digeser horizontal */
+    @media (max-width: 768px) {
+      .gjls-carousel-row {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+      }
+      .gjls-carousel-row::-webkit-scrollbar {
+        height: 4px;
+      }
+      .gjls-carousel-row::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+      }
+      .gjls-tile {
+        flex: 0 0 clamp(180px, 45vw, 220px);
+        width: clamp(180px, 45vw, 220px);
+        scroll-snap-align: start;
+      }
+      .gjls-carousel-row.row-3 .gjls-tile-empty {
+        display: none;
+      }
+    }
+    .gallery-modal-close {
+      position: absolute;
+      top: 18px; right: 18px;
+      width: 34px; height: 34px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(14, 14, 14, 0.08);
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ink);
+      transition: background 0.2s ease, transform 0.2s ease;
+      z-index: 5;
+    }
+    .gallery-modal-close:hover {
+      background: rgba(14, 14, 14, 0.16);
+      transform: scale(1.08);
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -1828,155 +2163,6 @@
       100% { transform: rotate(-18deg); }
     }
 
-    /* ── VIEWPORT CORNER BRACKETS ── */
-    .viewport-brackets {
-      position: fixed;
-      inset: clamp(12px, 2.5vw, 24px);
-      pointer-events: none;
-      z-index: 998;
-      opacity: 0.16;
-      transition: opacity 0.4s ease;
-    }
-    .viewport-brackets::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        /* Top-left */
-        linear-gradient(var(--ink), var(--ink)) 0 0 / 24px 2px no-repeat,
-        linear-gradient(var(--ink), var(--ink)) 0 0 / 2px 24px no-repeat,
-        /* Top-right */
-        linear-gradient(var(--ink), var(--ink)) 100% 0 / 24px 2px no-repeat,
-        linear-gradient(var(--ink), var(--ink)) 100% 0 / 2px 24px no-repeat,
-        /* Bottom-left */
-        linear-gradient(var(--ink), var(--ink)) 0 100% / 24px 2px no-repeat,
-        linear-gradient(var(--ink), var(--ink)) 0 100% / 2px 24px no-repeat,
-        /* Bottom-right */
-        linear-gradient(var(--ink), var(--ink)) 100% 100% / 24px 2px no-repeat,
-        linear-gradient(var(--ink), var(--ink)) 100% 100% / 2px 24px no-repeat;
-    }
-
-    /* ── CAMERA HUD OVERLAY ── */
-    #viewfinder-hud-overlay {
-      position: fixed;
-      inset: 0;
-      padding: calc(clamp(12px, 2.5vw, 24px) + 8px);
-      pointer-events: none;
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      font-family: monospace;
-      color: var(--ink);
-      opacity: 0.65;
-      font-size: 11px;
-      letter-spacing: 0.05em;
-      transition: opacity 0.4s ease;
-    }
-    #viewfinder-hud-overlay .hud-top,
-    #viewfinder-hud-overlay .hud-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-    }
-    #viewfinder-hud-overlay .hud-rec {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: bold;
-    }
-    #viewfinder-hud-overlay .rec-dot {
-      width: 8px;
-      height: 8px;
-      background: #E53E3E;
-      border-radius: 50%;
-      animation: rec-blink 1s steps(1) infinite;
-    }
-    #viewfinder-hud-overlay .hud-battery {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    #viewfinder-hud-overlay .battery-icon {
-      width: 18px;
-      height: 10px;
-      border: 1px solid var(--ink);
-      border-radius: 1px;
-      position: relative;
-    }
-    #viewfinder-hud-overlay .battery-icon::before {
-      content: '';
-      position: absolute;
-      right: -2.5px;
-      top: 2px;
-      width: 1.5px;
-      height: 4px;
-      background: var(--ink);
-      border-radius: 0 1px 1px 0;
-    }
-    #viewfinder-hud-overlay .battery-icon::after {
-      content: '';
-      position: absolute;
-      left: 1px;
-      top: 1px;
-      bottom: 1px;
-      right: 3px;
-      background: var(--ink);
-    }
-    #viewfinder-hud-overlay .hud-info,
-    #viewfinder-hud-overlay .hud-settings {
-      display: flex;
-      gap: 16px;
-      font-weight: bold;
-    }
-    #viewfinder-hud-overlay .hud-settings span {
-      transition: color 0.3s ease;
-    }
-
-    /* ── LENS CURSOR ── */
-    .lens-cursor {
-      position: fixed;
-      width: 110px;
-      height: 110px;
-      color: var(--ink);
-      pointer-events: none;
-      z-index: 2000;
-      transform: translate(-50%, -50%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: width 0.3s var(--ease-back), height 0.3s var(--ease-back), color 0.2s ease, opacity 0.3s ease;
-    }
-    .lens-cursor.active {
-      opacity: 1;
-    }
-    .lens-cursor.focus-locked {
-      color: #10B981;
-      width: 80px;
-      height: 80px;
-    }
-    .lens-cursor .lens-meta {
-      position: absolute;
-      font-family: monospace;
-      font-size: 8px;
-      font-weight: 500;
-      color: currentColor;
-      opacity: 0.8;
-      letter-spacing: 0.05em;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-    .lens-cursor .lens-meta.top-left {
-      top: -12px;
-      left: -12px;
-    }
-    .lens-cursor .lens-meta.bottom-right {
-      bottom: -12px;
-      right: -12px;
-    }
-
     /* ── FLOATING FILM CELLS ── */
     .film-cell {
       position: absolute;
@@ -2034,15 +2220,10 @@
 
     /* Hide overlays on small screens or reduced motion */
     @media (max-width: 768px) {
-      .film-cell, .floating-clapper, #viewfinder-hud-overlay, .viewport-brackets { display: none !important; }
-    }
-    @media (hover: none) {
-      .lens-cursor { display: none !important; }
+      .film-cell, .floating-clapper { display: none !important; }
     }
     @media (prefers-reduced-motion: reduce) {
       .film-cell, .floating-clapper { animation: none !important; }
-      #viewfinder-hud-overlay .rec-dot { animation: none !important; }
-      .lens-cursor { transition: none !important; }
     }
 
     /* ── SHUTTER INTRO LOADING ── */
@@ -2354,35 +2535,6 @@
     <div class="loader-reticle"></div>
   </div>
 
-  <!-- Camera Viewport Corner Brackets -->
-  <div class="viewport-brackets"></div>
-
-  <!-- Camera Viewfinder HUD Overlay -->
-  <div id="viewfinder-hud-overlay">
-    <div class="hud-bottom">
-      <div class="hud-info">
-        <span id="hudSceneReadout">SCENE: HERO</span>
-      </div>
-      <div class="hud-settings">
-        <span id="hudAperture">F2.8</span>
-        <span id="hudShutter">1/250s</span>
-        <span id="hudIso">ISO 100</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Interactive Lens Circle Custom Cursor -->
-  <div class="lens-cursor" id="lensCursor">
-    <svg width="100%" height="100%" viewBox="0 0 280 280" style="position: absolute; overflow: visible;">
-      <circle cx="140" cy="140" r="139" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="6 6" opacity="0.32"/>
-      <path d="M140 6 L140 18 M140 262 L140 274 M6 140 L18 140 M262 140 L274 140" stroke="currentColor" stroke-width="1.2" opacity="0.6"/>
-      <path d="M134 140 L146 140 M140 134 L140 146" stroke="currentColor" stroke-width="1.2" opacity="0.75"/>
-      <circle cx="140" cy="140" r="3" fill="currentColor" opacity="0.8"/>
-      <path d="M125 125 L125 120 L130 120 M155 125 L155 120 L150 120 M125 155 L125 160 L130 160 M155 155 L155 160 L150 160" stroke="currentColor" stroke-width="1" fill="none" opacity="0.4"/>
-    </svg>
-    <div class="lens-meta top-left" id="lensMode">AF-C</div>
-    <div class="lens-meta bottom-right" id="lensDistance">DST: 2.14m</div>
-  </div>
 
   <nav id="navbar" role="navigation" aria-label="Main navigation">
     <a class="nav-logo" href="#" aria-label="Nadja — Home">
@@ -2543,61 +2695,22 @@
           />
           <h3 class="journey-col-title">Politeknik Negeri Semarang</h3>
         </div>
-        <ul class="timeline" aria-label="Linimasa Politeknik Negeri Semarang">
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Google Student Ambassador</span>
-              <span class="timeline-year">2026</span>
-            </div>
-            <div class="timeline-org">Google</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Deputi Kementerian PSDM</span>
-              <span class="timeline-year">2025–2026</span>
-            </div>
-            <div class="timeline-org">BEM KBM Polines</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Koordinator Pendamping Jurusan Elektro</span>
-              <span class="timeline-year">2025</span>
-            </div>
-            <div class="timeline-org">WaRNA</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Kadiv PDD</span>
-            </div>
-            <div class="timeline-org">Makrab Internal BEM KBM Polines</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Koordinator Acara Staff Muda</span>
-              <span class="timeline-year">2025/2026</span>
-            </div>
-            <div class="timeline-org">BEM KBM Polines</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Kadiv PDD</span>
-              <span class="timeline-year">2025</span>
-            </div>
-            <div class="timeline-org">LKMM Madya</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Director of Video Profile</span>
-            </div>
-            <div class="timeline-org">MOSAIC</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">UI/UX Designer &amp; Frontend Developer</span>
-            </div>
-            <div class="timeline-org">MOSAIC</div>
-          </li>
-        </ul>
+        <div class="journey-narrative-card reveal">
+          <p class="journey-narrative-p">
+            Menempuh studi <strong>D4 Teknologi Rekayasa Komputer</strong>, memadukan fondasi rekayasa perangkat lunak, sistem jaringan, dan komputasi cerdas dengan eksplorasi visual. Terpilih sebagai <strong>Google Student Ambassador (2026)</strong> untuk mendorong adopsi teknologi dan AI di lingkungan kampus.
+          </p>
+          <p class="journey-narrative-p">
+            Di ranah organisasi dan kepemimpinan kreatif, dipercaya sebagai <strong>Deputi Kementerian PSDM BEM KBM Polines</strong>, sekaligus memimpin arahan artistik sebagai <strong>Director of Video Profile MOSAIC</strong> serta merancang produk digital sebagai <em>UI/UX Designer &amp; Frontend Developer</em>.
+          </p>
+          <div class="journey-narrative-roles">
+            <span class="journey-role-chip">Google Student Ambassador <span>2026</span></span>
+            <span class="journey-role-chip">Deputi PSDM BEM Polines <span>2025–2026</span></span>
+            <span class="journey-role-chip">Director Video Profile MOSAIC <span>2025</span></span>
+            <span class="journey-role-chip">UI/UX &amp; Frontend MOSAIC <span>2025</span></span>
+            <span class="journey-role-chip">Kadiv PDD LKMM Madya &amp; Makrab BEM <span>2025</span></span>
+            <span class="journey-role-chip">Koord. Pendamping WaRNA Elektro <span>2025</span></span>
+          </div>
+        </div>
       </div>
 
       <!-- Right: SMA IT Ibnu Abbas Klaten -->
@@ -2611,75 +2724,21 @@
           />
           <h3 class="journey-col-title">SMA IT Ibnu Abbas Klaten</h3>
         </div>
-        <ul class="timeline" aria-label="Linimasa SMA IT Ibnu Abbas Klaten">
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Ketua Divisi Kreatif</span>
-              <span class="timeline-year">2023</span>
-            </div>
-            <div class="timeline-org">Literacy Festival</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Ketua Divisi Media &amp; Dokumentasi</span>
-            </div>
-            <div class="timeline-org">Dirgahayu HUT RI 77</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Ketua Divisi Media &amp; Dokumentasi</span>
-              <span class="timeline-year">2022</span>
-            </div>
-            <div class="timeline-org">Ibaska Ramadhan Festival</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Ketua Divisi Media &amp; Dokumentasi</span>
-              <span class="timeline-year">2023</span>
-            </div>
-            <div class="timeline-org">Ibaska Ramadhan Festival</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Ketua Divisi Desain &amp; Dokumentasi</span>
-            </div>
-            <div class="timeline-org">Class Meeting SIA GAMES X</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Ketua Divisi Desain &amp; Dokumentasi</span>
-              <span class="timeline-year">2023</span>
-            </div>
-            <div class="timeline-org">Olimpiade Santri Ibaska</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Ketua Divisi Media</span>
-              <span class="timeline-year">2023</span>
-            </div>
-            <div class="timeline-org">Latihan Dasar Kepemimpinan OSIS Ibnu Abbas</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Sekretaris</span>
-              <span class="timeline-year">2022/2023</span>
-            </div>
-            <div class="timeline-org">Dewan Ambalan Jenderal Sudirman</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Sekretaris Umum</span>
-            </div>
-            <div class="timeline-org">Stage of Talent 9</div>
-          </li>
-          <li>
-            <div class="timeline-header">
-              <span class="timeline-role">Divisi Kebersihan</span>
-              <span class="timeline-year">2021/2022</span>
-            </div>
-            <div class="timeline-org">OSIS SMA IT Ibnu Abbas Klaten</div>
-          </li>
-        </ul>
+        <div class="journey-narrative-card reveal">
+          <p class="journey-narrative-p">
+            Titik awal pembentukan intuisi kepemimpinan media dan visual storytelling. Mengarahkan tim kreatif dan dokumentasi skala besar di berbagai perhelatan tahunan sekolah, mulai dari festival literasi hingga festival perayaan hari besar.
+          </p>
+          <p class="journey-narrative-p">
+            Berpengalaman memegang amanah struktural organisasi dan kepramukaan sebagai <strong>Sekretaris Dewan Ambalan Jenderal Sudirman</strong> dan <strong>Sekretaris Umum Stage of Talent</strong>, mengasah ketelitian manajemen arsip, komunikasi tim, serta koordinasi operasional divisi media secara disiplin.
+          </p>
+          <div class="journey-narrative-roles">
+            <span class="journey-role-chip">Ketua Divisi Kreatif Literacy Fest <span>2023</span></span>
+            <span class="journey-role-chip">Ketua Media &amp; Dokum. Ramadhan Fest <span>2022–2023</span></span>
+            <span class="journey-role-chip">Sekretaris Dewan Ambalan <span>2022/2023</span></span>
+            <span class="journey-role-chip">Sekretaris Umum Stage of Talent <span>2023</span></span>
+            <span class="journey-role-chip">Ketua Desain &amp; Media SIA Games &amp; LDK <span>2023</span></span>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -2713,44 +2772,44 @@
 
     <div class="skills-taskbar reveal" style="transition-delay:0.16s" role="list" aria-label="Software tools">
       <div class="taskbar-icon" role="listitem">
-        <img src="assets/DaVinci_Resolve_Studio.png" alt="DaVinci Resolve"
+        <img src="assets/logo-aplikasi/DaVinci_Resolve_Studio.png" alt="DaVinci Resolve"
              onerror="this.src='https://placehold.co/48x48/1a1a2e/FFFFFF?text=DR'" />
-        <div class="taskbar-tooltip">DaVinci Resolve — 90%</div>
+        <div class="taskbar-tooltip">DaVinci Resolve</div>
       </div>
       <div class="taskbar-icon" role="listitem">
-        <img src="assets/coreldraw.png" alt="CorelDRAW"
+        <img src="assets/logo-aplikasi/coreldraw.png" alt="CorelDRAW"
              onerror="this.src='https://placehold.co/48x48/009856/FFFFFF?text=CDR'" />
-        <div class="taskbar-tooltip">CorelDRAW — 90%</div>
+        <div class="taskbar-tooltip">CorelDRAW</div>
       </div>
       <div class="taskbar-icon" role="listitem">
-        <img src="assets/figma.png" alt="Figma"
+        <img src="assets/logo-aplikasi/figma.png" alt="Figma"
              onerror="this.src='https://placehold.co/48x48/f24e1e/FFFFFF?text=Fig'" />
-        <div class="taskbar-tooltip">Figma — 80%</div>
+        <div class="taskbar-tooltip">Figma</div>
       </div>
       <div class="taskbar-icon" role="listitem">
-        <img src="assets/premiere-pro.png" alt="Adobe Premiere Pro"
+        <img src="assets/logo-aplikasi/premiere-pro.png" alt="Adobe Premiere Pro"
              onerror="this.src='https://placehold.co/48x48/9999FF/FFFFFF?text=Pr'" />
-        <div class="taskbar-tooltip">Adobe Premiere Pro — 80%</div>
+        <div class="taskbar-tooltip">Adobe Premiere Pro</div>
       </div>
       <div class="taskbar-icon" role="listitem">
-        <img src="assets/photoshop.png" alt="Adobe Photoshop"
+        <img src="assets/logo-aplikasi/photoshop.png" alt="Adobe Photoshop"
              onerror="this.src='https://placehold.co/48x48/31A8FF/FFFFFF?text=Ps'" />
-        <div class="taskbar-tooltip">Adobe Photoshop — 82%</div>
+        <div class="taskbar-tooltip">Adobe Photoshop</div>
       </div>
       <div class="taskbar-icon" role="listitem">
-        <img src="assets/capcut.png" alt="CapCut"
+        <img src="assets/logo-aplikasi/capcut.png" alt="CapCut"
              onerror="this.src='https://placehold.co/48x48/0E0E0E/FFFFFF?text=CC'" />
-        <div class="taskbar-tooltip">CapCut — 95%</div>
+        <div class="taskbar-tooltip">CapCut</div>
       </div>
       <div class="taskbar-icon" role="listitem">
-        <img src="assets/blender.png" alt="Blender"
+        <img src="assets/logo-aplikasi/blender.png" alt="Blender"
              onerror="this.src='https://placehold.co/48x48/E87D0D/FFFFFF?text=Bld'" />
-        <div class="taskbar-tooltip">Blender — 20%</div>
+        <div class="taskbar-tooltip">Blender</div>
       </div>
       <div class="taskbar-icon" role="listitem">
-        <img src="assets/vscode.png" alt="VS Code"
+        <img src="assets/logo-aplikasi/vscode.png" alt="VS Code"
              onerror="this.src='https://placehold.co/48x48/007ACC/FFFFFF?text=VSC'" />
-        <div class="taskbar-tooltip">VS Code — 90%</div>
+        <div class="taskbar-tooltip">VS Code</div>
       </div>
     </div>
 
@@ -2844,6 +2903,39 @@
       <div class="reel-slider-wrap reveal" style="transition-delay: 0.1s">
         <div class="reel-slider" id="slider-video">
 
+          <!-- Item 1: Rigen Rakelna (Commissioned / Direct Hire) -->
+          <div class="reel-item">
+            <div class="phone-frame">
+              <div class="phone-screen">
+                <blockquote class="instagram-media"
+                  data-instgrm-permalink="https://www.instagram.com/reel/Detu75KJEoS/"
+                  data-instgrm-version="14"></blockquote>
+              </div>
+            </div>
+            <div class="reel-info">
+              <span class="reel-tag client">Commissioned • Shoot &amp; Edit</span>
+              <h4>Rigen Rakelna — Cinema Visit</h4>
+              <p>Dokumentasi sinematik agenda cinema visit Bang Rigen di Mall Citra. Dipercaya langsung untuk mengarahkan shooting lapangan sekaligus meramu ritme editingnya.</p>
+            </div>
+          </div>
+
+          <!-- Item 2: % ARABICA Semarang (Store Opening) -->
+          <div class="reel-item">
+            <div class="phone-frame">
+              <div class="phone-screen">
+                <blockquote class="instagram-media"
+                  data-instgrm-permalink="https://www.instagram.com/p/Dd3CXPCPNln/"
+                  data-instgrm-version="14"></blockquote>
+              </div>
+            </div>
+            <div class="reel-info">
+
+              <h4>% ARABICA — From Kyoto to Semarang</h4>
+              <p>Merekam visual identity pembukaan gerai % ARABICA di 23 Shopping Center Semarang; menangkap detail estetika minimalis Jepang dan antusiasme pengunjung.</p>
+            </div>
+          </div>
+
+          <!-- Item 3: Mesra-mesraannya Kecil-kecilan Dulu -->
           <div class="reel-item">
             <div class="phone-frame">
               <div class="phone-screen">
@@ -2853,11 +2945,13 @@
               </div>
             </div>
             <div class="reel-info">
+
               <h4>Mesra-mesraannya Kecil-kecilan Dulu</h4>
-              <p title="One day, we'll all get busy with our own lives. Mungkin itu alasan kenapa aku ingin merekam hari ini. Bukan tentang perginya ke mana. Tapi tentang menyimpan satu hari yang mungkin nanti akan kami rindukan.&#10;&#10;———&#10;Terima kasih, Mas @salpriadi dan Mas @acotenri. Lewat lagu dan music video Mesra-mesraannya Kecil-kecilan Dulu, aku diingatkan untuk lebih sering mengumpulkan 'koleksi suasana asyik'.">Cinematic short film about spending a day with my younger brother before life gets busy.</p>
+              <p>Short film tentang menyimpan satu hari berharga bersama adik sebelum hidup disibukkan oleh rutinitas. Mengabadikan 'koleksi suasana asyik' yang kelak akan dirindukan.</p>
             </div>
           </div>
 
+          <!-- Item 4: Aura Boost Series (Yummy Choice) -->
           <div class="reel-item">
             <div class="phone-frame">
               <div class="phone-screen">
@@ -2866,9 +2960,14 @@
                   data-instgrm-version="14"></blockquote>
               </div>
             </div>
-            <div class="reel-info"><h4>Aura Boost Series</h4><p>Yummy Choice Coffee Gold</p></div>
+            <div class="reel-info">
+
+              <h4>Aura Boost Series — Yummy Choice</h4>
+              <p>Konten promo kopi Yummy Choice Coffee Gold dengan hook kreatif: eksplorasi cara meningkatkan aura positif dari dalam diri dengan boost rasa kopi yang pas.</p>
+            </div>
           </div>
 
+          <!-- Item 5: Point Coffee Birthday 10th -->
           <div class="reel-item">
             <div class="phone-frame">
               <div class="phone-screen">
@@ -2877,20 +2976,14 @@
                   data-instgrm-version="14"></blockquote>
               </div>
             </div>
-            <div class="reel-info"><h4>Point Coffee Birthday 10th</h4><p>Visualisasi sinematik perayaan ulang tahun ke-10 Point Coffee dengan transisi dinamis.</p></div>
-          </div>
+            <div class="reel-info">
 
-          <div class="reel-item">
-            <div class="phone-frame">
-              <div class="phone-screen">
-                <blockquote class="instagram-media"
-                  data-instgrm-permalink="https://www.instagram.com/p/DY7Up4dvFi-/"
-                  data-instgrm-version="14"></blockquote>
-              </div>
+              <h4>Point Coffee Birthday 10th</h4>
+              <p>Narasi visual reflektif: menceritakan bagaimana mimpi-mimpi besar dapat diraih dan tumbuh sepanjang perjalanan 10 tahun ditemani Point Coffee.</p>
             </div>
-            <div class="reel-info"><h4>Pantai Ujung Negoro (Cinematic)</h4><p>Mengabadikan Pantai Ujung Negoro dengan polesan sinematik.</p></div>
           </div>
 
+          <!-- Item 6: 9th Point Coffee (1st Winner) -->
           <div class="reel-item">
             <div class="phone-frame">
               <div class="phone-screen">
@@ -2899,20 +2992,30 @@
                   data-instgrm-version="14"></blockquote>
               </div>
             </div>
-            <div class="reel-info"><h4>9th Point Coffee</h4><p>Video Competition Winner</p></div>
+            <div class="reel-info">
+
+              <h4>9th Point Coffee — Apa Itu Produktif?</h4>
+              <p>Video juara 1 kompetisi nasional Point Coffee ke-9: menarasikan ulang makna produktivitas sejati yang konsisten ditemani secangkir kopi favorit.</p>
+            </div>
           </div>
 
+          <!-- Item 7: Pantai Ujung Negoro -->
           <div class="reel-item">
             <div class="phone-frame">
               <div class="phone-screen">
                 <blockquote class="instagram-media"
-                  data-instgrm-permalink="https://www.instagram.com/reel/DXXCKllj9Bv/"
+                  data-instgrm-permalink="https://www.instagram.com/p/DY7Up4dvFi-/"
                   data-instgrm-version="14"></blockquote>
               </div>
             </div>
-            <div class="reel-info"><h4>Lyria 3</h4><p>AI Mode — Tech Content</p></div>
+            <div class="reel-info">
+
+              <h4>Pantai Ujung Negoro (Cinematic)</h4>
+              <p>Studi sinematografi lanskap pesisir: mengomposisi gradasi warna senja, hembusan ombak, dan ketenangan Pantai Ujung Negoro dalam polesan color grading sinematik.</p>
+            </div>
           </div>
 
+          <!-- Item 8: AI Mode (Google) -->
           <div class="reel-item">
             <div class="phone-frame">
               <div class="phone-screen">
@@ -2921,9 +3024,30 @@
                   data-instgrm-version="14"></blockquote>
               </div>
             </div>
-            <div class="reel-info"><h4>AI Mode</h4><p>Eksplorasi Sinematografi AI</p></div>
+            <div class="reel-info">
+
+              <h4>AI Mode di Google Search</h4>
+              <p>Konten edukasi teknologi as Google Student Ambassador: membedah kemudahan pencarian cerdas berbasis AI Mode dalam ekosistem Google secara praktis.</p>
+            </div>
           </div>
 
+          <!-- Item 9: Lyria 3 (Google) -->
+          <div class="reel-item">
+            <div class="phone-frame">
+              <div class="phone-screen">
+                <blockquote class="instagram-media"
+                  data-instgrm-permalink="https://www.instagram.com/reel/DXXCKllj9Bv/"
+                  data-instgrm-version="14"></blockquote>
+              </div>
+            </div>
+            <div class="reel-info">
+
+              <h4>Lyria 3 — Google DeepMind</h4>
+              <p>Membahas kapabilitas model generatif audio Lyria 3 dari Google DeepMind, menjembatani teknologi kecerdasan buatan dengan masa depan kreasi musik.</p>
+            </div>
+          </div>
+
+          <!-- Item 10: Bakmie Papaden -->
           <div class="reel-item">
             <div class="phone-frame">
               <div class="phone-screen">
@@ -2932,9 +3056,14 @@
                   data-instgrm-version="14"></blockquote>
               </div>
             </div>
-            <div class="reel-info"><h4>Bakmie Papaden</h4><p>Commercial Video</p></div>
+            <div class="reel-info">
+
+              <h4>Bakmie Papaden</h4>
+              <p>Eksplorasi kuliner berkonsep #CineVlog: menyajikan sensasi rasa dan tekstur sajian bakmie legendaris dengan pendekatan sinematik yang menggugah selera.</p>
+            </div>
           </div>
 
+          <!-- Item 11: Idul Adha di Perantauan -->
           <div class="reel-item">
             <div class="phone-frame">
               <div class="phone-screen">
@@ -2943,9 +3072,14 @@
                   data-instgrm-version="14"></blockquote>
               </div>
             </div>
-            <div class="reel-info"><h4>Idul Adha di Perantauan</h4><p>Cinematic Storytelling</p></div>
+            <div class="reel-info">
+
+              <h4>Idul Adha di Perantauan</h4>
+              <p>POV memaknai perayaan Idul Adha jauh dari kampung halaman; merekam rasa rindu, kehangatan kebersamaan sesama perantau, dan syukur yang mendalam.</p>
+            </div>
           </div>
 
+          <!-- Item 12: Kedan (#CineVlog) -->
           <div class="reel-item">
             <div class="phone-frame">
               <div class="phone-screen">
@@ -2954,9 +3088,12 @@
                   data-instgrm-version="14"></blockquote>
               </div>
             </div>
-            <div class="reel-info"><h4>Kedan</h4><p>Cinematic Vlog</p></div>
-          </div>
+            <div class="reel-info">
 
+              <h4>Kedan — Masakan Medan</h4>
+              <p>Konten orisinal #CineVlog: petualangan lidah seorang Jawa yang mencicipi otentisitas masakan khas Medan di Kedai Medan Kak Inong dalam visual sinematik.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2972,47 +3109,90 @@
       </div>
       <div class="photo-slider-wrap reveal" style="transition-delay: 0.1s">
         <div class="photo-slider" id="slider-photo">
-
+          <!-- Set 1: Sal Priadi — Live Stage Photography (Album Set) -->
           <div class="photo-item">
-            <div class="photo-frame">
-              <img src="assets/SAL_WOILAH.webp" alt="Foto Panggung"
-                   onerror="this.src='https://placehold.co/600x750/0E0E0E/F7F6F3?text=Photo'" loading="lazy" />
+            <div class="photo-frame"
+                 onclick="openPhotoGallery('sal-priadi')"
+                 title="Klik untuk membuka album Sal Priadi"
+                 role="button"
+                 tabindex="0"
+                 aria-label="Lihat album foto panggung Sal Priadi">
+              <img src="assets/Sal/SAL_WOILAH.webp" alt="Sal Priadi Live Stage" loading="lazy" />
+              <div class="collage-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span>3 Foto • Album</span>
+              </div>
             </div>
-            <div class="photo-info"><h4>Foto Panggung</h4><p>Color Grading and Portrait</p></div>
+            <div class="photo-info">
+              <span class="reel-tag cinevlog">Live Stage • Concert</span>
+              <h4>Sal Priadi — Live Stage Photography at Makna Talks x Nescafe Indonesia Ideas on The Go</h4>
+            </div>
           </div>
 
+          <!-- Set 2: GJLS — Video Production Grabstill Set -->
           <div class="photo-item">
-            <div class="photo-frame">
-              <img src="assets/SAL_WOILAH2.webp" alt="Foto Panggung 2"
-                   onerror="this.src='https://placehold.co/600x750/0E0E0E/F7F6F3?text=Photo'" loading="lazy" />
+            <div class="photo-frame"
+                 onclick="openPhotoGallery('gjls')"
+                 title="Klik untuk membuka album grabstill GJLS"
+                 role="button"
+                 tabindex="0"
+                 aria-label="Lihat album grabstill GJLS">
+              <img src="assets/GJLS/gjlsslide1.jpg" alt="GJLS Slide 1 Cover" loading="lazy" />
+              <div class="collage-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span>7 Slide • Carousel</span>
+              </div>
             </div>
-            <div class="photo-info"><h4>Foto Panggung 2</h4><p>Color Grading and Portrait</p></div>
+            <div class="photo-info">
+              <span class="reel-tag brand">Promo Film • BTS &amp; Grabstill</span>
+              <h4>GJLS Berapi-api — Promo Tour Semarang</h4>
+              <p>Mendokumentasikan perjalanan promo film GJLS Berapi-api di Semarang bersama Bang Rigen, Bang Rispo, Mas Hifdzi, dan tim GJLS.</p>
+            </div>
           </div>
 
+          <!-- Set 3: Fidela Huwaida — Event Photography -->
           <div class="photo-item">
-            <div class="photo-frame">
-              <img src="assets/SAL_WOILAH3.webp" alt="Foto Panggung 3"
+            <div class="photo-frame"
+                 onclick="openPhotoGallery('fidela')"
+                 title="Klik untuk memperbesar foto Fidela"
+                 role="button"
+                 tabindex="0"
+                 aria-label="Lihat foto Fidela Huwaida">
+              <img src="assets/fidelamadya.webp" alt="Foto Event Fidela Huwaida"
                    onerror="this.src='https://placehold.co/600x750/0E0E0E/F7F6F3?text=Photo'" loading="lazy" />
+              <div class="collage-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                <span>Lihat Foto</span>
+              </div>
             </div>
-            <div class="photo-info"><h4>Foto Panggung 3</h4><p>Color Grading and Portrait</p></div>
+            <div class="photo-info">
+              <span class="reel-tag client">Portrait • Event</span>
+              <h4>Fidela Huwaida — Event Documentation</h4>
+              <p>Dokumentasi foto event dan potret personal Fidela Huwaida dengan penekanan pada pencahayaan natural dan gestur panggung.</p>
+            </div>
           </div>
 
+          <!-- Set 4: Fungsionaris PSDM BEM Polines -->
           <div class="photo-item">
-            <div class="photo-frame">
-              <img src="assets/fidelamadya.webp" alt="Foto Event Fidela"
-                   onerror="this.src='https://placehold.co/600x750/0E0E0E/F7F6F3?text=Photo'" loading="lazy" />
-            </div>
-            <div class="photo-info"><h4>Foto Event</h4><p>Foto event Fidela Huwaida</p></div>
-          </div>
-
-          <div class="photo-item">
-            <div class="photo-frame">
+            <div class="photo-frame"
+                 onclick="openPhotoGallery('bem')"
+                 title="Klik untuk memperbesar foto Fungsionaris BEM"
+                 role="button"
+                 tabindex="0"
+                 aria-label="Lihat foto Fungsionaris BEM">
               <img src="assets/foto_fungsionaris.webp" alt="Foto Fungsionaris BEM"
                    onerror="this.src='https://placehold.co/600x750/0E0E0E/F7F6F3?text=Photo'" loading="lazy" />
+              <div class="collage-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                <span>Lihat Foto</span>
+              </div>
             </div>
-            <div class="photo-info"><h4>Foto Fungsionaris</h4><p>Foto fungsionaris PSDM BEM KBM Polines</p></div>
+            <div class="photo-info">
+              <span class="reel-tag brand">Editorial • Organizational</span>
+              <h4>Fungsionaris PSDM BEM KBM Polines</h4>
+              <p>Sesi foto editorial fungsionaris kementerian PSDM: mengarahkan pose, tata letak kelompok, dan konsistensi warna seragam kabinet.</p>
+            </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -3077,7 +3257,7 @@
        CERTIFICATIONS
        Cara tambah sertifikat baru: copy 1 blok .cert-card,
        paste di .cert-grid, ganti emoji + teks + data-cert.
-       File sertifikat taruh di assets/ (nama sesuai data-img).
+       File sertifikat taruh di assets/sertifikat/ (nama sesuai data-img).
   ═══════════════════════════════════════════════════════ -->
   <section id="certifications" aria-label="Certifications">
     <canvas id="certifications-bg-canvas" class="section-bg-canvas"></canvas>
@@ -3090,7 +3270,7 @@
            onclick="openCertModal('mtcna')"
            data-cert="mtcna"
            data-title="MTCNA — MikroTik Certified Network Associate"
-           data-img="assets/mtcna.jpg"
+           data-img="assets/sertifikat/mtcna.jpg"
            role="button" tabindex="0" aria-label="Lihat sertifikat MTCNA">
         <div class="cert-badge">🌐</div>
         <div class="cert-info">
@@ -3104,7 +3284,7 @@
            onclick="openCertModal('mtcre')"
            data-cert="mtcre"
            data-title="MTCRE — MikroTik Certified Routing Engineer"
-           data-img="assets/mtcre.jpg"
+           data-img="assets/sertifikat/mtcre.jpg"
            role="button" tabindex="0" aria-label="Lihat sertifikat MTCRE">
         <div class="cert-badge">🔀</div>
         <div class="cert-info">
@@ -3118,7 +3298,7 @@
            onclick="openCertModal('dbdesign')"
            data-cert="dbdesign"
            data-title="Database Design — Oracle"
-           data-img="assets/database_design.jpg"
+           data-img="assets/sertifikat/database_design.jpg"
            role="button" tabindex="0" aria-label="Lihat sertifikat Database Design Oracle">
         <div class="cert-badge">🗄️</div>
         <div class="cert-info">
@@ -3132,7 +3312,7 @@
            onclick="openCertModal('dbsql')"
            data-cert="dbsql"
            data-title="Database SQL — Oracle"
-           data-img="assets/database_sql.jpg"
+           data-img="assets/sertifikat/database_sql.jpg"
            role="button" tabindex="0" aria-label="Lihat sertifikat Database SQL Oracle">
         <div class="cert-badge">📊</div>
         <div class="cert-info">
@@ -3146,7 +3326,7 @@
            onclick="openCertModal('cuan')"
            data-cert="cuan"
            data-title="Cuan dari Konten — ILUSYX CREATIVE"
-           data-img="assets/cuan_dari_konten.jpg"
+           data-img="assets/sertifikat/cuan_dari_konten.jpg"
            role="button" tabindex="0" aria-label="Lihat sertifikat Cuan dari Konten">
         <div class="cert-badge">💡</div>
         <div class="cert-info">
@@ -3167,6 +3347,23 @@
       <p id="certModalTitle"></p>
       <img id="certModalImg" src="" alt="Sertifikat"
            onerror="this.src='https://placehold.co/640x400/F7F6F3/6B6B6B?text=Sertifikat+tidak+ditemukan'" />
+    </div>
+  </div>
+
+  <!-- ── PHOTO GALLERY LIGHTBOX MODAL ── -->
+  <div id="photoGalleryModal" role="dialog" aria-modal="true" aria-labelledby="galleryModalTitle"
+       onclick="if(event.target===this)closePhotoGallery()">
+    <div class="gallery-modal-box">
+      <button class="gallery-modal-close" onclick="closePhotoGallery()" aria-label="Tutup galeri">✕</button>
+      <div class="gallery-modal-header">
+        <h3 id="galleryModalTitle" class="gallery-modal-title">Album Foto</h3>
+        <span id="galleryModalSub" class="gallery-modal-sub"></span>
+      </div>
+      <div class="gallery-modal-body" id="galleryModalBody">
+        <div id="galleryModalGrid" class="gallery-modal-grid">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
     </div>
   </div>
 
@@ -3291,7 +3488,7 @@
           
           <!-- Testimonial Text -->
           <blockquote class="font-serif text-[18px] md:text-[21px] text-[#0E0E0E] italic leading-relaxed font-light blur-text">
-            "Baguss banget kontennya!!! Makasih yaaa"
+            "Baguss banget kontennya!!!"
           </blockquote>
         </div>
 
@@ -3299,6 +3496,70 @@
         <a href="https://www.instagram.com/kresnajulio/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-[#0E0E0E]/5 hover:bg-[#0E0E0E]/10 transition-colors group" aria-label="Lihat profil Kresna Julio di Instagram">
           <svg class="w-4 h-4 text-[#0E0E0E]/80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+          </svg>
+          <span class="font-radio text-[12px] text-[#0E0E0E]/80 font-medium">View Profile</span>
+        </a>
+      </div>
+
+      <!-- Card 5: Rigen Rakelna -->
+      <div class="testimonial-card reveal" style="transition-delay: 0.45s;">
+        <div class="w-full flex flex-col gap-6">
+          <!-- Profile Header -->
+          <div class="flex items-center gap-4">
+            <img src="assets/photos/testimonials/rigen_rakelna.jpg" alt="Rigen Rakelna" class="w-14 h-14 rounded-full object-cover border border-[#0E0E0E]/10" />
+            <div>
+              <div class="flex items-center gap-1.5 mb-0.5">
+                <h3 class="font-radio font-medium text-[16px] md:text-[18px] text-[#0E0E0E] leading-tight blur-text">Rigen Rakelna</h3>
+                <svg class="w-[15px] h-[15px] text-[#0095f6] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-label="Verified Profile">
+                  <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.667.14-.54.215-1.1.215-1.683 0-3.39-2.76-6.15-6.15-6.15-.58 0-1.14.075-1.68.215C12.02 2.5 10.65 1.625 9.07 1.625c-3.39 0-6.15 2.76-6.15 6.15 0 .58.075 1.14.215 1.68C1.875 10.15 1 11.52 1 13.1c0 3.39 2.76 6.15 6.15 6.15.58 0 1.14-.075 1.68-.215 1.1 1.1 2.15 1.485 3.7 1.485 3.39 0 6.15-2.76 6.15-6.15 0-.58-.075-1.14-.215-1.68 1.273-.717 2.148-2.087 2.148-3.667zm-12.5 4l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z" />
+                </svg>
+              </div>
+              <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Stand-up Comedian, Actor &amp; Content Creator</p>
+            </div>
+          </div>
+          
+          <!-- Testimonial Text -->
+          <blockquote class="font-serif text-[18px] md:text-[21px] text-[#0E0E0E] italic leading-relaxed font-light blur-text">
+            "Kereen deh!"
+          </blockquote>
+        </div>
+
+        <!-- Instagram Link -->
+        <a href="https://www.instagram.com/rigensih/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-[#0E0E0E]/5 hover:bg-[#0E0E0E]/10 transition-colors group" aria-label="Lihat profil Rigen Rakelna di Instagram">
+          <svg class="w-4 h-4 text-[#0E0E0E]/80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+          </svg>
+          <span class="font-radio text-[12px] text-[#0E0E0E]/80 font-medium">View Profile</span>
+        </a>
+      </div>
+
+      <!-- Card 6: Ananta Rispo -->
+      <div class="testimonial-card reveal" style="transition-delay: 0.55s;">
+        <div class="w-full flex flex-col gap-6">
+          <!-- Profile Header -->
+          <div class="flex items-center gap-4">
+            <img src="assets/photos/testimonials/ananta_rispo.jpg" alt="Ananta Rispo" class="w-14 h-14 rounded-full object-cover border border-[#0E0E0E]/10" />
+            <div>
+              <div class="flex items-center gap-1.5 mb-0.5">
+                <h3 class="font-radio font-medium text-[16px] md:text-[18px] text-[#0E0E0E] leading-tight blur-text">Ananta Rispo</h3>
+                <svg class="w-[15px] h-[15px] text-[#0095f6] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-label="Verified Profile">
+                  <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.667.14-.54.215-1.1.215-1.683 0-3.39-2.76-6.15-6.15-6.15-.58 0-1.14.075-1.68.215C12.02 2.5 10.65 1.625 9.07 1.625c-3.39 0-6.15 2.76-6.15 6.15 0 .58.075 1.14.215 1.68C1.875 10.15 1 11.52 1 13.1c0 3.39 2.76 6.15 6.15 6.15.58 0 1.14-.075 1.68-.215 1.1 1.1 2.15 1.485 3.7 1.485 3.39 0 6.15-2.76 6.15-6.15 0-.58-.075-1.14-.215-1.68 1.273-.717 2.148-2.087 2.148-3.667zm-12.5 4l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z" />
+                </svg>
+              </div>
+              <p class="font-radio text-[13px] md:text-[14px] text-[#6B6B6B] leading-normal">Stand-up Comedian, Actor &amp; Content Creator</p>
+            </div>
+          </div>
+          
+          <!-- Testimonial Text -->
+          <blockquote class="font-serif text-[18px] md:text-[21px] text-[#0E0E0E] italic leading-relaxed font-light blur-text">
+            "Salah satu contoh orang yang serius sama passion-nya. ...soalnya bagus videonya"
+          </blockquote>
+        </div>
+
+        <!-- Instagram Link -->
+        <a href="https://www.instagram.com/anantarispo/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-full bg-[#0E0E0E]/5 hover:bg-[#0E0E0E]/10 transition-colors group" aria-label="Lihat profil Ananta Rispo di Instagram">
+          <svg class="w-4 h-4 text-[#0E0E0E]/80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6…
           </svg>
           <span class="font-radio text-[12px] text-[#0E0E0E]/80 font-medium">View Profile</span>
         </a>
@@ -3585,23 +3846,26 @@
       }
 
       const p  = progress();
-      const t2 = ramp(p, 0.15, 0.75);
+      // Fase 1: textHero fade out tuntas di p 0.08 -> 0.40
+      const outRamp = ramp(p, 0.08, 0.40);
+      // Fase 2: textAbout mulai fade in setelah textHero bersih di p 0.46 -> 0.85
+      const inRamp  = ramp(p, 0.46, 0.85);
 
-      textHero.style.opacity      = String(1 - t2);
-      textHero.style.setProperty('--scroll-y', `${-40 * t2}px`);
-      textHero.style.pointerEvents = t2 >= 0.5 ? 'none' : 'auto';
+      textHero.style.opacity      = String(1 - outRamp);
+      textHero.style.setProperty('--scroll-y', `${-40 * outRamp}px`);
+      textHero.style.pointerEvents = outRamp >= 0.8 ? 'none' : 'auto';
 
-      captionWrap.style.opacity   = String(1 - t2);
-      captionWrap.style.setProperty('--scroll-y', `${-20 * t2}px`);
-      captionWrap.style.pointerEvents = t2 >= 0.5 ? 'none' : 'auto';
+      captionWrap.style.opacity   = String(1 - outRamp);
+      captionWrap.style.setProperty('--scroll-y', `${-20 * outRamp}px`);
+      captionWrap.style.pointerEvents = outRamp >= 0.8 ? 'none' : 'auto';
 
-      textAbout.style.opacity   = String(t2);
-      textAbout.style.setProperty('--scroll-y', `${50 * (1 - t2)}px`);
-      textAbout.style.pointerEvents = t2 < 0.5 ? 'none' : 'auto';
+      textAbout.style.opacity   = String(inRamp);
+      textAbout.style.setProperty('--scroll-y', `${45 * (1 - inRamp)}px`);
+      textAbout.style.pointerEvents = inRamp >= 0.2 ? 'auto' : 'none';
 
-      textHero.setAttribute('aria-hidden',    t2 >= 1 ? 'true' : 'false');
-      textAbout.setAttribute('aria-hidden',   t2 <= 0 ? 'true' : 'false');
-      captionWrap.setAttribute('aria-hidden', t2 >= 1 ? 'true' : 'false');
+      textHero.setAttribute('aria-hidden',    outRamp >= 1 ? 'true' : 'false');
+      textAbout.setAttribute('aria-hidden',   inRamp <= 0 ? 'true' : 'false');
+      captionWrap.setAttribute('aria-hidden', outRamp >= 1 ? 'true' : 'false');
     }
 
     let heroRaf = null;
@@ -3907,106 +4171,6 @@
       });
     });
 
-    /* ── 13. VIEWPORT CAMERA HUD TIMER ── */
-    // Timer element has been removed from Viewfinder HUD overlay.
-
-    /* ── 14. DYNAMIC HUD CAMERA READOUTS ON SCROLL ── */
-    const sections = [
-      { id: 'hero-about-scroll', name: 'SCENE: HERO', settings: { f: 'F2.8', s: '1/250s', iso: 'ISO 100' } },
-      { id: 'journey', name: 'SCENE: TRAVEL', settings: { f: 'F2.0', s: '1/125s', iso: 'ISO 400' } },
-      { id: 'skills', name: 'SCENE: SKILLS', settings: { f: 'F1.8', s: '1/80s', iso: 'ISO 600' } },
-      { id: 'vault', name: 'SCENE: PORTFOLIO', settings: { f: 'F1.8', s: '1/60s', iso: 'ISO 800' } },
-      { id: 'contact', name: 'SCENE: CONTACT', settings: { f: 'F1.4', s: '1/50s', iso: 'ISO 1600' } }
-    ];
-
-    const hudSceneReadout = document.getElementById('hudSceneReadout');
-    const hudAperture = document.getElementById('hudAperture');
-    const hudShutter = document.getElementById('hudShutter');
-    const hudIso = document.getElementById('hudIso');
-
-    function updateHudOnScroll() {
-      const scrollPos = window.scrollY + window.innerHeight / 2;
-      let activeSection = sections[0];
-
-      for (const sec of sections) {
-        const el = document.getElementById(sec.id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          const top = rect.top + window.scrollY;
-          const bottom = top + el.offsetHeight;
-          if (scrollPos >= top && scrollPos <= bottom) {
-            activeSection = sec;
-            break;
-          }
-        }
-      }
-
-      if (hudSceneReadout && hudSceneReadout.textContent !== activeSection.name) {
-        hudSceneReadout.textContent = activeSection.name;
-        if (hudAperture) hudAperture.textContent = activeSection.settings.f;
-        if (hudShutter) hudShutter.textContent = activeSection.settings.s;
-        if (hudIso) hudIso.textContent = activeSection.settings.iso;
-      }
-    }
-    window.addEventListener('scroll', updateHudOnScroll, { passive: true });
-    updateHudOnScroll();
-
-    /* ── 15. LENS CURSOR TRACKING WITH LERP ── */
-    const lensCursor = document.getElementById('lensCursor');
-    let mX = window.innerWidth / 2;
-    let mY = window.innerHeight / 2;
-    let curX = mX;
-    let curY = mY;
-
-    window.addEventListener('mousemove', e => {
-      mX = e.clientX;
-      mY = e.clientY;
-    });
-
-    function updateCursor() {
-      curX += (mX - curX) * 0.15;
-      curY += (mY - curY) * 0.15;
-      if (lensCursor) {
-        lensCursor.style.left = `${curX}px`;
-        lensCursor.style.top = `${curY}px`;
-      }
-      requestAnimationFrame(updateCursor);
-    }
-    requestAnimationFrame(updateCursor);
-
-    // Focus lock trigger on hover
-    const interactives = document.querySelectorAll('a, button, [role="button"], .reel-item, .photo-item, .hero-photo-inner, .clapperboard, .social-link, .milestone-media');
-    const lensMode = document.getElementById('lensMode');
-    const lensDistance = document.getElementById('lensDistance');
-
-    interactives.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        if (lensCursor) {
-          lensCursor.classList.add('focus-locked');
-          triggerFocusBeep();
-        }
-        if (lensMode) lensMode.textContent = 'AF-L';
-        if (lensDistance) lensDistance.textContent = 'DST: LOCK';
-      });
-      el.addEventListener('mouseleave', () => {
-        if (lensCursor) {
-          lensCursor.classList.remove('focus-locked');
-        }
-        if (lensMode) lensMode.textContent = 'AF-C';
-        if (lensDistance) {
-          const varDistance = (1.5 + Math.random() * 2).toFixed(2);
-          lensDistance.textContent = `DST: ${varDistance}m`;
-        }
-      });
-    });
-
-    window.addEventListener('mousemove', () => {
-      if (lensDistance && lensCursor && !lensCursor.classList.contains('focus-locked') && Math.random() < 0.08) {
-        const varDistance = (1.5 + Math.random() * 2).toFixed(2);
-        lensDistance.textContent = `DST: ${varDistance}m`;
-      }
-    });
-
     /* ── 16. SHUTTER INTRO DISMISSAL ── */
     const shutterLoader = document.getElementById('shutter-loader');
     const dismissLoader = () => {
@@ -4014,9 +4178,6 @@
         playFocusBeep();
         if (shutterLoader) {
           shutterLoader.classList.add('loaded');
-        }
-        if (lensCursor) {
-          lensCursor.classList.add('active');
         }
       }, 700);
     };
@@ -4417,9 +4578,131 @@
       });
     });
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeCertModal();
+      if (e.key === 'Escape') {
+        closeCertModal();
+        closePhotoGallery();
+      }
     });
 
+
+    /* ── PHOTO GALLERY LIGHTBOX MODAL DATA & CONTROLLER ── */
+    const PHOTO_ALBUMS = {
+      'sal-priadi': {
+        title: 'Sal Priadi — Live Stage Photography at Makna Talks x Nescafe Indonesia Ideas on The Go',
+        sub: '3 Photos',
+        photos: [
+          { src: 'assets/Sal/SAL_WOILAH.webp', alt: 'Sal Priadi Stage Portrait 1' },
+          { src: 'assets/Sal/SAL_WOILAH2.webp', alt: 'Sal Priadi Stage Portrait 2' },
+          { src: 'assets/Sal/SAL_WOILAH3.webp', alt: 'Sal Priadi Stage Portrait 3' }
+        ]
+      },
+      'gjls': {
+        title: 'GJLS Berapi-api — Promo Tour Semarang',
+        sub: '7 Slides Carousel',
+        // Baris 1: Slide 1 (Cover), lalu Slide 2, 3, 4 menyambung rapat
+        row1: [
+          { src: 'assets/GJLS/gjlsslide1.jpg', alt: 'GJLS Slide 1 (Cover)', standalone: true },
+          { src: 'assets/GJLS/gjlsslide2.jpg', alt: 'GJLS Slide 2 (Panorama Part 1)' },
+          { src: 'assets/GJLS/slide 3.gif', alt: 'GJLS Slide 3 GIF (Panorama Part 2)' },
+          { src: 'assets/GJLS/gjlsslide4.jpg', alt: 'GJLS Slide 4 (Panorama Part 3)' }
+        ],
+        // Baris 2: Slide 5, lalu Slide 6 dan 7 menyambung rapat
+        row2: [
+          { src: 'assets/GJLS/slide 5.gif', alt: 'GJLS Slide 5 (Motion Grabstill GIF)', standalone: true },
+          { src: 'assets/GJLS/gjlsslide6.png', alt: 'GJLS Slide 6 (Panorama Part 1)' },
+          { src: 'assets/GJLS/gjlsslide7.png', alt: 'GJLS Slide 7 (Panorama Part 2)' }
+        ]
+      },
+      'fidela': {
+        title: 'Fidela Huwaida — Event Documentation',
+        sub: 'Event Photography',
+        photos: [
+          { src: 'assets/fidelamadya.webp', alt: 'Fidela Huwaida Event' }
+        ]
+      },
+      'bem': {
+        title: 'Fungsionaris PSDM BEM KBM Polines',
+        sub: 'Editorial Portrait',
+        photos: [
+          { src: 'assets/foto_fungsionaris.webp', alt: 'Foto Fungsionaris PSDM' }
+        ]
+      }
+    };
+
+    window.openPhotoGallery = function(albumId) {
+      const album = PHOTO_ALBUMS[albumId];
+      if (!album) return;
+      const modal = document.getElementById('photoGalleryModal');
+      const titleEl = document.getElementById('galleryModalTitle');
+      const subEl = document.getElementById('galleryModalSub');
+      const bodyEl = document.getElementById('galleryModalBody');
+
+      titleEl.textContent = album.title;
+      subEl.textContent = album.sub;
+      bodyEl.innerHTML = '';
+
+      // Layout khusus GJLS: 2 baris (Baris 1: 1-2-3-4; Baris 2: 5-6-7)
+      if (album.row1 && album.row2) {
+        // Baris 1
+        const r1 = document.createElement('div');
+        r1.className = 'gjls-carousel-row row-4';
+        album.row1.forEach(p => {
+          const tile = document.createElement('div');
+          tile.className = 'gjls-tile' + (p.standalone ? ' tile-standalone' : '');
+          tile.innerHTML = `<img src="${p.src}" alt="${p.alt}" loading="lazy" />`;
+          tile.onclick = () => window.open(p.src, '_blank');
+          r1.appendChild(tile);
+        });
+        bodyEl.appendChild(r1);
+
+        // Baris 2 (Slide 5 standalone, Slide 6 dan 7 seamless)
+        const r2 = document.createElement('div');
+        r2.className = 'gjls-carousel-row row-3';
+        album.row2.forEach(p => {
+          const tile = document.createElement('div');
+          tile.className = 'gjls-tile' + (p.standalone ? ' tile-standalone' : '');
+          tile.innerHTML = `<img src="${p.src}" alt="${p.alt}" loading="lazy" />`;
+          tile.onclick = () => window.open(p.src, '_blank');
+          r2.appendChild(tile);
+        });
+        // Slot kosong ke-4 agar 3 tile di baris 2 memiliki lebar 25% yang sama persis dengan baris 1
+        const emptyTile = document.createElement('div');
+        emptyTile.className = 'gjls-tile-empty';
+        r2.appendChild(emptyTile);
+        bodyEl.appendChild(r2);
+      } else if (album.photos) {
+        // Grid standar untuk album foto lainnya
+        const grid = document.createElement('div');
+        grid.className = 'gallery-modal-grid';
+        album.photos.forEach(p => {
+          const item = document.createElement('div');
+          item.className = 'gallery-grid-item';
+          item.innerHTML = `<img src="${p.src}" alt="${p.alt}" loading="lazy" />`;
+          item.onclick = () => window.open(p.src, '_blank');
+          grid.appendChild(item);
+        });
+        bodyEl.appendChild(grid);
+      }
+
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closePhotoGallery = function() {
+      const modal = document.getElementById('photoGalleryModal');
+      if (modal) modal.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    // Keyboard accessibility untuk photo collage cards
+    document.querySelectorAll('.photo-frame[tabindex="0"]').forEach(frame => {
+      frame.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          frame.click();
+        }
+      });
+    });
     /* ── 20. 3D CARD PARALLAX EFFECT FOR HERO IMAGE & TEXTS ── */
     function init3DTilt() {
       if (typeof reduceMotion !== 'undefined' && reduceMotion) return;
