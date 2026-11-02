@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://nadjakencana.netlify.app/</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://nadjakencana.netlify.app/assets/preview.jpg</image:loc>
+      <image:title>Nadja Kencana — Visual Storyteller &amp; Engineering Student</image:title>
+      <image:caption>Portfolio Nadja Kencana: Videografi, Fotografi Sinematik, Desain Grafis, dan UI/UX</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://nadjakencana.netlify.app/nadja-hero.webp</image:loc>
+      <image:title>Nadja Kencana</image:title>
+      <image:caption>Potret Nadja Kencana — Visual Storyteller &amp; Engineering Student</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://nadjakencana.netlify.app/assets/Sal/SAL_WOILAH.webp</image:loc>
+      <image:title>Sal Priadi Live Stage Photography</image:title>
+      <image:caption>Dokumentasi foto panggung Sal Priadi di Makna Talks x Nescafe oleh Nadja Kencana</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://nadjakencana.netlify.app/assets/GJLS/gjlsslide1.webp</image:loc>
+      <image:title>GJLS Berapi-api Promo Tour Semarang</image:title>
+      <image:caption>Grabstill &amp; BTS Dokumentasi Promo Tour Semarang GJLS oleh Nadja Kencana</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://nadjakencana.netlify.app/assets/fidelamadya.webp</image:loc>
+      <image:title>Fidela Huwaida Event Documentation</image:title>
+      <image:caption>Dokumentasi event dan portrait Fidela Huwaida oleh Nadja Kencana</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://nadjakencana.netlify.app/assets/foto_fungsionaris.webp</image:loc>
+      <image:title>Foto Editorial Fungsionaris PSDM BEM KBM Polines</image:title>
+      <image:caption>Foto editorial fungsionaris PSDM BEM Polines karya Nadja Kencana</image:caption>
+    </image:image>
+  </url>
+</urlset>

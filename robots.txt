@@ -1,0 +1,7 @@
+# Robots.txt for Nadja Kencana Portfolio (https://nadjakencana.netlify.app/)
+User-agent: *
+Allow: /
+Disallow: /efek/
+
+# Sitemaps
+Sitemap: https://nadjakencana.netlify.app/sitemap.xml
