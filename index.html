@@ -905,6 +905,10 @@
       .journey-columns { grid-template-columns: 1fr; }
       .journey-columns::before { display: none; }
     }
+    .journey-col {
+      display: flex;
+      flex-direction: column;
+    }
 
     .journey-col-header {
       display: flex;
@@ -1045,6 +1049,9 @@
       box-shadow: 0 4px 24px rgba(14, 14, 14, 0.04);
       margin-bottom: 24px;
       transition: transform 0.28s ease, border-color 0.25s ease, box-shadow 0.28s ease;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
     .journey-narrative-card:hover {
       transform: translateY(-2px);
@@ -1066,8 +1073,8 @@
       display: flex;
       flex-wrap: wrap;
       gap: 7px;
-      margin-top: 14px;
-      padding-top: 14px;
+      margin-top: auto;
+      padding-top: 16px;
       border-top: 1px dashed rgba(14, 14, 14, 0.12);
     }
     .journey-role-chip {
@@ -1395,12 +1402,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.25s ease;
     }
-    .vault-cat-nav button:hover {
+    .vault-cat-nav button:hover:not(:disabled) {
       background: var(--ink);
       color: var(--bg);
       border-color: var(--ink);
+    }
+    .vault-cat-nav button:disabled {
+      opacity: 0.22;
+      cursor: not-allowed;
+      pointer-events: none;
+      border-color: rgba(14, 14, 14, 0.08);
     }
 
     /* ── Reel slider (untuk video / Instagram Reels) ── */
@@ -3352,7 +3365,8 @@
             </div>
             <div class="photo-info">
               <span class="reel-tag cinevlog">Live Stage • Concert</span>
-              <h4>Sal Priadi — Live Stage Photography at Makna Talks x Nescafe Indonesia Ideas on The Go</h4>
+              <h4>Sal Priadi — Live Stage</h4>
+              <p>Dokumentasi panggung intim Makna Talks x Nescafe di Semarang.</p>
             </div>
           </div>
 
@@ -3372,8 +3386,8 @@
             </div>
             <div class="photo-info">
               <span class="reel-tag brand">Promo Film • BTS &amp; Grabstill</span>
-              <h4>GJLS Berapi-api — Promo Tour Semarang</h4>
-              <p>Mendokumentasikan perjalanan promo film GJLS Berapi-api di Semarang bersama Bang Rigen, Bang Rispo, Mas Hifdzi, dan tim GJLS.</p>
+              <h4>GJLS Berapi-api — Promo Tour</h4>
+              <p>Dokumentasi perjalanan dan grabstill promo film GJLS di Semarang.</p>
             </div>
           </div>
 
@@ -3394,8 +3408,8 @@
             </div>
             <div class="photo-info">
               <span class="reel-tag client">Portrait • Event</span>
-              <h4>Fidela Huwaida — Event Documentation</h4>
-              <p>Dokumentasi foto event dan potret personal Fidela Huwaida dengan penekanan pada pencahayaan natural dan gestur panggung.</p>
+              <h4>Fidela Huwaida — Event &amp; Portrait</h4>
+              <p>Dokumentasi acara dan potret panggung dengan pencahayaan natural.</p>
             </div>
           </div>
 
@@ -3416,8 +3430,8 @@
             </div>
             <div class="photo-info">
               <span class="reel-tag brand">Editorial • Organizational</span>
-              <h4>Fungsionaris PSDM BEM KBM Polines</h4>
-              <p>Sesi foto editorial fungsionaris kementerian PSDM: mengarahkan pose, tata letak kelompok, dan konsistensi warna seragam kabinet.</p>
+              <h4>Fungsionaris PSDM BEM Polines</h4>
+              <p>Sesi foto editorial dan pengarahan pose kabinet fungsionaris.</p>
             </div>
           </div>
         </div>
@@ -4366,6 +4380,28 @@
       }
     });
 
+    function updateVaultNav(slider) {
+      if (!slider || !slider.children.length) return;
+      const prevBtn = document.querySelector(`.vault-cat-nav button[data-target="${slider.id}"]:not([data-dir="next"])`);
+      const nextBtn = document.querySelector(`.vault-cat-nav button[data-target="${slider.id}"][data-dir="next"]`);
+      const sRect = slider.getBoundingClientRect();
+      const firstChild = slider.children[0];
+      const lastChild = slider.children[slider.children.length - 1];
+      const isAtStart = firstChild.getBoundingClientRect().left >= sRect.left - 12;
+      const isAtEnd = lastChild.getBoundingClientRect().right <= sRect.right + 12;
+      if (prevBtn) prevBtn.disabled = isAtStart;
+      if (nextBtn) nextBtn.disabled = isAtEnd;
+    }
+
+    const vaultSliders = document.querySelectorAll('.reel-slider, .photo-slider');
+    vaultSliders.forEach(slider => {
+      updateVaultNav(slider);
+      slider.addEventListener('scroll', () => updateVaultNav(slider), { passive: true });
+    });
+    window.addEventListener('resize', () => {
+      vaultSliders.forEach(slider => updateVaultNav(slider));
+    }, { passive: true });
+
     document.querySelectorAll('.vault-cat-nav button').forEach(btn => {
       btn.addEventListener('click', () => {
         const target = document.getElementById(btn.dataset.target);
@@ -4374,6 +4410,7 @@
         const itemW = firstItem ? firstItem.offsetWidth + 22 : 280;
         const dir = btn.dataset.dir === 'next' ? 1 : -1;
         target.scrollBy({ left: dir * itemW, behavior: 'smooth' });
+        setTimeout(() => updateVaultNav(target), 350);
       });
     });
 
